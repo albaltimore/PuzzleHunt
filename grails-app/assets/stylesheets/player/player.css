@@ -1,0 +1,24 @@
+/*
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+*/
+/*
+    Created on : Apr 4, 2017, 11:50:11 AM
+    Author     : Aleks
+*/
+
+.puzzlePoint {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    box-shadow: 2px 2px 20px -5px rgba(0, 0, 0, .75),
+        inset 2px 2px 10px 0 rgba(0, 0, 0, 0.5);
+    border: 1px solid black;
+    background:  red;
+    cursor: pointer;
+}
