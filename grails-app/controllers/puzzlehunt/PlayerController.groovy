@@ -11,8 +11,7 @@ class PlayerController {
         def solved = []
         Player.findById session.playerId solvedPuzzles.each {p -> solved << p}
         def ret = Puzzle.list().collect { p ->
-            def pz = [id: p.id, xCor: p.xCor, yCor: p.yCor, name: p.name, requiredPuzzles: p.requiredPuzzles.collect {rp -> rp.id}, solved: p in solved]
-            return pz
+            [id: p.id, xCor: p.xCor, yCor: p.yCor, name: p.name, requiredPuzzles: p.requiredPuzzles.collect {rp -> rp.id}, solved: p in solved]
         }
         render ret as JSON
     }
