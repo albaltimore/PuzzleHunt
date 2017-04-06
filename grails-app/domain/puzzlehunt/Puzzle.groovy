@@ -11,6 +11,5 @@ class Puzzle {
 
     static constraints = {
         name unique:true
-
     }
 }
