@@ -8,5 +8,9 @@ class Player {
         name unique: true
     }
 
-    static hasMany = [solvedPuzzles: Puzzle]
+    def getSolvedPuzzles() {
+        Attempt.where { def pz = puzzle; player == this && answer == pz.solution }  list null collect { it.puzzle }
+    }
+
+    static hasMany = []
 }

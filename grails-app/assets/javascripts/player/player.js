@@ -1,7 +1,6 @@
 /* global jQuery */
 //= require jquery-3.2.0
 
-
 $(document).ready(function () {
     $.get("getPuzzles", function (puzzles) {
         console.log(puzzles);
@@ -103,8 +102,6 @@ $(document).ready(function () {
                             });
                         }
                     });
-
-
                 } else {
                     var label = $("<label style='position: absolute; width:100%; color:red; font-size: 64px; text-align: center; top: 12px'>LOCKED</label>");
                     pane.append(label);

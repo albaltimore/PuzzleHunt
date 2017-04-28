@@ -27,7 +27,6 @@ class BootStrap {
 
 
         def pl = new Player(name:"Aleks", password:"1")
-        pl.solvedPuzzles = [a, b]
         pl.save()
     }
     def destroy = {
