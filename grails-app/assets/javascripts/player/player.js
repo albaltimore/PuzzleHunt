@@ -10,7 +10,9 @@ $(document).ready(function () {
         });
         puzzles.forEach(function (puzzle) {
             pMap[puzzle.id] = puzzle;
-            puzzle.requiredPuzzles.forEach(function (rp) {
+            puzzle.requiredPuzzles.filter(function (rp) {
+                return pMap[rp];
+            }).forEach(function (rp) {
                 var a = puzzle, b = pMap[rp];
                 var x1 = a.xCor, y1 = a.yCor, x2 = b.xCor, y2 = b.yCor;
                 var angle = Math.atan2((y1 - y2), (x1 - x2)) * (180 / Math.PI);
@@ -30,7 +32,6 @@ $(document).ready(function () {
                 l.css("left", ((x1 + x2) / 2 - length / 2) + "px");
 
                 $("#puzzlePoints").append(l);
-
             });
         });
 
@@ -54,7 +55,7 @@ $(document).ready(function () {
 
             if (puzzle.solved) {
                 point.css("background-color", "green");
-            } else if (puzzle.requiredPuzzles.every(function (rp) {
+            } else if (!puzzle.requiredPuzzles.length || puzzle.requiredPuzzles.some(function (rp) {
                 return pMap[rp].solved;
             })) {
                 point.css("background-color", "yellow");
@@ -65,7 +66,7 @@ $(document).ready(function () {
 
             point.click(function (evt) {
                 clearPanes();
-                var pane = $("<div style='position: absolute; background-color: black; width: 300px; height : 100px; border: 1px solid white; padding: 5px 5px 5px 5px; z-index: 100' />");
+                var pane = $("<div style='position: absolute; background-color: black; width: 300px; border: 1px solid white; padding: 5px 5px 5px 5px; z-index: 100' />");
                 $("#puzzlePoints").append(pane);
 
                 pane.css("top", (puzzle.yCor) + "px");
@@ -78,14 +79,16 @@ $(document).ready(function () {
                 evt.stopPropagation();
 
                 if (puzzle.solved) {
-                    var label = $("<label style='position: absolute; width:100%; color:green; font-size: 64px; text-align: center; top: 12px'>SOLVED</label>");
+                    var label = $("<label style='width:100%; color:green; font-size: 64px; text-align: center; display: inline-block'>SOLVED</label>");
                     pane.append(label);
                 } else if (solveable) {
                     var label = $("<label style='position: relative; color:yellow; font-size: 16px; text-align: center; top: 4px'></label>");
                     label.text(puzzle.name);
                     pane.append(label);
 
-                    var body = $("<p style='color: white; font-size: 12px'>This is the body of the puzzle. It will contain any relevant images, links, videos, etc...</p>");
+                    var accessorUrl = "getResource?accessor=" + puzzle.accessor;
+                    var body = $("<a target=\"_blank\" href=\"" + accessorUrl + "\"><img src=\"" + accessorUrl + "\" style='width:100%; margin-top: 10px; margin-bottom: 10px; max-height: 200px; overflow-y: auto'/></a>");
+
                     pane.append(body);
 
                     pane.append($("<span style='margin-right: 15px'><label style='color: white; font-size: 14px'>Solve</label></span>"));
@@ -103,13 +106,11 @@ $(document).ready(function () {
                         }
                     });
                 } else {
-                    var label = $("<label style='position: absolute; width:100%; color:red; font-size: 64px; text-align: center; top: 12px'>LOCKED</label>");
+                    var label = $("<label style='width:100%; color:red; font-size: 64px; text-align: center; display: inline-block'>LOCKED</label>");
                     pane.append(label);
                 }
-
             });
         });
     });
-    console.log('hi');
 });
 

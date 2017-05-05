@@ -10,3 +10,5 @@ build/
 .settings
 .classpath
 bin
+bootstrap
+.vscode

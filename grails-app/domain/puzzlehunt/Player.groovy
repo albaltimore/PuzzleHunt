@@ -9,7 +9,11 @@ class Player {
     }
 
     def getSolvedPuzzles() {
-        Attempt.where { def pz = puzzle; player == this && answer == pz.solution }  list null collect { it.puzzle }
+        Attempt.where { def pz = puzzle; player == this } findAll {it.isCorrect} collect { it.puzzle }
+    }
+
+    def hasSolved(Puzzle puzzle) {
+        Attempt.findByPlayerAndPuzzle this, puzzle collect {it.isCorrect} contains true
     }
 
     static hasMany = []

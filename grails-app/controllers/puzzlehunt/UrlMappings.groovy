@@ -9,7 +9,7 @@ class UrlMappings {
             }
         }
 
-        "/"(view:"/index")
+        "/"(redirect:[controller: "player", action: "index", permanent:"true"])
         "500"(view:'/error')
         "404"(view:'/notFound')
     }

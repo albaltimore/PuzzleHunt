@@ -97,6 +97,8 @@ dataSource:
 
 environments:
     development:
+        puzzlehunt:
+            bootstrapPath: bootstrap
         dataSource:
             dbCreate: create-drop
             driverClassName: org.apache.derby.jdbc.ClientDriver
