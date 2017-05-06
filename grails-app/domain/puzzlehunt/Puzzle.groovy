@@ -4,6 +4,8 @@ class Puzzle {
 
     String name
     String solution
+    Resource introResource
+    Resource solvedResource
 
     int xCor, yCor
 
@@ -11,5 +13,7 @@ class Puzzle {
 
     static constraints = {
         name unique:true
+        introResource nullable: true
+        solvedResource nullable: true
     }
 }
