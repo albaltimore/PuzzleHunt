@@ -19,7 +19,7 @@
                 <label class="bloomberg-headline">Bloomberg</label><br/>
 
                 <label style="color:white; font-size: 44px">Mystery Hunt</label>
-                <label style="color: red; position: absolute; transform: rotate(-45deg); top: -5px; left: -20px; font-size: 48px">Hack</label>
+                <label style="color: red; position: absolute; transform: rotate(-45deg); top: -5px; left: -20px; font-size: 48px; font-family: Segoe Script">Hack</label>
 
                 <div style="height: 40px"></div>
                 <g:if test="${flash.message}">
