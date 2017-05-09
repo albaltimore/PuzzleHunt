@@ -95,12 +95,26 @@ $(document).ready(function () {
                     var solveEntry = $("<input type='text' style='width: 245px' placeholder='Type the solution then press <Enter>' />");
                     pane.append(solveEntry);
 
+                    var statusDiv = $("<div style='position: relative; height: 16px; margin-top: 5px; margin-bottom: 10px'/>");
+                    pane.append(statusDiv);
+
+                    var statusLabel = $("<label style='color: white;  display: inline-block'></label>");
+                    statusDiv.append(statusLabel)
+
                     solveEntry.keydown(function (evt) {
                         if (evt.key === "Enter") {
+                            if (!solveEntry.val().length) {
+                                statusLabel.text("");
+                                return;
+                            }
+
+                            statusLabel.text("Checking..")
                             $.post("checkPuzzle", {id: puzzle.id, solution: solveEntry.val()}, function (data) {
                                 console.log(data);
                                 if (data.solved) {
                                     location.reload()
+                                } else {
+                                    statusLabel.text(data.message);
                                 }
                             });
                         }

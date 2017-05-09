@@ -21,8 +21,14 @@ class PlayerController {
     }
 
     def checkPuzzle() {
-        def puzzle = Puzzle.findById(params.id)
         def player = Player.findById session.playerId
+        if (System.currentTimeMillis() <= player.lastSubmission  + (grailsApplication.config.getProperty("puzzlehunt.puzzleTimeout") as Long) ) {
+            def ret = [solved: false, message: "Too many submissions at once"]
+            render ret as JSON
+            return
+        }
+
+        def puzzle = Puzzle.findById(params.id)
 
         def attempt = new Attempt(player: player, puzzle: puzzle, answer: params.solution, timestamp: System.currentTimeMillis())
         attempt.save(flush: true)
@@ -30,6 +36,7 @@ class PlayerController {
         def c = attempt.isCorrect
 
         def ret = [solved: c]
+        if (!c) ret.message = "Incorrect"
         render ret as JSON
     }
 

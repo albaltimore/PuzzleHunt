@@ -95,6 +95,9 @@ dataSource:
     username: sa
     password:
 
+puzzlehunt:
+    puzzleTimeout: 2000
+
 environments:
     development:
         puzzlehunt:
