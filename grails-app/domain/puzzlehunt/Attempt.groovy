@@ -14,11 +14,6 @@ class Attempt {
         cleanSolution(puzzle.solution) == cleanSolution(answer)
     }
 
-    static mappedBy = [
-        puzzle: "attempt",
-        player: "attempt"
-    ]
-
     static belongsTo = [puzzle: "puzzle", player: "player"]
 
     static constraints = {

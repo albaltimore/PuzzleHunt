@@ -36,7 +36,7 @@ class PlayerController {
         def c = attempt.isCorrect
 
         def ret = [solved: c]
-        if (!c) ret.message = "Incorrect"
+        if (!c) ret.message = puzzle.getPartialSolution(params.solution) ?: "Incorrect"
         render ret as JSON
     }
 

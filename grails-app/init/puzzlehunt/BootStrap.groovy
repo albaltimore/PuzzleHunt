@@ -34,6 +34,12 @@ class BootStrap {
 
         config.puzzles.each {
             puzzles[it.id] = new Puzzle(xCor: it.xcor, yCor: it.ycor, name: it.name, solution: it.solution)
+            puzzles[it.id].partialSolutions = it.hints.collect { k, v ->
+                def ptl = new PartialSolution(trigger: k, hint: v)
+                ptl.save()
+                ptl
+            }
+
             puzzles[it.id].save()
         }
 
