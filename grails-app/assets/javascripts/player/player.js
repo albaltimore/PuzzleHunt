@@ -58,7 +58,7 @@ $(document).ready(function () {
             if (puzzle.solved) {
                 point.css("background-color", "green");
             } else if (!puzzle.requiredPuzzles.length || puzzle.requiredPuzzles.some(function (rp) {
-                return pMap[rp].solved;
+                return pMap[rp] && pMap[rp].solved;
             })) {
                 point.css("background-color", "yellow");
                 solveable = true;
