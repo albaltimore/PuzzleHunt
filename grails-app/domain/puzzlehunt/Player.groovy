@@ -12,8 +12,8 @@ class Player {
         Attempt.where { player == this } findAll {it.isCorrect} collect { it.puzzle }
     }
 
-    def hasSolved(Puzzle puzzle) {
-        Attempt.findByPlayerAndPuzzle this, puzzle collect {it.isCorrect} contains true
+    def hasSolved(Puzzle puz) {
+        Attempt.where { player == this && puzzle == puz } collect {println it.answer; println it.isCorrect; it.isCorrect} contains true
     }
 
     def getLastSubmission() {

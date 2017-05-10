@@ -15,7 +15,10 @@ class BootStrap {
     }
 
     def loadFromPath() {
+
         def bootstrapPath = grailsApplication.config.getProperty("puzzlehunt.bootstrapPath")
+
+        if (Puzzle.list().size()) return
 
         if (!bootstrapPath) return
 
@@ -35,11 +38,10 @@ class BootStrap {
         config.puzzles.each {
             puzzles[it.id] = new Puzzle(xCor: it.xcor, yCor: it.ycor, name: it.name, solution: it.solution)
             puzzles[it.id].partialSolutions = it.hints.collect { k, v ->
-                def ptl = new PartialSolution(trigger: k, hint: v)
+                def ptl = new PartialSolution(trigger: k, hint: v ?: "You're on the right track, keep going!")
                 ptl.save()
                 ptl
             }
-
             puzzles[it.id].save()
         }
 
@@ -49,20 +51,23 @@ class BootStrap {
         }
 
         config.resources.each {
-            resources[it.id] = new Resource(puzzle: puzzles[it.id], filename: it.file, accessor: UUID.randomUUID().toString())
+            resources[it.id] = new Resource(puzzle: puzzles[it.puzzle], filename: it.file, accessor: UUID.randomUUID().toString(), mustSolve: it.mustSolve ?: false)
             resources[it.id].save()
         }
 
         config.puzzles.each {
             puzzles[it.id].introResource = resources[it.introResource]
-            if (puzzles[it.id].solvedResource) puzzles[it.id].solvedResource = resources[it.solvedResource]
+            if (it.solvedResource) puzzles[it.id].solvedResource = resources[it.solvedResource]
             puzzles[it.id].requiredPuzzles = it.requires.collect {pid -> puzzles[pid]}
+            puzzles[it.id].save()
         }
-
-        println resources
 
         players.each {k,v->v.save(flush:true)}
         puzzles.each{k,v->v.save(flush:true)}
         resources.each{k,v->v.save(flush:true)}
+
+        println players
+        println puzzles
+        println resources
     }
 }

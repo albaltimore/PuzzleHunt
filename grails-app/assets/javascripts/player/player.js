@@ -1,6 +1,8 @@
 /* global jQuery */
 //= require jquery-3.2.0
 
+
+
 $(document).ready(function () {
     $.get("getPuzzles", function (puzzles) {
         console.log(puzzles);
@@ -69,9 +71,8 @@ $(document).ready(function () {
                 var pane = $("<div style='position: absolute; background-color: black; width: 300px; border: 1px solid white; padding: 5px 5px 5px 5px; z-index: 100' />");
                 $("#puzzlePoints").append(pane);
 
-                pane.css("top", (puzzle.yCor) + "px");
-                pane.css("left", (puzzle.xCor) + "px");
-
+                pane.css(puzzle.yCor < 450 ? "top" : "bottom", (puzzle.yCor < 450 ? puzzle.yCor : 900 - puzzle.yCor) + "px");
+                pane.css(puzzle.xCor < 720 ? "left" : "right", (puzzle.xCor < 720 ? puzzle.xCor : 1440 - puzzle.xCor) + "px");
                 removePanes.push(pane);
                 pane.click(function (evt) {
                     evt.stopPropagation();
@@ -79,40 +80,70 @@ $(document).ready(function () {
                 evt.stopPropagation();
 
                 if (puzzle.solved) {
-                    var label = $("<label style='width:100%; color:green; font-size: 64px; text-align: center; display: inline-block'>SOLVED</label>");
+                    var label = $("<label style='position: relative; color:green; font-size: 16px; text-align: center; top: 4px'></label>");
+                    label.text(puzzle.name);
                     pane.append(label);
+
+                    if (puzzle.solvedAccessor) {
+                        var accessorUrl = "getResource?accessor=" + puzzle.solvedAccessor;
+                        var introExtension = puzzle.solvedFilename.substr(puzzle.introFilename.lastIndexOf(".") + 1).toLowerCase();
+
+                        if (introExtension === "pdf") {
+                            var body = $("<object data='" + accessorUrl + "' style='width:100%; margin-top: 10px; margin-bottom: 3px; max-height: 200px; overflow-y: auto'/>");
+                            var link = $("<div style='margin-bottom: 10px'><a style='color: #59A0E6' target=\"_blank\" href=\"" + accessorUrl + "\">Download</a></div>");
+                            pane.append(body);
+                            pane.append(link);
+                        } else {
+                            body = $("<a target=\"_blank\" href=\"" + accessorUrl + "\"><img src=\"" + accessorUrl + "\" style='width:100%; margin-top: 10px; margin-bottom: 10px; max-height: 200px; overflow-y: auto'/></a>");
+                            pane.append(body);
+                        }
+                    } else {
+                        var label = $("<label style='width:100%; color:green; font-size: 64px; text-align: center; display: inline-block'>SOLVED</label>");
+                        pane.append(label);
+                    }
+
+                    link = $("<div style='margin-bottom: 10px'><a style='color: #59A0E6' target=\"_blank\" href=\"" + "getResource?accessor=" + puzzle.introAccessor + "\">The Puzzle</a></div>");
+                    pane.append(link);
                 } else if (solveable) {
                     var label = $("<label style='position: relative; color:yellow; font-size: 16px; text-align: center; top: 4px'></label>");
                     label.text(puzzle.name);
                     pane.append(label);
 
-                    var accessorUrl = "getResource?accessor=" + puzzle.accessor;
-                    var body = $("<a target=\"_blank\" href=\"" + accessorUrl + "\"><img src=\"" + accessorUrl + "\" style='width:100%; margin-top: 10px; margin-bottom: 10px; max-height: 200px; overflow-y: auto'/></a>");
+                    var accessorUrl = "getResource?accessor=" + puzzle.introAccessor;
+                    var introExtension = puzzle.introFilename.substr(puzzle.introFilename.lastIndexOf(".") + 1).toLowerCase();
 
-                    pane.append(body);
+                    if (introExtension === "pdf") {
+                        var body = $("<object data='" + accessorUrl + "' style='width:100%; margin-top: 10px; margin-bottom: 3px; max-height: 200px; overflow-y: auto'/>");
+                        var link = $("<div style='margin-bottom: 10px'><a style='color: #59A0E6' target=\"_blank\" href=\"" + accessorUrl + "\">Download</a></div>");
+                        pane.append(body);
+                        pane.append(link);
+                    } else {
+                        body = $("<a target=\"_blank\" href=\"" + accessorUrl + "\"><img src=\"" + accessorUrl + "\" style='width:100%; margin-top: 10px; margin-bottom: 10px; max-height: 200px; overflow-y: auto'/></a>");
+                        pane.append(body);
+                    }
 
                     pane.append($("<span style='margin-right: 15px'><label style='color: white; font-size: 14px'>Solve</label></span>"));
                     var solveEntry = $("<input type='text' style='width: 245px' placeholder='Type the solution then press <Enter>' />");
                     pane.append(solveEntry);
 
-                    var statusDiv = $("<div style='position: relative; height: 16px; margin-top: 5px; margin-bottom: 10px'/>");
+                    var statusDiv = $("<div style='position: relative; height: 20px; margin-top: 10px; margin-bottom: 5px; overflow-y: auto; background-color: #444444'/>");
                     pane.append(statusDiv);
 
-                    var statusLabel = $("<label style='color: white;  display: inline-block'></label>");
-                    statusDiv.append(statusLabel)
+                    var statusLabel = $("<label style='color: white;  display: inline-block'>Awaiting input...</label>");
+                    statusDiv.append(statusLabel);
 
                     solveEntry.keydown(function (evt) {
                         if (evt.key === "Enter") {
                             if (!solveEntry.val().length) {
-                                statusLabel.text("");
+                                statusLabel.text("Awaiting input...");
                                 return;
                             }
 
-                            statusLabel.text("Checking..")
+                            statusLabel.text("Checking..");
                             $.post("checkPuzzle", {id: puzzle.id, solution: solveEntry.val()}, function (data) {
                                 console.log(data);
                                 if (data.solved) {
-                                    location.reload()
+                                    location.reload();
                                 } else {
                                     statusLabel.text(data.message);
                                 }
