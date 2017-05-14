@@ -27,7 +27,22 @@ class BootStrap {
 
 
         def pl = new Player(name:"Aleks", password:"1")
+        def ss = new Player(name: "Steph", password:"2")
         pl.save()
+        ss.save()
+        
+        def h_a = new Hint(player:pl, puzzle:a, owner:"UNCLAIMED", question:"I need help with this", notes: "NOTES")
+        def h_b = new Hint(player:pl, puzzle:a, owner:"UNCLAIMED", question:"I need help again", notes:"NOTES")
+        def h_c = new Hint(player:pl, puzzle:a, owner:"UNCLAIMED", question:"I need more help", notes:"NOTES")
+        def h_d = new Hint(player:pl, puzzle:a, owner:"UNCLAIMED", question:"I have another question", notes:"NOTES")
+        
+        h_a.save()
+        h_b.save()
+        h_c.save()
+        h_d.save()
+        
+        def ts = new Player(name: "Tom", password:"3")
+        ts.save()
     }
     def destroy = {
     }
