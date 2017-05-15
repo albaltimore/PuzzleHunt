@@ -9,7 +9,16 @@ class Player {
     }
 
     def getSolvedPuzzles() {
-        Attempt.where { def pz = puzzle; player == this && answer == pz.solution }  list null collect { it.puzzle }
+        Attempt.where { player == this } findAll {it.isCorrect} collect { it.puzzle }
+    }
+
+    def hasSolved(Puzzle puz) {
+        Attempt.where { player == this && puzzle == puz } collect {println it.answer; println it.isCorrect; it.isCorrect} contains true
+    }
+
+    def getLastSubmission() {
+        def item = Attempt.where {timestamp == max(timestamp).of{ player==this } && player==this }.list()
+        item.size() ? item.first().timestamp : 0
     }
 
     static hasMany = []
