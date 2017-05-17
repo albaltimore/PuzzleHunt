@@ -11,6 +11,7 @@ class Puzzle {
     Resource introResource
     Resource solvedResource
     int xCor, yCor
+    Round round
 
     def getPartialSolution(input) {
         def ret = null
@@ -22,7 +23,7 @@ class Puzzle {
     static hasMany = [requiredPuzzles: Puzzle, partialSolutions: PartialSolution]
 
     static constraints = {
-        name unique:true
+        name unique: true
         introResource nullable: true
         solvedResource nullable: true
     }
