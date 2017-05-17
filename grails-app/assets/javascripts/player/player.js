@@ -78,6 +78,19 @@ $(document).ready(function () {
                     evt.stopPropagation();
                 });
                 evt.stopPropagation();
+                var hintentry = $("<input id='hintentry' type='text' placeholder='<enter hint request>' style='width: 240px;'>");
+                pane.append(hintentry);
+                var hintrequest = $("<label title='Click to Request Hint' style='position: relative; color:orange; font-size: 25px; font-weight: bold; text-align: center; top: 4px; left: 10px; cursor: pointer;'></label>");
+                hintrequest.text("?");
+                pane.append(hintrequest);
+                var spacer = $("</br>");
+                pane.append(spacer);
+                
+                hintrequest.click(function () {
+                    var elemententry = document.getElementById("hintentry");
+                    var hintquestion = elemententry.value;
+                    $.post("requestHint", {id: puzzle.id, question: hintquestion}, function () {});
+                });
 
                 if (puzzle.solved) {
                     var label = $("<label style='position: relative; color:green; font-size: 16px; text-align: center; top: 4px'></label>");

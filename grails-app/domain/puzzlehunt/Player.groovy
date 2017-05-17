@@ -3,9 +3,11 @@ package puzzlehunt
 class Player {
     String name
     String password
+    String role
 
     static constraints = {
         name unique: true
+        role nullable: true
     }
 
     def getSolvedPuzzles() {
