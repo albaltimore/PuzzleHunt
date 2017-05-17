@@ -83,7 +83,7 @@ class PlayerController {
         def puzzle = Puzzle.findById(params.id)
 
         if (puzzle.timeLimit) {
-            def pstart = puzzle.findByPuzzleAndPlayer(puzzle, player)
+            def pstart = PuzzleStart.findByPuzzleAndPlayer(puzzle, player)
             if (!pstart) {
                 def ret = [solved: false, message: "Puzzle not started"]
                 render ret as JSON
@@ -99,6 +99,7 @@ class PlayerController {
 
         def attempt = new Attempt(player: player, puzzle: puzzle, answer: params.solution, timestamp: System.currentTimeMillis())
         attempt.save(flush: true)
+        println "${puzzle.name} ${puzzle.solution} ${params.solution}"
 
         def c = attempt.isCorrect
 
