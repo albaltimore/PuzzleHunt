@@ -33,9 +33,14 @@ class BootStrap {
         def players = [:]
         def puzzles = [:]
         def resources = [:]
+        def rounds = [:]
+
+        config.rounds.each {
+            rounds[it.id] = new Round(name: it.name)
+        }
 
         config.puzzles.each {
-            puzzles[it.id] = new Puzzle(xCor: it.xcor, yCor: it.ycor, name: it.name, solution: it.solution)
+            puzzles[it.id] = new Puzzle(xCor: it.xcor, yCor: it.ycor, name: it.name, solution: it.solution, round: rounds[it.round], timeLimit: it.timeLimit ?: null)
             puzzles[it.id].partialSolutions = it.hints.collect { k, v ->
                 def ptl = new PartialSolution(trigger: k, hint: v ?: "You're on the right track, keep going!")
                 ptl.save()
@@ -45,13 +50,17 @@ class BootStrap {
         }
 
         config.players.each {
-            players[it.name] = new Player(name: it.name, password: it.password)
+            players[it.name] = new Player(name: it.name, password: it.password, round: rounds[it.round], role: it.role)
             players[it.name].save()
         }
 
         config.resources.each {
             resources[it.id] = new Resource(puzzle: puzzles[it.puzzle], filename: it.file, accessor: UUID.randomUUID().toString(), mustSolve: it.mustSolve ?: false)
             resources[it.id].save()
+        }
+
+        config.rounds.each {
+            rounds[it.id].background = resources[it.resource]
         }
 
         config.puzzles.each {
@@ -64,6 +73,7 @@ class BootStrap {
         players.each {k,v->v.save(flush:true)}
         puzzles.each{k,v->v.save(flush:true)}
         resources.each{k,v->v.save(flush:true)}
+        rounds.each{k,v->v.save(flush:true)}
 
         println players
         println puzzles

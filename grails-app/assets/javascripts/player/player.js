@@ -78,19 +78,7 @@ $(document).ready(function () {
                     evt.stopPropagation();
                 });
                 evt.stopPropagation();
-                var hintentry = $("<input id='hintentry' type='text' placeholder='<enter hint request>' style='width: 240px;'>");
-                pane.append(hintentry);
-                var hintrequest = $("<label title='Click to Request Hint' style='position: relative; color:orange; font-size: 25px; font-weight: bold; text-align: center; top: 4px; left: 10px; cursor: pointer;'></label>");
-                hintrequest.text("?");
-                pane.append(hintrequest);
-                var spacer = $("</br>");
-                pane.append(spacer);
-                
-                hintrequest.click(function () {
-                    var elemententry = document.getElementById("hintentry");
-                    var hintquestion = elemententry.value;
-                    $.post("requestHint", {id: puzzle.id, question: hintquestion}, function () {});
-                });
+
 
                 if (puzzle.solved) {
                     var label = $("<label style='position: relative; color:green; font-size: 16px; text-align: center; top: 4px'></label>");
@@ -122,47 +110,82 @@ $(document).ready(function () {
                     label.text(puzzle.name);
                     pane.append(label);
 
-                    var accessorUrl = "getResource?accessor=" + puzzle.introAccessor;
-                    var introExtension = puzzle.introFilename.substr(puzzle.introFilename.lastIndexOf(".") + 1).toLowerCase();
+                    if (puzzle.started) {
+                        var accessorUrl = "getResource?accessor=" + puzzle.introAccessor;
+                        var introExtension = puzzle.introFilename.substr(puzzle.introFilename.lastIndexOf(".") + 1).toLowerCase();
 
-                    if (introExtension === "pdf") {
-                        var body = $("<object data='" + accessorUrl + "' style='width:100%; margin-top: 10px; margin-bottom: 3px; max-height: 200px; overflow-y: auto'/>");
-                        var link = $("<div style='margin-bottom: 10px'><a style='color: #59A0E6' target=\"_blank\" href=\"" + accessorUrl + "\">Download</a></div>");
-                        pane.append(body);
-                        pane.append(link);
-                    } else {
-                        body = $("<a target=\"_blank\" href=\"" + accessorUrl + "\"><img src=\"" + accessorUrl + "\" style='width:100%; margin-top: 10px; margin-bottom: 10px; max-height: 200px; overflow-y: auto'/></a>");
-                        pane.append(body);
-                    }
+                        if (introExtension === "pdf") {
+                            var body = $("<object data='" + accessorUrl + "' style='width:100%; margin-top: 10px; margin-bottom: 3px; max-height: 200px; overflow-y: auto'/>");
+                            var link = $("<div style='margin-bottom: 10px'><a style='color: #59A0E6' target=\"_blank\" href=\"" + accessorUrl + "\">Download</a></div>");
+                            pane.append(body);
+                            pane.append(link);
+                        } else {
+                            body = $("<a target=\"_blank\" href=\"" + accessorUrl + "\"><img src=\"" + accessorUrl + "\" style='width:100%; margin-top: 10px; margin-bottom: 10px; max-height: 200px; overflow-y: auto'/></a>");
+                            pane.append(body);
+                        }
 
-                    pane.append($("<span style='margin-right: 15px'><label style='color: white; font-size: 14px'>Solve</label></span>"));
-                    var solveEntry = $("<input type='text' style='width: 245px' placeholder='Type the solution then press <Enter>' />");
-                    pane.append(solveEntry);
+                        pane.append($("<span style='margin-right: 15px'><label style='color: white; font-size: 14px'>Solve</label></span>"));
+                        var solveEntry = $("<input type='text' style='width: 245px' placeholder='Type the solution then press <Enter>' />");
+                        pane.append(solveEntry);
 
-                    var statusDiv = $("<div style='position: relative; height: 20px; margin-top: 10px; margin-bottom: 5px; overflow-y: auto; background-color: #444444'/>");
-                    pane.append(statusDiv);
+                        var statusDiv = $("<div style='position: relative; height: 20px; margin-top: 10px; margin-bottom: 5px; overflow-y: auto; background-color: #444444'/>");
+                        pane.append(statusDiv);
 
-                    var statusLabel = $("<label style='color: white;  display: inline-block'>Awaiting input...</label>");
-                    statusDiv.append(statusLabel);
+                        var statusLabel = $("<label style='color: white;  display: inline-block'>Awaiting input...</label>");
+                        statusDiv.append(statusLabel);
 
-                    solveEntry.keydown(function (evt) {
-                        if (evt.key === "Enter") {
-                            if (!solveEntry.val().length) {
-                                statusLabel.text("Awaiting input...");
+                        solveEntry.keydown(function (evt) {
+                            if (evt.key === "Enter") {
+                                if (!solveEntry.val().length) {
+                                    statusLabel.text("Awaiting input...");
+                                    return;
+                                }
+
+                                statusLabel.text("Checking..");
+                                $.post("checkPuzzle", {id: puzzle.id, solution: solveEntry.val()}, function (data) {
+                                    console.log(data);
+                                    if (data.solved) {
+                                        location.reload();
+                                    } else {
+                                        statusLabel.text(data.message);
+                                    }
+                                });
+                            }
+                        });
+
+                        var hintDiv = $("<div style='position: relative;  margin-top: 10px; margin-bottom: 5px; margin-right: 8px'>");
+                        var hintEntry = $("<textarea placeholder='Type to request a hint' style='resize: none; width: 100%;' />");
+                        pane.append(hintDiv);
+                        hintDiv.append(hintEntry);
+                        var hintButton = $("<label style='cursor: pointer; color: white'>Submit</label>");
+                        hintDiv.append(hintButton);
+
+                        hintButton.click(function () {
+                            if (!hintEntry.val()) {
                                 return;
                             }
-
-                            statusLabel.text("Checking..");
-                            $.post("checkPuzzle", {id: puzzle.id, solution: solveEntry.val()}, function (data) {
-                                console.log(data);
-                                if (data.solved) {
-                                    location.reload();
-                                } else {
-                                    statusLabel.text(data.message);
-                                }
+                            $.post("requestHint", {id: puzzle.id, question: hintEntry.val()}, function (data) {
+                                hintDiv.html("");
+                                hintDiv.append($("<label style='color: white'>Submitted</label>"));
                             });
-                        }
-                    });
+                        });
+                    } else {
+                        var label = $("<label style='position: relative; color:white; font-size: 16px; text-align: center'></label>");
+                        label.text("This is a timed puzzle. You have " + (puzzle.timeLimit / 60) + " minutes to solve it. You should gather your whole team!");
+                        var labDiv = $("<div style='position: relative; margin-top: 10px'>");
+                        labDiv.append(label);
+                        pane.append(labDiv);
+
+                        var startBtn = $("<label style='cursor: pointer; color: white; margin-top: 10px; color: lightgreen'>Ok, start!</label>");
+                        pane.append(startBtn);
+                        startBtn.click(function () {
+                            $.post("startTimedPuzzle", {id: puzzle.id}, function (data) {
+                                location.reload();
+                            });
+                        });
+
+                    }
+
                 } else {
                     var label = $("<label style='width:100%; color:red; font-size: 64px; text-align: center; display: inline-block'>LOCKED</label>");
                     pane.append(label);

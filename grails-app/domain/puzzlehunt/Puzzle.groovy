@@ -12,6 +12,7 @@ class Puzzle {
     Resource solvedResource
     int xCor, yCor
     Round round
+    Long timeLimit
 
     def getPartialSolution(input) {
         def ret = null
@@ -26,5 +27,6 @@ class Puzzle {
         name unique: true
         introResource nullable: true
         solvedResource nullable: true
+        timeLimit nullable: true
     }
 }

@@ -7,5 +7,6 @@ class Round {
 
 
     static constraints = {
+        background nullable: true
     }
 }
