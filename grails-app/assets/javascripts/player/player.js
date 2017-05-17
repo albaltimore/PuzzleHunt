@@ -131,11 +131,13 @@ $(document).ready(function () {
 
                     if (puzzle.started) {
                         if (puzzle.timeLimit) {
-                            var endTime = puzzle.timeLimit * 1000 + puzzle.started;
+                            var endTime = puzzle.timeLimit * 1000 + puzzle.startTime;
+                            console.log(new Date().getTime(), endTime);
+
                             if (endTime < new Date().getTime()) {
                                 var ends = $("<div><label style='color: red'>Time Limit Expired!</label><div>");
                             } else {
-                                ends = $("<div><label style='color: white'>Ends at " + new Date(endTime).toDateString() + "</label><div>");
+                                ends = $("<div><label style='color: white'>Ends at " + new Date(endTime).toLocaleTimeString() + "</label><div>");
                             }
                             pane.append(ends);
                         }

@@ -21,13 +21,13 @@ class PlayerController {
     def getPuzzles() {
         def player = Player.get(session.playerId)
         def solved = player.solvedPuzzles.collect {it.id}
-        def timedStarted = PuzzleStart.findByPlayer player collect {it.id}
+        def timedStarted = PuzzleStart.findAllByPlayer player collect {println it.puzzle.name; it.puzzle.id}
 
         println solved
+        println timedStarted
         def ret = Puzzle.list().findAll { p ->
             p.id in solved || !p.requiredPuzzles || p.requiredPuzzles.findAll {rp -> rp.id in solved}.size()
         }.collect { p ->
-            println "${p.id} ${p.id in solved} ${solved.contains(p.id)}"
             def started = p.timeLimit ? (p.id in timedStarted) : true
             def startTime = p.id in timedStarted ? PuzzleStart.findByPlayerAndPuzzle(player, p).startTime : null
             [
@@ -39,6 +39,7 @@ class PlayerController {
                 solved: p.id in solved,
                 timeLimit: p.timeLimit,
                 started: started,
+                startTime: startTime,
                 round: p.round.name,
                 roundAccessor: p.round.background.accessor,
                 roundWidth: p.round.width,
