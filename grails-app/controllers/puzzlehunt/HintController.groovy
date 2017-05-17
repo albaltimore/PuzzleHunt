@@ -24,8 +24,7 @@ class HintController {
     
     def claim() {
         def uh = Hint.findById(params.hintid)
-        def ap = Player.findByNameAndPassword(session.playerName, 
-                                              session.playerId)
+        def ap = Player.findById(session.playerId)
         if (ap && uh)
         {
             println "claiming hint request"

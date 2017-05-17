@@ -41,10 +41,9 @@ class PlayerController {
     }
     
     def requestHint() {
-        def pl = Player.findByNameAndId(session.playerName, session.playerId)
+        def pl = Player.findById(session.playerId)
         def pu = Puzzle.findById(params.id)
-        def uu = Player.findByNameAndPassword("--", 0)
-        def hn = new Hint(player:pl, puzzle:pu, owner: uu, question: params.question)
+        def hn = new Hint(player:pl, puzzle:pu, question: params.question)
         hn.save()
     }
 
