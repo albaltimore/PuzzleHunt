@@ -7,6 +7,7 @@ class Player {
 
     static constraints = {
         name unique: true
+        role nullable: true
     }
 
     def getSolvedPuzzles() {
