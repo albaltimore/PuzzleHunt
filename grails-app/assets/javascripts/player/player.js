@@ -21,6 +21,10 @@ $(document).ready(function () {
                 var puzzlePoints = $("<div style='position: absolute; z-index: 2; width: " + puzzle.roundWidth + "px; height: " + puzzle.roundHeight + "px'>");
                 paneDiv.append(puzzlePoints);
                 rounds[puzzle.round].pointsDiv = puzzlePoints;
+
+                if (puzzle.round !== "Ghosts") {
+                    paneDiv.css("display", "none");
+                }
             }
         });
         puzzles.forEach(function (puzzle) {
@@ -93,8 +97,9 @@ $(document).ready(function () {
                 });
                 evt.stopPropagation();
 
-
+                console.log("puzzle", puzzle.solved);
                 if (puzzle.solved) {
+                    console.log("solved", puzzle);
                     var label = $("<label style='position: relative; color:green; font-size: 16px; text-align: center; top: 4px'></label>");
                     label.text(puzzle.name);
                     pane.append(label);
@@ -125,6 +130,16 @@ $(document).ready(function () {
                     pane.append(label);
 
                     if (puzzle.started) {
+                        if (puzzle.timeLimit) {
+                            var endTime = puzzle.timeLimit * 1000 + puzzle.started;
+                            if (endTime < new Date().getTime()) {
+                                var ends = $("<div><label style='color: red'>Time Limit Expired!</label><div>");
+                            } else {
+                                ends = $("<div><label style='color: white'>Ends at " + new Date(endTime).toDateString() + "</label><div>");
+                            }
+                            pane.append(ends);
+                        }
+
                         var accessorUrl = "getResource?accessor=" + puzzle.introAccessor;
                         var introExtension = puzzle.introFilename.substr(puzzle.introFilename.lastIndexOf(".") + 1).toLowerCase();
 

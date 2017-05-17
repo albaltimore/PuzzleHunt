@@ -27,6 +27,7 @@ class PlayerController {
         def ret = Puzzle.list().findAll { p ->
             p.id in solved || !p.requiredPuzzles || p.requiredPuzzles.findAll {rp -> rp.id in solved}.size()
         }.collect { p ->
+            println "${p.id} ${p.id in solved} ${solved.contains(p.id)}"
             def started = p.timeLimit ? (p.id in timedStarted) : true
             def startTime = p.id in timedStarted ? PuzzleStart.findByPlayerAndPuzzle(player, p).startTime : null
             [

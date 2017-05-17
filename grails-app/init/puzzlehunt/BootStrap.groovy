@@ -67,6 +67,7 @@ class BootStrap {
             puzzles[it.id].introResource = resources[it.introResource]
             if (it.solvedResource) puzzles[it.id].solvedResource = resources[it.solvedResource]
             puzzles[it.id].requiredPuzzles = it.requires.collect {pid -> puzzles[pid]}
+            println "puzzles ${it} ${puzzles[it.id].requiredPuzzles}"
             puzzles[it.id].save()
         }
 
