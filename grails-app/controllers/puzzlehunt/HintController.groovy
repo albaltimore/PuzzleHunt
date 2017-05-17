@@ -19,7 +19,6 @@ class HintController {
     }
     
     def refreshlist() {
-//        requestHint()
         redirect controller: "hint", action: "index"
     }
     
