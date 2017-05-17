@@ -39,6 +39,13 @@ class PlayerController {
         }
         render ret as JSON
     }
+    
+    def requestHint() {
+        def pl = Player.findById(session.playerId)
+        def pu = Puzzle.findById(params.id)
+        def hn = new Hint(player:pl, puzzle:pu, question: params.question)
+        hn.save()
+    }
 
     def checkPuzzle() {
         def player = Player.findById session.playerId

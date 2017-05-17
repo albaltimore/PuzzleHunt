@@ -9,7 +9,6 @@ class BootStrap {
 
     def init = { servletContext ->
         loadFromPath()
-
     }
     def destroy = {
     }
