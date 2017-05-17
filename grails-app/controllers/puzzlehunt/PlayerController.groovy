@@ -40,6 +40,8 @@ class PlayerController {
                 started: started,
                 round: p.round.name,
                 roundAccessor: p.round.background.accessor,
+                roundWidth: p.round.width,
+                roundHeight: p.round.height,
                 introAccessor: started ? p?.introResource?.accessor : null,
                 introFilename: started ? p?.introResource?.filename : null,
                 solvedAccessor: p.id in solved ? p?.solvedResource?.accessor : null,

@@ -36,7 +36,7 @@ class BootStrap {
         def rounds = [:]
 
         config.rounds.each {
-            rounds[it.id] = new Round(name: it.name)
+            rounds[it.id] = new Round(name: it.name, width: it.width, height: it.height)
         }
 
         config.puzzles.each {
@@ -60,7 +60,7 @@ class BootStrap {
         }
 
         config.rounds.each {
-            rounds[it.id].background = resources[it.resource]
+            rounds[it.id].background = resources[it.background]
         }
 
         config.puzzles.each {

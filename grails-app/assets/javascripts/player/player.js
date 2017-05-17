@@ -13,12 +13,12 @@ $(document).ready(function () {
             pMap[puzzle.id] = puzzle;
             if (!rounds[puzzle.round]) {
                 rounds[puzzle.round] = {background: puzzle.roundAccessor};
-                var paneDiv = $("<div style='height: 1000px'>");
+                var paneDiv = $("<div style='height: " + puzzle.roundHeight + "px'>");
                 rootPane.append(paneDiv);
                 var img = $("<img src=" + "getResource?accessor=" + puzzle.roundAccessor + " style='position: absolute; z-index: 1'>");
                 paneDiv.append(img);
 
-                var puzzlePoints = $("<div style='position: absolute; z-index: 2'>");
+                var puzzlePoints = $("<div style='position: absolute; z-index: 2; width: " + puzzle.roundWidth + "px; height: " + puzzle.roundHeight + "px'>");
                 paneDiv.append(puzzlePoints);
                 rounds[puzzle.round].pointsDiv = puzzlePoints;
             }
@@ -85,8 +85,8 @@ $(document).ready(function () {
                 var pane = $("<div style='position: absolute; background-color: black; width: 300px; border: 1px solid white; padding: 5px 5px 5px 5px; z-index: 100' />");
                 rounds[puzzle.round].pointsDiv.append(pane);
 
-                pane.css(puzzle.yCor < 450 ? "top" : "bottom", (puzzle.yCor < 450 ? puzzle.yCor : 900 - puzzle.yCor) + "px");
-                pane.css(puzzle.xCor < 720 ? "left" : "right", (puzzle.xCor < 720 ? puzzle.xCor : 1440 - puzzle.xCor) + "px");
+                pane.css(puzzle.yCor < (puzzle.roundHeight / 2) ? "top" : "bottom", (puzzle.yCor < (puzzle.roundHeight / 2) ? puzzle.yCor : puzzle.roundHeight - puzzle.yCor) + "px");
+                pane.css(puzzle.xCor < (puzzle.roundWidth / 2) ? "left" : "right", (puzzle.xCor < (puzzle.roundWidth / 2) ? puzzle.xCor : puzzle.roundWidth - puzzle.xCor) + "px");
                 removePanes.push(pane);
                 pane.click(function (evt) {
                     evt.stopPropagation();
