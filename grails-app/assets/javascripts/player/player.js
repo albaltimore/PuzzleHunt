@@ -6,9 +6,22 @@
 $(document).ready(function () {
     $.get("getPuzzles", function (puzzles) {
         console.log(puzzles);
+        var rootPane = $("#rootPane");
         var pMap = {};
+        var rounds = {};
         puzzles.forEach(function (puzzle) {
             pMap[puzzle.id] = puzzle;
+            if (!rounds[puzzle.round]) {
+                rounds[puzzle.round] = {background: puzzle.roundAccessor};
+                var paneDiv = $("<div style='height: 1000px'>");
+                rootPane.append(paneDiv);
+                var img = $("<img src=" + "getResource?accessor=" + puzzle.roundAccessor + " style='position: absolute; z-index: 1'>");
+                paneDiv.append(img);
+
+                var puzzlePoints = $("<div style='position: absolute; z-index: 2'>");
+                paneDiv.append(puzzlePoints);
+                rounds[puzzle.round].pointsDiv = puzzlePoints;
+            }
         });
         puzzles.forEach(function (puzzle) {
             pMap[puzzle.id] = puzzle;
@@ -33,7 +46,8 @@ $(document).ready(function () {
                 l.css("top", ((y1 + y2) / 2) + "px");
                 l.css("left", ((x1 + x2) / 2 - length / 2) + "px");
 
-                $("#puzzlePoints").append(l);
+
+                rounds[puzzle.round].pointsDiv.append(l);
             });
         });
 
@@ -64,12 +78,12 @@ $(document).ready(function () {
                 solveable = true;
             }
 
-            $("#puzzlePoints").append(point);
+            rounds[puzzle.round].pointsDiv.append(point);
 
             point.click(function (evt) {
                 clearPanes();
                 var pane = $("<div style='position: absolute; background-color: black; width: 300px; border: 1px solid white; padding: 5px 5px 5px 5px; z-index: 100' />");
-                $("#puzzlePoints").append(pane);
+                rounds[puzzle.round].pointsDiv.append(pane);
 
                 pane.css(puzzle.yCor < 450 ? "top" : "bottom", (puzzle.yCor < 450 ? puzzle.yCor : 900 - puzzle.yCor) + "px");
                 pane.css(puzzle.xCor < 720 ? "left" : "right", (puzzle.xCor < 720 ? puzzle.xCor : 1440 - puzzle.xCor) + "px");

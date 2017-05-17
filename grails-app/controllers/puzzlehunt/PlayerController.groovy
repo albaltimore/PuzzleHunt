@@ -38,6 +38,8 @@ class PlayerController {
                 solved: p.id in solved,
                 timeLimit: p.timeLimit,
                 started: started,
+                round: p.round.name,
+                roundAccessor: p.round.background.accessor,
                 introAccessor: started ? p?.introResource?.accessor : null,
                 introFilename: started ? p?.introResource?.filename : null,
                 solvedAccessor: p.id in solved ? p?.solvedResource?.accessor : null,
@@ -45,6 +47,10 @@ class PlayerController {
             ]
         }
         render ret as JSON
+    }
+
+    def getRounds() {
+
     }
 
     def startTimedPuzzle() {
@@ -102,8 +108,8 @@ class PlayerController {
         def rs = Resource.findByAccessor(params.accessor)
         def player = Player.findById session.playerId
 
-        println "${rs} ${rs.puzzle.name} ${player.hasSolved(rs.puzzle)}"
-        if (rs && (player.hasSolved(rs.puzzle) ||
+        println "${rs} ${rs.puzzle}"
+        if (rs && (!rs.puzzle || player.hasSolved(rs.puzzle) ||
                 (!rs.mustSolve && (!rs.puzzle.requiredPuzzles || rs.puzzle.requiredPuzzles.collect {player.hasSolved it}.contains(true))))) {
             def f = new File("${bootstrapPath}/${rs.filename}")
             def extension = rs.filename.substring(rs.filename.lastIndexOf(".") + 1).toLowerCase()
