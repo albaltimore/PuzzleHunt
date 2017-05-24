@@ -4,10 +4,13 @@ class Player {
     String name
     String password
     String role
+    Long lastHint = 0
+    long hintRegen = 1000 * 60 * 20
 
     static constraints = {
         name unique: true
         role nullable: true
+        lastHint nullable: true
     }
 
     def getSolvedPuzzles() {

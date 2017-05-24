@@ -1,33 +1,232 @@
 /* global jQuery */
 //= require jquery-3.2.0
 
+function showDialog(text, cb) {
+    var modal = $("#modal");
+    var modalRoot = $("#modal-root");
+    modal.css("visibility", "visible");
+    modalRoot.css("height", "150px");
+    modalRoot.css("width", "400px");
+    modalRoot.empty();
+
+    var pane = $("<div style='position:absolute; width:100%; height 100%' />");
+    var label = $("<label class='modal-label' />");
+    pane.append(label);
+    pane.append($("<br/>"));
+    var close = $("<input type='button' value='close' class='modal-button-close' />");
+    close.css("left", "115px");
+    close.css("top", "80px");
+    close.click(function () {
+        pane.remove();
+        modal.css("visibility", "hidden");
+        if (cb) cb();
+    });
+    pane.append(close);
+
+    label.text(text);
+    modalRoot.append(pane);
+}
+
+function showConfirmDialog(text, yText, nText, cb) {
+    var modal = $("#modal");
+    var modalRoot = $("#modal-root");
+    modal.css("visibility", "visible");
+    modalRoot.css("height", "170px");
+    modalRoot.css("width", "500px");
+    modalRoot.empty();
+
+    var pane = $("<div style='position:absolute; width:100%; height 100%' />");
+    var label = $("<label class='modal-label' />");
+    pane.append(label);
+    pane.append($("<br/>"));
 
 
-$(document).ready(function () {
-    $.get("getPuzzles", function (puzzles) {
-        console.log(puzzles);
+    var close = $("<input type='button' value='" + yText + "' class='modal-button-close' />");
+    close.css("left", "75px");
+    close.css("top", "100px");
+    close.click(function () {
+        pane.remove();
+        modal.css("visibility", "hidden");
+        if (cb) cb();
+    });
+    pane.append(close);
+
+    var closeNo = $("<input type='button' value='" + nText + "' class='modal-button-close' />");
+    closeNo.css("left", "255px");
+    closeNo.css("top", "100px");
+    closeNo.click(function () {
+        pane.remove();
+        modal.css("visibility", "hidden");
+    });
+    pane.append(closeNo);
+
+
+    label.text(text);
+    modalRoot.append(pane);
+}
+
+function showLoading(text) {
+    var modal = $("#modal");
+    var modalRoot = $("#modal-root");
+    modal.css("visibility", "visible");
+    modalRoot.css("height", "100px");
+    modalRoot.css("width", "300px");
+    modalRoot.empty();
+
+    var pane = $("<div style='position:absolute; width:100%; height 100%' />");
+    var label = $("<label class='modal-label' style='top: 20px; left:70px; color:orange' />");
+    pane.append(label);
+
+    label.text(text ? text : "Loading...");
+    modalRoot.append(pane);
+}
+
+function closeLoading() {
+    var modal = $("#modal");
+    var modalRoot = $("#modal-root");
+    modalRoot.empty();
+    modal.css("visibility", "hidden");
+}
+
+function showHintDialog(puzzleId, puzzleName, hintText) {
+    $.get("nextHintTime", function (nextHintTime) {
+        var modal = $("#modal");
+        var modalRoot = $("#modal-root");
+        modal.css("visibility", "visible");
+        modalRoot.css("height", "500px");
+        modalRoot.css("width", "500px");
+        modalRoot.empty();
+
+        var pane = $("<div style='padding: 20px; 20px; 20px; 20px;' />");
+
+
+        modalRoot.append(pane);
+
+
+        pane.append($("<label style='color: white; display: block; font-size: 24px; margin-top: 20px;'>To request your next hint, please enter as much detailed information as possible about what you have tried so far.</label>"));
+
+        pane.append($("<label style='color: white; display: inline-block; font-size: 22px; margin-top: 20px;'>Puzzle:&nbsp;</label><label style='color: lightgreen; display: inline-block; font-size: 22px' >" + puzzleName + "<label/>"));
+
+        var availableLabel = $("<label style='color: white; display: block; font-size: 24px; margin-top: 20px;'></label>");
+        pane.append(availableLabel);
+
+        var hintEntry = $("<textarea style='resize: none; font-size: 16px; width: 100%; margin-top: 20px; height: 150px; box-sizing: border-box' />");
+        pane.append(hintEntry);
+        hintEntry.text(hintText ? hintText : "");
+
+        var timer = setInterval(function () {
+
+            var left = Math.max(0, nextHintTime - new Date().getTime()) / 1000;
+            if (left <= 0) {
+                availableLabel.text("Your hint is available now...");
+            } else {
+                var pad = function (t) {
+                    return t < 10 ? '0' + parseInt(t) : parseInt(t);
+                };
+                availableLabel.text("Next hint available in: " + pad((left / 3600) % 60) + ":" + pad((left / 60) % 60) + ":" + pad(left % 60));
+            }
+
+        }, 25);
+
+        var close = $("<input type='button' value='Request Hint' class='modal-button-close' />");
+        close.css("left", "35px");
+        close.css("top", "430px");
+        close.click(function () {
+            var hintRequest = hintEntry.val();
+            if (!hintRequest) return;
+            $.post("requestHint", {id: puzzleId, question: hintRequest}, function (data) {
+                clearInterval(timer);
+                pane.remove();
+                modal.css("visibility", "hidden");
+
+                showDialog(data.success ? "Submitted. Someone will help shortly!" : data.error, data.success ? null : function () {
+                    showHintDialog(puzzleId, puzzleName, hintRequest);
+                });
+
+            });
+        });
+        pane.append(close);
+
+        var closeNo = $("<input type='button' value='Cancel' class='modal-button-close' />");
+        closeNo.css("left", "285px");
+        closeNo.css("top", "430px");
+        closeNo.click(function () {
+            clearInterval(timer);
+            pane.remove();
+            modal.css("visibility", "hidden");
+        });
+        pane.append(closeNo);
+
+//
+//    $.post("requestHint", {id: puzzle.id, question: hintEntry.val()}, function (data) {
+//        hintDiv.html("");
+//        hintDiv.append($("<label style='color: white'>Submitted</label>"));
+//    });
+
+    });
+}
+
+
+var removePanes = [];
+var removeTimers = [];
+function clearPanes() {
+    console.log("clearing", removePanes);
+    removePanes.forEach(function (pane) {
+        pane.remove();
+    });
+    removePanes = [];
+
+    removeTimers.forEach(function (timer) {
+        clearInterval(timer);
+    });
+    removeTimers = [];
+}
+
+
+var puzzlePoints = [];
+function clearPoints() {
+    clearPanes();
+    puzzlePoints.forEach(function (puzzlePoint) {
+        if (puzzlePoint) {
+            puzzlePoint.remove();
+        }
+    });
+    puzzlePoints = [];
+}
+
+var rounds = {};
+function reloadMap(openPuzzleId) {
+    clearPanes();
+    $.get("getPuzzles", function (playerData) {
+        console.log(playerData);
         var rootPane = $("#rootPane");
         var pMap = {};
-        var rounds = {};
-        puzzles.forEach(function (puzzle) {
-            pMap[puzzle.id] = puzzle;
-            if (!rounds[puzzle.round]) {
-                rounds[puzzle.round] = {background: puzzle.roundAccessor};
-                var paneDiv = $("<div style='height: " + puzzle.roundHeight + "px'>");
-                rootPane.append(paneDiv);
-                var img = $("<img src=" + "getResource?accessor=" + puzzle.roundAccessor + " style='position: absolute; z-index: 1'>");
-                paneDiv.append(img);
 
-                var puzzlePoints = $("<div style='position: absolute; z-index: 2; width: " + puzzle.roundWidth + "px; height: " + puzzle.roundHeight + "px'>");
-                paneDiv.append(puzzlePoints);
-                rounds[puzzle.round].pointsDiv = puzzlePoints;
+        playerData.rounds.forEach(function (round) {
+            if (rounds[round.id]) {
+                return;
+            }
+            rounds[round.id] = round;
+            var paneDiv = $("<div style='margin: auto; width: " + round.width + "px ;height: " + round.height + "px'>");
+            rootPane.append(paneDiv);
+            var img = $("<img src=getResource?accessor=" + round.background + " style='position: absolute; z-index: 1'>");
+            paneDiv.append(img);
 
-                if (puzzle.round !== "Ghosts") {
-                    paneDiv.css("display", "none");
-                }
+            var puzzlePoints = $("<div style='position: absolute; z-index: 2; width: " + round.width + "px; height: " + round.height + "px'>");
+            paneDiv.append(puzzlePoints);
+            rounds[round.id].pointsDiv = puzzlePoints;
+
+            if (round.name !== "Ghosts") {
+                paneDiv.css("display", "none");
             }
         });
-        puzzles.forEach(function (puzzle) {
+
+        playerData.puzzles.forEach(function (puzzle) {
+            pMap[puzzle.id] = puzzle;
+        });
+
+        console.log(rounds);
+        playerData.puzzles.forEach(function (puzzle) {
             pMap[puzzle.id] = puzzle;
             puzzle.requiredPuzzles.filter(function (rp) {
                 return pMap[rp];
@@ -51,23 +250,13 @@ $(document).ready(function () {
                 l.css("left", ((x1 + x2) / 2 - length / 2) + "px");
 
 
-                rounds[puzzle.round].pointsDiv.append(l);
+                rounds[puzzle.roundId].pointsDiv.append(l);
             });
         });
 
-        function clearPanes() {
-            console.log("clearing", removePanes);
-            removePanes.forEach(function (pane) {
-                pane.remove();
-            });
-            removePanes = [];
-        }
-
-        var removePanes = [];
-        $(document).click(clearPanes);
-
-        puzzles.forEach(function (puzzle) {
+        playerData.puzzles.forEach(function (puzzle) {
             var point = $("<div class='puzzlePoint' />");
+            puzzlePoints.push(point);
             point.css("top", (puzzle.yCor - 15) + "px");
             point.css("left", (puzzle.xCor - 15) + "px");
 
@@ -82,25 +271,44 @@ $(document).ready(function () {
                 solveable = true;
             }
 
-            rounds[puzzle.round].pointsDiv.append(point);
+            rounds[puzzle.roundId].pointsDiv.append(point);
 
             point.click(function (evt) {
                 clearPanes();
                 var pane = $("<div style='position: absolute; background-color: black; width: 300px; border: 1px solid white; padding: 5px 5px 5px 5px; z-index: 100' />");
-                rounds[puzzle.round].pointsDiv.append(pane);
+                rounds[puzzle.roundId].pointsDiv.append(pane);
 
-                pane.css(puzzle.yCor < (puzzle.roundHeight / 2) ? "top" : "bottom", (puzzle.yCor < (puzzle.roundHeight / 2) ? puzzle.yCor : puzzle.roundHeight - puzzle.yCor) + "px");
-                pane.css(puzzle.xCor < (puzzle.roundWidth / 2) ? "left" : "right", (puzzle.xCor < (puzzle.roundWidth / 2) ? puzzle.xCor : puzzle.roundWidth - puzzle.xCor) + "px");
+                var rw = rounds[puzzle.roundId].width;
+                var rh = rounds[puzzle.roundId].height;
+                pane.css(puzzle.yCor < (rh / 2) ? "top" : "bottom", (puzzle.yCor < (rh / 2) ? puzzle.yCor : rh - puzzle.yCor) + "px");
+                pane.css(puzzle.xCor < (rw / 2) ? "left" : "right", (puzzle.xCor < (rw / 2) ? puzzle.xCor : rw - puzzle.xCor) + "px");
                 removePanes.push(pane);
                 pane.click(function (evt) {
                     evt.stopPropagation();
                 });
                 evt.stopPropagation();
 
+                var timers = [];
+                removeTimers.push(setInterval(function () {
+                    timers.forEach(function (timer) {
+                        var left = Math.max(0, timer.end - new Date().getTime()) / 1000;
+                        if (left <= 0) {
+                            timer.widget.text("Time Expired");
+                            timer.widget.css("color", "red");
+                        } else {
+                            var pad = function (t) {
+                                return t < 10 ? '0' + parseInt(t) : parseInt(t);
+                            };
+
+                            timer.widget.text("Time left:  " + pad((left / 3600) % 60) + ":" + pad((left / 60) % 60) + ":" + pad(left % 60));
+                        }
+                    });
+                }, 25));
+
                 console.log("puzzle", puzzle.solved);
                 if (puzzle.solved) {
                     console.log("solved", puzzle);
-                    var label = $("<label style='position: relative; color:green; font-size: 16px; text-align: center; top: 4px'></label>");
+                    var label = $("<label style='position: relative; color:green; font-size: 20px; text-align: center; top: 4px'></label>");
                     label.text(puzzle.name);
                     pane.append(label);
 
@@ -125,7 +333,7 @@ $(document).ready(function () {
                     link = $("<div style='margin-bottom: 10px'><a style='color: #59A0E6' target=\"_blank\" href=\"" + "getResource?accessor=" + puzzle.introAccessor + "\">The Puzzle</a></div>");
                     pane.append(link);
                 } else if (solveable) {
-                    var label = $("<label style='position: relative; color:yellow; font-size: 16px; text-align: center; top: 4px'></label>");
+                    var label = $("<label style='position: relative; color:yellow; font-size: 20px; text-align: center; top: 4px'></label>");
                     label.text(puzzle.name);
                     pane.append(label);
 
@@ -134,11 +342,11 @@ $(document).ready(function () {
                             var endTime = puzzle.timeLimit * 1000 + puzzle.startTime;
                             console.log(new Date().getTime(), endTime);
 
-                            if (endTime < new Date().getTime()) {
-                                var ends = $("<div><label style='color: red'>Time Limit Expired!</label><div>");
-                            } else {
-                                ends = $("<div><label style='color: white'>Ends at " + new Date(endTime).toLocaleTimeString() + "</label><div>");
-                            }
+                            var ends = $("<div style='margin-top: 5px'></div>");
+                            var endLab = $("<label style='color: white; font-size: 18px; margin: auto; width: 100%'>Time Limit Expired!</label>");
+                            ends.append(endLab);
+                            timers.push({widget: endLab, end: endTime});
+
                             pane.append(ends);
                         }
 
@@ -176,7 +384,7 @@ $(document).ready(function () {
                                 $.post("checkPuzzle", {id: puzzle.id, solution: solveEntry.val()}, function (data) {
                                     console.log(data);
                                     if (data.solved) {
-                                        location.reload();
+                                        reloadMap(puzzle.id)
                                     } else {
                                         statusLabel.text(data.message);
                                     }
@@ -185,20 +393,11 @@ $(document).ready(function () {
                         });
 
                         var hintDiv = $("<div style='position: relative;  margin-top: 10px; margin-bottom: 5px; margin-right: 8px'>");
-                        var hintEntry = $("<textarea placeholder='Type to request a hint' style='resize: none; width: 100%;' />");
                         pane.append(hintDiv);
-                        hintDiv.append(hintEntry);
-                        var hintButton = $("<label style='cursor: pointer; color: white'>Submit</label>");
-                        hintDiv.append(hintButton);
-
-                        hintButton.click(function () {
-                            if (!hintEntry.val()) {
-                                return;
-                            }
-                            $.post("requestHint", {id: puzzle.id, question: hintEntry.val()}, function (data) {
-                                hintDiv.html("");
-                                hintDiv.append($("<label style='color: white'>Submitted</label>"));
-                            });
+                        var hintLink = $("<label style='color: #59A0E6; text-decoration: underline; cursor: pointer; text-align: end; display: block'>Need a hint?</label>");
+                        hintDiv.append(hintLink);
+                        hintLink.click(function () {
+                            showHintDialog(puzzle.id, puzzle.name);
                         });
                     } else {
                         var label = $("<label style='position: relative; color:white; font-size: 16px; text-align: center'></label>");
@@ -210,11 +409,12 @@ $(document).ready(function () {
                         var startBtn = $("<label style='cursor: pointer; color: white; margin-top: 10px; color: lightgreen'>Ok, start!</label>");
                         pane.append(startBtn);
                         startBtn.click(function () {
-                            $.post("startTimedPuzzle", {id: puzzle.id}, function (data) {
-                                location.reload();
+                            showConfirmDialog("Are you sure? You'll have " + (puzzle.timeLimit / 60) + " minutes to solve it. Gather your whole team!", "Start!", "Cancel", function () {
+                                $.post("startTimedPuzzle", {id: puzzle.id}, function (data) {
+                                    reloadMap(puzzle.id);
+                                });
                             });
                         });
-
                     }
 
                 } else {
@@ -222,7 +422,22 @@ $(document).ready(function () {
                     pane.append(label);
                 }
             });
+            if (openPuzzleId === puzzle.id) {
+                console.log('hi');
+                point.click();
+            }
         });
     });
+}
+
+
+
+$(document).ready(function () {
+
+    $(document).click(clearPanes);
+    $("#modal").click(function (event) {
+        event.stopPropagation();
+    });
+    reloadMap();
 });
 

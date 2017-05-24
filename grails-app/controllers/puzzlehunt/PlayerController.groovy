@@ -25,11 +25,22 @@ class PlayerController {
 
         println solved
         println timedStarted
-        def ret = Puzzle.list().findAll { p ->
+
+        def rounds = [:]
+        def puzzles = Puzzle.list().findAll { p ->
             p.id in solved || !p.requiredPuzzles || p.requiredPuzzles.findAll {rp -> rp.id in solved}.size()
         }.collect { p ->
             def started = p.timeLimit ? (p.id in timedStarted) : true
             def startTime = p.id in timedStarted ? PuzzleStart.findByPlayerAndPuzzle(player, p).startTime : null
+            if (!(p.round.id in rounds)) {
+                rounds[p.round.id] = [
+                    id: p.round.id,
+                    name: p.round.name,
+                    background: p.round.background.accessor,
+                    width: p.round.width,
+                    height: p.round.height,
+                ]
+            }
             [
                 id: p.id,
                 xCor: p.xCor,
@@ -40,21 +51,15 @@ class PlayerController {
                 timeLimit: p.timeLimit,
                 started: started,
                 startTime: startTime,
-                round: p.round.name,
-                roundAccessor: p.round.background.accessor,
-                roundWidth: p.round.width,
-                roundHeight: p.round.height,
+                roundId: p.round.id,
                 introAccessor: started ? p?.introResource?.accessor : null,
                 introFilename: started ? p?.introResource?.filename : null,
                 solvedAccessor: p.id in solved ? p?.solvedResource?.accessor : null,
                 solvedFilename: p.id in solved ? p?.solvedResource?.filename : null,
             ]
         }
+        def ret = [puzzles: puzzles, rounds: rounds.values()]
         render ret as JSON
-    }
-
-    def getRounds() {
-
     }
 
     def startTimedPuzzle() {
@@ -64,12 +69,30 @@ class PlayerController {
         new PuzzleStart(puzzle: puzzle, player: player, startTime: System.currentTimeMillis()).save(flush: true)
     }
 
+    def nextHintTime() {
+        def player = Player.findById(session.playerId)
+        def val = player.lastHint + player.hintRegen
+        render val
+    }
+
     def requestHint() {
         //TODO CHECK PUZZLE IS ACCESSIBLE
-        def pl = Player.findById(session.playerId)
-        def pu = Puzzle.findById(params.id)
-        def hn = new Hint(player:pl, puzzle:pu, question: params.question)
+        def player = Player.findById(session.playerId)
+
+        if (System.currentTimeMillis() < player.lastHint + player.hintRegen) {
+            def ret = [error: "Hint requested too soon. Try later."]
+            render ret as JSON
+            return
+        }
+
+        def puzzle = Puzzle.findById(params.id)
+        def hn = new Hint(player:player, puzzle:puzzle, question: params.question)
         hn.save()
+        player.lastHint = System.currentTimeMillis()
+        player.save(flush: true)
+
+        def ret = [success:true]
+        render ret as JSON
     }
 
     def checkPuzzle() {
