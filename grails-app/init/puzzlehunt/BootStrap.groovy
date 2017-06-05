@@ -66,8 +66,19 @@ class BootStrap {
         config.puzzles.each {
             puzzles[it.id].introResource = resources[it.introResource]
             if (it.solvedResource) puzzles[it.id].solvedResource = resources[it.solvedResource]
-            puzzles[it.id].requiredPuzzles = it.requires.collect {pid -> puzzles[pid]}
-            println "puzzles ${it} ${puzzles[it.id].requiredPuzzles}"
+
+            puzzles[it.id].requiredPuzzles = it.requires.collect {pid ->
+                def rp = new RequiredPuzzle(puzzle: puzzles[pid.puzzle], color: pid.color)
+                rp.coordinates = pid?.path.collect { point ->
+                    def co = new Coordinate(xCor: point.xcor, yCor: point.ycor)
+                    co.save()
+                    co
+                }
+                rp.save()
+                rp
+            }
+
+            println "puzzles ${puzzles[it.id].name} ${puzzles[it.id].requiredPuzzles*.puzzle*.name}"
             puzzles[it.id].save()
         }
 

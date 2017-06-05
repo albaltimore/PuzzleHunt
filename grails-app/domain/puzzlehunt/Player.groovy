@@ -14,11 +14,11 @@ class Player {
     }
 
     def getSolvedPuzzles() {
-        Attempt.where { player == this } findAll {it.isCorrect} collect { it.puzzle }
+        Attempt.where { player == this } findAll {it.isCorrect} *.puzzle
     }
 
     def hasSolved(Puzzle puz) {
-        Attempt.where { player == this && puzzle == puz } collect {println it.answer; println it.isCorrect; it.isCorrect} contains true
+        Attempt.where { player == this && puzzle == puz } *.isCorrect .contains true
     }
 
     def getLastSubmission() {

@@ -16,11 +16,9 @@ class PlayerController {
         "pdf": "application/pdf",
     ]
 
-
-
     def getPuzzles() {
         def player = Player.get(session.playerId)
-        def solved = player.solvedPuzzles.collect {it.id}
+        def solved = player.solvedPuzzles*.id
         def timedStarted = PuzzleStart.findAllByPlayer player collect {println it.puzzle.name; it.puzzle.id}
 
         println solved
@@ -28,7 +26,7 @@ class PlayerController {
 
         def rounds = [:]
         def puzzles = Puzzle.list().findAll { p ->
-            p.id in solved || !p.requiredPuzzles || p.requiredPuzzles.findAll {rp -> rp.id in solved}.size()
+            p.id in solved || !p.requiredPuzzles || p.requiredPuzzles*.puzzle.findAll {rp -> rp.id in solved}.size()
         }.collect { p ->
             def started = p.timeLimit ? (p.id in timedStarted) : true
             def startTime = p.id in timedStarted ? PuzzleStart.findByPlayerAndPuzzle(player, p).startTime : null
@@ -46,7 +44,7 @@ class PlayerController {
                 xCor: p.xCor,
                 yCor: p.yCor,
                 name: p.name,
-                requiredPuzzles: p.requiredPuzzles.collect {rp -> rp.id},
+                requiredPuzzles: p.requiredPuzzles.collect {rp -> [id: rp.puzzle.id, color: rp.color, points: rp.coordinates.collect {c -> [xCor: c.xCor, yCor: c.yCor]} ]},
                 solved: p.id in solved,
                 timeLimit: p.timeLimit,
                 started: started,
@@ -138,7 +136,7 @@ class PlayerController {
 
         println "${rs} ${rs.puzzle}"
         if (rs && (!rs.puzzle || player.hasSolved(rs.puzzle) ||
-                (!rs.mustSolve && (!rs.puzzle.requiredPuzzles || rs.puzzle.requiredPuzzles.collect {player.hasSolved it}.contains(true))))) {
+                (!rs.mustSolve && (!rs.puzzle.requiredPuzzles || rs.puzzle.requiredPuzzles*.puzzle.collect {player.hasSolved it}.contains(true))))) {
             def f = new File("${bootstrapPath}/${rs.filename}")
             def extension = rs.filename.substring(rs.filename.lastIndexOf(".") + 1).toLowerCase()
 

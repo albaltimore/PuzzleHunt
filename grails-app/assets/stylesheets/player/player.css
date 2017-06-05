@@ -10,8 +10,6 @@ and open the template in the editor.
 
 .puzzlePoint {
     position: absolute;
-    top: 50%;
-    left: 50%;
 
     width: 30px;
     height: 30px;
@@ -19,7 +17,7 @@ and open the template in the editor.
     box-shadow: 2px 2px 20px -5px rgba(0, 0, 0, .75),
         inset 2px 2px 10px 0 rgba(0, 0, 0, 0.5);
     border: 1px solid black;
-    background:  red;
+    background: red;
     cursor: pointer;
 }
 

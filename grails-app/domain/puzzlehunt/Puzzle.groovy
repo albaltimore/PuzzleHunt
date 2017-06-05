@@ -13,6 +13,7 @@ class Puzzle {
     int xCor, yCor
     Round round
     Long timeLimit
+    Set<RequiredPuzzle> requiredPuzzles
 
     def getPartialSolution(input) {
         def ret = null
@@ -21,7 +22,7 @@ class Puzzle {
         return ret
     }
 
-    static hasMany = [requiredPuzzles: Puzzle, partialSolutions: PartialSolution]
+    static hasMany = [requiredPuzzles: RequiredPuzzle, partialSolutions: PartialSolution]
 
     static constraints = {
         name unique: true
@@ -29,4 +30,8 @@ class Puzzle {
         solvedResource nullable: true
         timeLimit nullable: true
     }
+
+    static mappedBy = [
+        requiredPuzzles : "none"
+    ]
 }
