@@ -14,6 +14,7 @@ class PlayerController {
         "jpg": "image/jpg",
         "gif": "image/gif",
         "pdf": "application/pdf",
+        "mp4": "video/mp4"
     ]
 
     def getPuzzles() {
@@ -21,13 +22,8 @@ class PlayerController {
         def solved = player.solvedPuzzles*.id
         def timedStarted = PuzzleStart.findAllByPlayer player collect {println it.puzzle.name; it.puzzle.id}
 
-        println solved
-        println timedStarted
-
         def rounds = [:]
-        def puzzles = Puzzle.list().findAll { p ->
-            p.id in solved || !p.requiredPuzzles || p.requiredPuzzles*.puzzle.findAll {rp -> rp.id in solved}.size()
-        }.collect { p ->
+        def puzzles = player.getSolvablePuzzles().collect { p ->
             def started = p.timeLimit ? (p.id in timedStarted) : true
             def startTime = p.id in timedStarted ? PuzzleStart.findByPlayerAndPuzzle(player, p).startTime : null
             if (!(p.round.id in rounds)) {
@@ -61,9 +57,13 @@ class PlayerController {
     }
 
     def startTimedPuzzle() {
-        //TODO CHECK PUZZLE IS ACCESSIBLE
         def player = Player.findById(session.playerId)
         def puzzle = Puzzle.findById(params.id)
+        if (player.hasSolved(puzzle) || !player.isSolvable(puzzle)) {
+            render status: 404
+            return
+        }
+
         new PuzzleStart(puzzle: puzzle, player: player, startTime: System.currentTimeMillis()).save(flush: true)
     }
 
@@ -77,6 +77,8 @@ class PlayerController {
         //TODO CHECK PUZZLE IS ACCESSIBLE
         def player = Player.findById(session.playerId)
 
+
+
         if (System.currentTimeMillis() < player.lastHint + player.hintRegen) {
             def ret = [error: "Hint requested too soon. Try later."]
             render ret as JSON
@@ -84,6 +86,13 @@ class PlayerController {
         }
 
         def puzzle = Puzzle.findById(params.id)
+
+        if (player.hasSolved(puzzle) || !player.isSolvable(puzzle)) {
+            def ret = [error: "You can't request a hint for this puzzle."]
+            render ret as JSON
+            return
+        }
+
         def hn = new Hint(player:player, puzzle:puzzle, question: params.question)
         hn.save()
         player.lastHint = System.currentTimeMillis()
@@ -120,7 +129,7 @@ class PlayerController {
 
         def attempt = new Attempt(player: player, puzzle: puzzle, answer: params.solution, timestamp: System.currentTimeMillis())
         attempt.save(flush: true)
-        println "${puzzle.name} ${puzzle.solution} ${params.solution}"
+        println "guess ${player.name} ${puzzle.name} ${puzzle.solution} ${params.solution}"
 
         def c = attempt.isCorrect
 
@@ -134,9 +143,8 @@ class PlayerController {
         def rs = Resource.findByAccessor(params.accessor)
         def player = Player.findById session.playerId
 
-        println "${rs} ${rs.puzzle}"
         if (rs && (!rs.puzzle || player.hasSolved(rs.puzzle) ||
-                (!rs.mustSolve && (!rs.puzzle.requiredPuzzles || rs.puzzle.requiredPuzzles*.puzzle.collect {player.hasSolved it}.contains(true))))) {
+                (!rs.mustSolve && player.isSolvable(rs.puzzle)))) {
             def f = new File("${bootstrapPath}/${rs.filename}")
             def extension = rs.filename.substring(rs.filename.lastIndexOf(".") + 1).toLowerCase()
 

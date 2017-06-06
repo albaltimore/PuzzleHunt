@@ -21,6 +21,16 @@ class Player {
         Attempt.where { player == this && puzzle == puz } *.isCorrect .contains true
     }
 
+    def getSolvablePuzzles() {
+        def solved = getSolvedPuzzles()*.id
+        Puzzle.list().findAll { p-> p.id in solved || !p.requiredPuzzles || p.requiredPuzzles*.puzzle.findAll {rp -> rp.id in solved}.size() }
+    }
+
+    def isSolvable(Puzzle puzzle) {
+        println "req ${puzzle.requiredPuzzles*.puzzle*.name}"
+        hasSolved(puzzle) || !puzzle.requiredPuzzles || puzzle.requiredPuzzles*.puzzle.findAll { p-> hasSolved(p) } .size()
+    }
+
     def getLastSubmission() {
         def item = Attempt.where {timestamp == max(timestamp).of{ player==this } && player==this }.list()
         item.size() ? item.first().timestamp : 0

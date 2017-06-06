@@ -216,7 +216,7 @@ function reloadMap(openPuzzleId) {
             paneDiv.append(puzzlePoints);
             rounds[round.id].pointsDiv = puzzlePoints;
 
-            if (round.name !== "Ghosts") {
+            if (0 && round.name !== "Ghosts") {
                 paneDiv.css("display", "none");
             }
         });
@@ -328,6 +328,11 @@ function reloadMap(openPuzzleId) {
                             var link = $("<div style='margin-bottom: 10px'><a style='color: #59A0E6' target=\"_blank\" href=\"" + accessorUrl + "\">Download</a></div>");
                             pane.append(body);
                             pane.append(link);
+                        } else if (introExtension === "mp4") {
+                            var body = $("<video style='width:100%; margin-top: 10px; margin-bottom: 3px; max-height: 200px; overflow-y: auto' controls><source src='" + accessorUrl + "' type='video/mp4' /></video>");
+                            var link = $("<div style='margin-bottom: 10px'><a style='color: #59A0E6' target=\"_blank\" href=\"" + accessorUrl + "\">Download</a></div>");
+                            pane.append(body);
+                            pane.append(link);
                         } else {
                             body = $("<a target=\"_blank\" href=\"" + accessorUrl + "\"><img src=\"" + accessorUrl + "\" style='width:100%; margin-top: 10px; margin-bottom: 10px; max-height: 200px; overflow-y: auto'/></a>");
                             pane.append(body);
@@ -362,6 +367,11 @@ function reloadMap(openPuzzleId) {
 
                         if (introExtension === "pdf") {
                             var body = $("<object data='" + accessorUrl + "' style='width:100%; margin-top: 10px; margin-bottom: 3px; max-height: 200px; overflow-y: auto'/>");
+                            var link = $("<div style='margin-bottom: 10px'><a style='color: #59A0E6' target=\"_blank\" href=\"" + accessorUrl + "\">Download</a></div>");
+                            pane.append(body);
+                            pane.append(link);
+                        } else if (introExtension === "mp4") {
+                            var body = $("<video style='width:100%; margin-top: 10px; margin-bottom: 3px; max-height: 200px; overflow-y: auto' controls><source src='" + accessorUrl + "' type='video/mp4' /></video>");
                             var link = $("<div style='margin-bottom: 10px'><a style='color: #59A0E6' target=\"_blank\" href=\"" + accessorUrl + "\">Download</a></div>");
                             pane.append(body);
                             pane.append(link);
