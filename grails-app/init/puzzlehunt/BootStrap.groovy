@@ -9,6 +9,46 @@ class BootStrap {
 
     def init = { servletContext ->
         loadFromPath()
+        
+        def roundzero = new Round(name: "ZERO", width: 50, height: 50)
+
+        def a = new Puzzle(xCor:100, yCor:100, name:'Puzzle A', solution:"A", round:roundzero)
+        def b = new Puzzle(xCor:300, yCor:100, name:'Puzzle B', solution:"B", round:roundzero)
+        def c = new Puzzle(xCor:500, yCor:100, name:'Puzzle C', solution:"C", round:roundzero)
+        def d = new Puzzle(xCor:300, yCor:200, name:'Puzzle D', solution:"D", requiredPuzzles: [b], round:roundzero)
+        def e = new Puzzle(xCor:200, yCor:400, name:'Puzzle E', solution:"E", requiredPuzzles: [a, d], round:roundzero)
+        def f = new Puzzle(xCor:400, yCor:400, name:'Puzzle F', solution:"F", requiredPuzzles: [c, d], round:roundzero)
+        def g = new Puzzle(xCor:400, yCor:500, name:'Puzzle G', solution:"G", requiredPuzzles: [f], round:roundzero)
+        def h = new Puzzle(xCor:200, yCor:600, name:'Puzzle H', solution:"H", requiredPuzzles: [e, g], round:roundzero)
+        def i = new Puzzle(xCor:300, yCor:800, name:'Puzzle I', solution:"I", requiredPuzzles: [g, h], round:roundzero)
+
+        a.save()
+        b.save()
+        c.save()
+        d.save()
+        e.save()
+        f.save()
+        g.save()
+        h.save()
+        i.save()
+
+        println "adding players"
+        def pl = new Player(name:"Aleks", password:"1", role: "HINTER")
+        def ss = new Player(name: "Stephanie", password:"2", role: "PLAYER")
+        
+        pl.save()
+        ss.save()
+        println "adding hints"
+        def h_a = new Hint(player:pl, puzzle:a, owner: ss, question:"I need help with this", notes: "NO NOTES")
+        def h_b = new Hint(player:pl, puzzle:a, question:"I need help again", notes:"NO NOTES")
+        def h_c = new Hint(player:pl, puzzle:a, question:"I need more help", notes:"NO NOTES")
+        def h_d = new Hint(player:pl, puzzle:a, question:"I have another question", notes:"NO NOTES")
+        
+        h_a.save()
+        h_b.save()
+        h_c.save()
+        h_d.save()
+        println "done adding hints"
     }
     def destroy = {
     }

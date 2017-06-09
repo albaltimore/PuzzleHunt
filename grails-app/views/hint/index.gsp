@@ -26,6 +26,7 @@
                 <td width="200" class="bloomberg-title-cell">Question</td>
                 <td width="70" class="bloomberg-title-cell">Owner</td>
                 <td width="55" class="bloomberg-title-cell"></td>
+                <td width="55" class="bloomberg-title-cell"></td>
             </tr>
             <g:each in="${list}" var="hint">
             <tr border="1">
@@ -36,7 +37,13 @@
                 <td width="55" class="bloomberg-cell">
                     <g:form useToken="true" controller="hint" action="claim">
                     <g:hiddenField name="hintid" value="${hint.id}" />
-                    <input type="submit" value="claim" class="claim-button"/>
+                    <input type="submit" value="${hint.status}" class="claim-button"/>
+                    </g:form>
+                </td>
+                <td width="55" class="bloomberg-cell">
+                    <g:form useToken="true" controller="hint" action="toggle">
+                    <g:hiddenField name="hintid" value="${hint.id}" />
+                    <input type="submit" value="${hint.action}" class="claim-button"/>
                     </g:form>
                 </td>
             </tr>
