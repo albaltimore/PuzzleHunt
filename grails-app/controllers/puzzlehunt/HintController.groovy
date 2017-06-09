@@ -15,7 +15,7 @@ class HintController {
              action : h.closed ? "re-open" : "close"]
         }
 
-        [ list : list ]
+        [ list : list.sort{[it.owner]} ]
 
     }
 
@@ -53,19 +53,22 @@ class HintController {
             println "unlocking hint request"
             uh.owner = null
             uh.save(flush : true)
+            redirect controller: "hint", action: "index"
         }
         else if (ap && uh) {
             println "claiming hint request"
             uh.owner = ap
             uh.save(flush : true)
+            details()
         }
-        redirect controller: "hint", action: "index"
     }
     
     def details() {
         println "showing details hintid:"
         def uh = Hint.findById(params.hintid)
+        def hinterName = uh.owner ? uh.owner.name : "--"
         render(view: "details", model: [hintid: params.hintid,
+                                        hinterName: hinterName,
                                         playerName: uh.player.name,
                                         phone: uh.phone,
                                         nexi: uh.nexi,
