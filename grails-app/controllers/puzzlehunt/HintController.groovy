@@ -56,9 +56,31 @@ class HintController {
         }
         else if (ap && uh) {
             println "claiming hint request"
-            uh.owner = ap;
-            uh.save(flush : true);
+            uh.owner = ap
+            uh.save(flush : true)
         }
+        redirect controller: "hint", action: "index"
+    }
+    
+    def details() {
+        println "showing details hintid:"
+        def uh = Hint.findById(params.hintid)
+        render(view: "details", model: [hintid: params.hintid,
+                                        playerName: uh.player.name,
+                                        phone: uh.phone,
+                                        nexi: uh.nexi,
+                                        puzzleName: uh.puzzle.name,
+                                        question: uh.question,
+                                        puzzleLink: "<link to puzzle>",
+                                        solution: "<link to solution>",
+                                        notes: uh.notes])
+    }
+    
+    def updateNote() {
+        println "param entry notes"
+        def uh = Hint.findById(params.hintid)
+        uh.notes = params.entrynotes
+        uh.save(flush : true)
         redirect controller: "hint", action: "index"
     }
     

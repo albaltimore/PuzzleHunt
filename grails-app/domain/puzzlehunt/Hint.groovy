@@ -6,6 +6,8 @@ class Hint {
     String question
     String notes // notes from owner on how hint went
     Player owner
+    Long nexi
+    Long phone
     Boolean closed
 
     static constraints = {
@@ -13,6 +15,8 @@ class Hint {
         notes nullable: true
         owner nullable: true
         closed nullable: true
+        nexi nullable: true
+        phone nullable: true
     }
     
     static belongsTo = [puzzle: "puzzle", player: "player", owner: "player"]

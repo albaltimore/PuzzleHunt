@@ -37,6 +37,11 @@ table, th, tc, td, .hint-table {
     color: white;
     font-size: 17px
 }
+.details-cell {
+    font-family: avenir demi, helvetica neue, helvetica, arial, sans-serif;
+    color: #aaaaaa;
+    font-size: 17px
+}
 
 .claim-button {
     background: none;
@@ -50,4 +55,15 @@ table, th, tc, td, .hint-table {
 .claim-button:hover {
     background-color: white;
     color:black
+}
+
+.notes-entry {
+    height: 200px;width: 500px;
+    margin-bottom: 30px;
+    margin-top: 15px;
+    font-size: 32px;
+    border:none;
+    background-color: white;
+    padding-left: 5px;
+    padding-bottom: 6px
 }
