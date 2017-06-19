@@ -50,6 +50,7 @@ table, th, tc, td, .hint-table {
     font-size: 17px;
     color: white;
     padding: 3px 10px 3px 10px;
+    width: 100px;
     cursor: pointer
 }
 .claim-button:hover {

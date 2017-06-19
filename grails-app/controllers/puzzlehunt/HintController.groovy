@@ -5,18 +5,22 @@ import grails.converters.JSON
 class HintController {
 
     def index() {
+
+    }
+    
+    def getHints() {
         def list = Hint.list().collect { h ->
             [id: h.id,
              question: h.question,
              puzzle: h.puzzle.name,
              player: h.player.name,
              owner: h.owner ? h.owner.name : "--",
-             status: h.owner ? "unlock" : "claim",
-             action : h.closed ? "re-open" : "close"]
+             status: h.owner ? "unclaim" : "claim",
+             action : h.closed ? "re-open" : "done"]
         }
-
-        [ list : list.sort{[it.owner]} ]
-
+        
+        def ret = [hints : list.sort{[it.owner]}]
+        render ret as JSON
     }
 
     def requestHint() {
@@ -49,18 +53,21 @@ class HintController {
     def claim() {
         def uh = Hint.findById(params.hintid)
         def ap = Player.findById(session.playerId)
+        def ret = [ owner : "--", action : "claim" ]
         if (uh.owner) {
             println "unlocking hint request"
             uh.owner = null
             uh.save(flush : true)
-            redirect controller: "hint", action: "index"
         }
         else if (ap && uh) {
             println "claiming hint request"
             uh.owner = ap
             uh.save(flush : true)
             details()
+            ret = [ owner : ap.name, action : "unclaim" ]
         }
+        
+        render ret as JSON;
     }
     
     def details() {
