@@ -63,7 +63,6 @@ class HintController {
             println "claiming hint request"
             uh.owner = ap
             uh.save(flush : true)
-            details()
             ret = [ owner : ap.name, action : "unclaim" ]
         }
         
@@ -71,19 +70,26 @@ class HintController {
     }
     
     def details() {
-        println "showing details hintid:"
-        def uh = Hint.findById(params.hintid)
-        def hinterName = uh.owner ? uh.owner.name : "--"
-        render(view: "details", model: [hintid: params.hintid,
-                                        hinterName: hinterName,
-                                        playerName: uh.player.name,
-                                        phone: uh.phone,
-                                        nexi: uh.nexi,
-                                        puzzleName: uh.puzzle.name,
-                                        question: uh.question,
-                                        puzzleLink: "<link to puzzle>",
-                                        solution: "<link to solution>",
-                                        notes: uh.notes])
+        if (params.hintid)
+        {
+            println "showing details hintid:" + params.hintid
+            def uh = Hint.findById(params.hintid)
+            def hinterName = uh.owner ? uh.owner.name : "--"
+            render(view: "details", model: [hintid: params.hintid,
+                                            hinterName: hinterName,
+                                            playerName: uh.player.name,
+                                            phone: uh.phone,
+                                            nexi: uh.nexi,
+                                            puzzleName: uh.puzzle.name,
+                                            question: uh.question,
+                                            puzzleLink: "<link to puzzle>",
+                                            solution: "<link to solution>",
+                                            notes: uh.notes])
+        }
+        else
+        {
+            println "error, no hintid passed"
+        }
     }
     
     def updateNote() {

@@ -58,11 +58,26 @@ table, th, tc, td, .hint-table {
     color:black
 }
 
+.update-button {
+    background: none;
+    margin:10px 2px 2px 5px;
+    border: 3px solid white;
+    font-size: 17px;
+    color: white;
+    padding: 3px 10px 3px 10px;
+    width: 150px;
+    cursor: pointer
+}
+.update-button:hover {
+    background-color: white;
+    color:black
+}
+
 .notes-entry {
     height: 200px;width: 500px;
     margin-bottom: 30px;
     margin-top: 15px;
-    font-size: 32px;
+    font-size: 16px;
     border:none;
     background-color: white;
     padding-left: 5px;

@@ -52,9 +52,8 @@ function reloadHintQueue() {
         });
 
         hintTable.on("click", ".details", function(){
-            $.post("details", {hintid: this.id}, function (response) {
-                console.log("showed hint details");
-            }.bind(this));
+            console.log("showing hint details");
+            window.location.href = "/hint/details?hintid=" + this.id;
         });
     });
 }
