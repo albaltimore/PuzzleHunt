@@ -16,10 +16,12 @@ class HintController {
              player: h.player.name,
              owner: h.owner ? h.owner.name : "--",
              status: h.owner ? "unclaim" : "claim",
-             action : h.closed ? "re-open" : "done"]
+             action : h.closed ? "closed" : "open",
+             createTime : h.createTime,
+             owned : h.owner ? (h.owner.id == session.playerId ? true : false) : false]
         }
         
-        def ret = [hints : list.sort{[it.owner]}]
+        def ret = [hints : list.sort{[it.action, it.owned, it.owner, it.createTime]}]
         render ret as JSON
     }
 
@@ -40,16 +42,25 @@ class HintController {
     
     def toggle() {
         def uh = Hint.findById(params.hintid)
-        if (uh.closed) {
-            uh.closed = false
+        if (!uh.owner && !uh.closed)
+        {
+            redirect controller: "hint", action: "details", 
+                                         params: [hintid: params.hintid, 
+                                                  notice: "cannot close unclaimed hint"]
         }
-        else {
-            uh.closed = true
+        else 
+        {
+            if (uh.closed) {
+                uh.closed = false
+            }
+            else {
+                uh.closed = true
+            }
+            uh.save(flush : true)
+            redirect controller: "hint", action: "details", 
+                                         params: [hintid: params.hintid, 
+                                                  notice: "ticket state updated"]
         }
-        uh.save(flush : true)
-        redirect controller: "hint", action: "details", 
-                                     params: [hintid: params.hintid, 
-                                              notice: "ticket state updated"]
     }
 
     def claim() {
@@ -77,6 +88,9 @@ class HintController {
             println "showing details hintid:" + params.hintid
             def uh = Hint.findById(params.hintid)
             def hinterName = uh.owner ? uh.owner.name : "--"
+            println "action " + uh.closed
+            def actionBlob = uh.closed ? "re-open" : "done"
+            println "derived action " + actionBlob
             render(view: "details", model: [hintid: params.hintid,
                                             hinterName: hinterName,
                                             playerName: uh.player.name,

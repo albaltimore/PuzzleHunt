@@ -9,6 +9,7 @@ class Hint {
     Long nexi
     Long phone
     Boolean closed
+    Date createTime
 
     static constraints = {
         question nullable: true

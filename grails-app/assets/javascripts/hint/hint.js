@@ -2,7 +2,18 @@
 //= require jquery-3.2.0
 
 function clearHintQueue() {
-console.log('clearing hints');
+    console.log('clearing hints');
+    $("#hintTable tr").remove();
+    var row= $('<tr border="1"> \
+                    <td width="70" class="bloomberg-title-cell">Player</td> \
+                    <td width="70" class="bloomberg-title-cell">Puzzle</td> \
+                    <td width="200" class="bloomberg-title-cell">Question</td> \
+                    <td width="90" class="bloomberg-title-cell">Owner</td> \
+                    <td width="70" class="bloomberg-title-cell">Status</td> \
+                    <td width="55" class="bloomberg-title-cell"></td> \
+                    <td width="55" class="bloomberg-title-cell"></td> \
+                </tr>');
+    $("#hintTable").append(row);
 }
 
 function reloadHintQueue() {
@@ -19,7 +30,7 @@ function reloadHintQueue() {
                 <td width="70" class="bloomberg-cell">' + hint.player + '</td> \
                 <td width="70" class="bloomberg-cell">' + hint.puzzle + '</td> \
                 <td width="200" class="bloomberg-cell">' + hint.question + '</td> \
-                <td width="70" class="bloomberg-cell ' + ownerClass + '" id="' + ownerClass + '">' + hint.owner + '</td> \
+                <td width="90" class="bloomberg-cell ' + ownerClass + '" id="' + ownerClass + '">' + hint.owner + '</td> \
                 <td width="70" class="bloomberg-cell">' + hint.action + '</td> \
                 <td width="55" class="bloomberg-cell"> \
                     <input id="' + hint.id + '" "type="submit" value="' + hint.status + '" class="claim-button claim"/> \
@@ -64,7 +75,7 @@ $(document).ready(function () {
                             <td width="70" class="bloomberg-title-cell">Player</td> \
                             <td width="70" class="bloomberg-title-cell">Puzzle</td> \
                             <td width="200" class="bloomberg-title-cell">Question</td> \
-                            <td width="70" class="bloomberg-title-cell">Owner</td> \
+                            <td width="90" class="bloomberg-title-cell">Owner</td> \
                             <td width="70" class="bloomberg-title-cell">Status</td> \
                             <td width="55" class="bloomberg-title-cell"></td> \
                             <td width="55" class="bloomberg-title-cell"></td> \
@@ -73,4 +84,5 @@ $(document).ready(function () {
     $("#rootPane").append(hintTable);
 
     reloadHintQueue();
+    var intervalID = window.setInterval(reloadHintQueue, 30000);
 });
