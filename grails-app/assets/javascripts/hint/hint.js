@@ -20,11 +20,9 @@ function reloadHintQueue() {
                 <td width="70" class="bloomberg-cell">' + hint.puzzle + '</td> \
                 <td width="200" class="bloomberg-cell">' + hint.question + '</td> \
                 <td width="70" class="bloomberg-cell ' + ownerClass + '" id="' + ownerClass + '">' + hint.owner + '</td> \
+                <td width="70" class="bloomberg-cell">' + hint.action + '</td> \
                 <td width="55" class="bloomberg-cell"> \
                     <input id="' + hint.id + '" "type="submit" value="' + hint.status + '" class="claim-button claim"/> \
-                </td> \
-                <td width="55" class="bloomberg-cell"> \
-                    <input id="' + hint.id + '" type="submit" value="' + hint.action + '" class="claim-button toggle"/> \
                 </td> \
                 <td width="55" class="bloomberg-cell"> \
                     <input id="' + hint.id + '" type="submit" value="Details" class="claim-button details"/> \
@@ -67,7 +65,7 @@ $(document).ready(function () {
                             <td width="70" class="bloomberg-title-cell">Puzzle</td> \
                             <td width="200" class="bloomberg-title-cell">Question</td> \
                             <td width="70" class="bloomberg-title-cell">Owner</td> \
-                            <td width="55" class="bloomberg-title-cell"></td> \
+                            <td width="70" class="bloomberg-title-cell">Status</td> \
                             <td width="55" class="bloomberg-title-cell"></td> \
                             <td width="55" class="bloomberg-title-cell"></td> \
                         </tr> \

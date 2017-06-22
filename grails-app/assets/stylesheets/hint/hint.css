@@ -42,6 +42,11 @@ table, th, tc, td, .hint-table {
     color: #aaaaaa;
     font-size: 17px
 }
+.status-cell {
+    font-family: avenir demi, helvetica neue, helvetica, arial, sans-serif;
+    color: green;
+    font-size: 17px
+}
 
 .claim-button {
     background: none;

@@ -18,7 +18,7 @@
         <g:form useToken="true" controller="hint">
         <input type="submit" value="Back" class="claim-button"/>
         </g:form>
-        </br>
+        <label class="status-cell">${notice}</label><br/><br/>
         <label class="bloomberg-cell">Owner:</label>
         <label class="details-cell">${hinterName}</label><br/><br/>
         <label class="bloomberg-cell">Player:</label>
@@ -36,10 +36,11 @@
         <label class="bloomberg-cell">Puzzle Solution:</label>
         <label class="details-cell">${solution}</label><br/><br/>
         <label class="bloomberg-cell">Notes:</label><br/>
-        <g:form useToken="true" action="updateNote">
+        <g:form useToken="true">
         <g:hiddenField name="hintid" value="${hintid}" />
         <textarea type="notes" name="entrynotes" class="notes-entry">${notes}</textarea><br/>
-        <input type="submit" value="Update Note" width="100" class="update-button"/>
+        <g:actionSubmit action="updateNote" value="Update Note" width="100" class="update-button"/>
+        <g:actionSubmit action="toggle" value="${action}" width="100" class="update-button"/>
         </g:form>
     </body>
 </html>

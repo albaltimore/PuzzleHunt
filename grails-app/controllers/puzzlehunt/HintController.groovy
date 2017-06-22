@@ -47,7 +47,9 @@ class HintController {
             uh.closed = true
         }
         uh.save(flush : true)
-        redirect controller: "hint", action: "index"
+        redirect controller: "hint", action: "details", 
+                                     params: [hintid: params.hintid, 
+                                              notice: "ticket state updated"]
     }
 
     def claim() {
@@ -84,7 +86,9 @@ class HintController {
                                             question: uh.question,
                                             puzzleLink: "<link to puzzle>",
                                             solution: "<link to solution>",
-                                            notes: uh.notes])
+                                            notes: uh.notes,
+                                            notice: params.notice,
+                                            action : uh.closed ? "re-open" : "done"])
         }
         else
         {
@@ -97,7 +101,9 @@ class HintController {
         def uh = Hint.findById(params.hintid)
         uh.notes = params.entrynotes
         uh.save(flush : true)
-        redirect controller: "hint", action: "index"
+        redirect controller: "hint", action: "details", 
+                                     params: [hintid: params.hintid, 
+                                              notice: "note updated"]
     }
     
 }
