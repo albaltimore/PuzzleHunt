@@ -62,10 +62,19 @@ class HintController {
             uh.save(flush : true)
         }
         else if (ap && uh) {
-            println "claiming hint request"
-            uh.owner = ap
-            uh.save(flush : true)
-            ret = [ owner : ap.name, action : "unclaim" ]
+            def count = Hint.executeUpdate("update Hint h set h.owner=:owner " +
+                                           "where h.id=int(:hintid) and h.owner=null",
+                                           [owner: ap, hintid: params.hintid])
+            if (count == 0)
+            {
+                uh = Hint.findById(params.hintid)
+                def name = uh.owner ? uh.owner.name : "ERROR"
+                ret = [ owner : name, action : "unclaim" ]
+            }
+            else
+            {
+                ret = [ owner : ap.name, action : "unclaim" ]
+            }
         }
         
         render ret as JSON;
