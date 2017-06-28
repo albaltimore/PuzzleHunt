@@ -6,6 +6,7 @@ class Hint {
     String question
     String notes // notes from owner on how hint went
     Player owner
+    Player lastOwner
     Long nexi
     Long phone
     Boolean closed
@@ -15,6 +16,7 @@ class Hint {
         question nullable: true
         notes nullable: true
         owner nullable: true
+        lastOwner nullable: true
         closed nullable: true
         nexi nullable: true
         phone nullable: true
