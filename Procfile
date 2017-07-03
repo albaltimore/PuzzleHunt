@@ -1,1 +1,1 @@
-web: java -Dserver.port=$PORT -Dgrails.env=$GRAILS_ENV $JAVA_OPTS -DdataSource.url=$DATABASE_URL -DdataSource.username=$DATABASE_USERNAME -DdataSource.password=$DATABASE_PASSWORD -jar build/libs/PuzzleHunt.war
+web: java -Dserver.port=$PORT -Dgrails.env=$GRAILS_ENV -DdataSource.url=$DATABASE_URL -DdataSource.username=$DATABASE_USERNAME -DdataSource.password=$DATABASE_PASSWORD -jar build/libs/PuzzleHunt.war
