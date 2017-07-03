@@ -63,3 +63,4 @@ assets {
 }
 
 task stage(dependsOn: ['clean', 'assemble'])
+assemble.mustRunAfter clean
