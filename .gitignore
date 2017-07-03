@@ -13,3 +13,4 @@ bin
 bootstrap
 .vscode
 .env
+log
