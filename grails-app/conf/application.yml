@@ -140,6 +140,7 @@ environments:
                     secret: 'test'
     production:
         dataSource:
+            dialect: org.hibernate.dialect.MySQL5InnoDBDialect
             driverClassName: com.mysql.jdbc.Driver
             dbCreate: none
         grails:
