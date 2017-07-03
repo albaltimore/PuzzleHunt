@@ -1,10 +1,8 @@
 package puzzlehunt
 
 class Puzzle {
-
     static final def Alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890".toCharArray()
     static final def cleanSolution = { it.toUpperCase().toCharArray().findAll {c -> c in Alphabet} .join()}
-
 
     String name
     String solution
@@ -17,8 +15,7 @@ class Puzzle {
 
     def getPartialSolution(input) {
         def ret = null
-        partialSolutions.each {println it; if (cleanSolution(it.trigger) == cleanSolution(input)) ret = it.hint}
-        println ret
+        partialSolutions.each {if (cleanSolution(it.trigger) == cleanSolution(input)) ret = it.hint}
         return ret
     }
 

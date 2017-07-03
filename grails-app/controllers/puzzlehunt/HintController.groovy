@@ -14,7 +14,6 @@ class HintController {
         }
 
         [ list : list ]
-
     }
 
     def requestHint() {
@@ -39,5 +38,5 @@ class HintController {
         }
         redirect controller: "hint", action: "index"
     }
-    
+
 }

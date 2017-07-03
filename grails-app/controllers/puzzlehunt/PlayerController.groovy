@@ -23,7 +23,7 @@ class PlayerController {
         def timedStarted = PuzzleStart.findAllByPlayer player collect {println it.puzzle.name; it.puzzle.id}
 
         def rounds = [:]
-        def puzzles = player.getSolvablePuzzles().collect { p ->
+        def puzzles = player.solvablePuzzles.collect { p ->
             def started = p.timeLimit ? (p.id in timedStarted) : true
             def startTime = p.id in timedStarted ? PuzzleStart.findByPlayerAndPuzzle(player, p).startTime : null
             if (!(p.round.id in rounds)) {

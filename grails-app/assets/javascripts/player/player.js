@@ -31,34 +31,31 @@ function showConfirmDialog(text, yText, nText, cb) {
     var modal = $("#modal");
     var modalRoot = $("#modal-root");
     modal.css("visibility", "visible");
-    modalRoot.css("height", "170px");
-    modalRoot.css("width", "500px");
     modalRoot.empty();
 
-    var pane = $("<div style='position:absolute; width:100%; height 100%' />");
+    var pane = $("<div style='padding: 20px; 20px; 20px; 20px; max-width: 740px' />");
     var label = $("<label class='modal-label' />");
     pane.append(label);
     pane.append($("<br/>"));
 
 
+    var closeDiv = $("<div style='position: relative; left: 50%; transform: translate(-50%); display: inline-block' />");
+    pane.append(closeDiv);
+
     var close = $("<input type='button' value='" + yText + "' class='modal-button-close' />");
-    close.css("left", "75px");
-    close.css("top", "100px");
     close.click(function () {
         pane.remove();
         modal.css("visibility", "hidden");
         if (cb) cb();
     });
-    pane.append(close);
+    closeDiv.append(close);
 
     var closeNo = $("<input type='button' value='" + nText + "' class='modal-button-close' />");
-    closeNo.css("left", "255px");
-    closeNo.css("top", "100px");
     closeNo.click(function () {
         pane.remove();
         modal.css("visibility", "hidden");
     });
-    pane.append(closeNo);
+    closeDiv.append(closeNo);
 
 
     label.text(text);
@@ -93,17 +90,17 @@ function showHintDialog(puzzleId, puzzleName, hintText) {
         var modal = $("#modal");
         var modalRoot = $("#modal-root");
         modal.css("visibility", "visible");
-        modalRoot.css("height", "500px");
-        modalRoot.css("width", "500px");
+        //modalRoot.css("height", "500px");
+        //modalRoot.css("width", "500px");
         modalRoot.empty();
 
-        var pane = $("<div style='padding: 20px; 20px; 20px; 20px;' />");
+        var pane = $("<div style='padding: 20px; 20px; 20px; 20px; max-width: 500px; position: relative' />");
 
 
         modalRoot.append(pane);
 
 
-        pane.append($("<label style='color: white; display: block; font-size: 24px; margin-top: 20px;'>To request your next hint, please enter as much detailed information as possible about what you have tried so far.</label>"));
+        pane.append($("<label style='color: white; display: block; font-size: 24px;'>To request your next hint, please enter as much detailed information as possible about what you have tried so far.</label>"));
 
         pane.append($("<label style='color: white; display: inline-block; font-size: 22px; margin-top: 20px;'>Puzzle:&nbsp;</label><label style='color: lightgreen; display: inline-block; font-size: 22px' >" + puzzleName + "<label/>"));
 
@@ -128,6 +125,9 @@ function showHintDialog(puzzleId, puzzleName, hintText) {
 
         }, 25);
 
+        var closeDiv = $("<div style='position: relative; left: 50%; transform: translate(-50%); display: inline-block' />");
+        pane.append(closeDiv);
+
         var close = $("<input type='button' value='Request Hint' class='modal-button-close' />");
         close.css("left", "35px");
         close.css("top", "430px");
@@ -145,7 +145,7 @@ function showHintDialog(puzzleId, puzzleName, hintText) {
 
             });
         });
-        pane.append(close);
+        closeDiv.append(close);
 
         var closeNo = $("<input type='button' value='Cancel' class='modal-button-close' />");
         closeNo.css("left", "285px");
@@ -155,13 +155,7 @@ function showHintDialog(puzzleId, puzzleName, hintText) {
             pane.remove();
             modal.css("visibility", "hidden");
         });
-        pane.append(closeNo);
-
-//
-//    $.post("requestHint", {id: puzzle.id, question: hintEntry.val()}, function (data) {
-//        hintDiv.html("");
-//        hintDiv.append($("<label style='color: white'>Submitted</label>"));
-//    });
+        closeDiv.append(closeNo);
 
     });
 }
@@ -232,7 +226,6 @@ function reloadMap(openPuzzleId) {
                 return pMap[rp.id];
             }).forEach(function (rp) {
                 var points = [puzzle].concat(rp.points).concat([pMap[rp.id]]);
-
 
                 var thickness = 10;
                 var color = rp.color ? rp.color : "black";

@@ -4,7 +4,7 @@ package puzzlehunt
 class LoginInterceptor {
 
     public LoginInterceptor() {
-        matchAll().excludes controller: "login"
+        matchAll().excludes controller: "login" excludes uri: "/error" excludes uri: "/notFound"
     }
 
     boolean before() {
