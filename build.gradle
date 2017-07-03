@@ -50,6 +50,8 @@ dependencies {
     compile "org.apache.derby:derbyclient:10.13.1.1"
     compile 'org.grails.plugins:cookie-session:3.0.1'
     runtime 'mysql:mysql-connector-java:5.1.36'
+
+    compile 'com.github.jsimone:webapp-runner:8.0.30.2'
 }
 
 bootRun {
@@ -63,5 +65,25 @@ assets {
     minifyCss = true
 }
 
-task stage(dependsOn: ['clean', 'assemble'])
-assemble.mustRunAfter clean
+
+task stage() {
+    dependsOn assemble
+}
+
+tasks.stage.doLast() {
+    delete fileTree(dir: "build/distributions")
+    delete fileTree(dir: "build/assetCompile")
+    delete fileTree(dir: "build/distributions")
+    delete fileTree(dir: "build/libs", exclude: "*.war")
+}
+
+
+
+task copyToLib(type: Copy) {
+    into "$buildDir/server"
+    from(configurations.compile) {
+        include "webapp-runner*"
+    }
+}
+
+stage.dependsOn(copyToLib)
