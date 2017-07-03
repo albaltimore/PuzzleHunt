@@ -144,7 +144,8 @@ environments:
             driverClassName: com.mysql.jdbc.Driver
             dbCreate: none
             properties:
-                reconnect: true
+                maxActive: 3
+                maxIdle: 3
         grails:
             plugin:
                 cookiesession:
