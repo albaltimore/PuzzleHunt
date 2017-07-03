@@ -143,6 +143,8 @@ environments:
             dialect: org.hibernate.dialect.MySQL5InnoDBDialect
             driverClassName: com.mysql.jdbc.Driver
             dbCreate: none
+            properties:
+                reconnect: true
         grails:
             plugin:
                 cookiesession:
