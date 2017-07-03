@@ -12,3 +12,4 @@ build/
 bin
 bootstrap
 .vscode
+.env

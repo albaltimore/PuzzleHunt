@@ -1,0 +1,1 @@
+web: java -Dserver.port=$PORT -Dgrails.env=$GRAILS_ENV $JAVA_OPTS -DdataSource.url=$CLEARDB_DATABASE_URL -jar build/libs/PuzzleHunt.war
