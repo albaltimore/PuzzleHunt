@@ -86,6 +86,8 @@ grails:
             cookiename: 'puzzlesession'
             sethttponly: true
             springsecuritycompatibility: false
+    dbconsole:
+        enabled: true
 endpoints:
     jmx:
         unique-names: true

@@ -49,7 +49,7 @@ dependencies {
 
     compile "org.apache.derby:derbyclient:10.13.1.1"
     compile 'org.grails.plugins:cookie-session:3.0.1'
-    runtime 'mysql:mysql-connector-java:5.1.36'
+    runtime 'mysql:mysql-connector-java:5.1.42'
 }
 
 bootRun {
