@@ -15,7 +15,7 @@ class Puzzle {
 
     def getPartialSolution(input) {
         def ret = null
-        partialSolutions.each {if (cleanSolution(it.trigger) == cleanSolution(input)) ret = it.hint}
+        partialSolutions.each {if (cleanSolution(it.partialSolution) == cleanSolution(input)) ret = it.hint}
         return ret
     }
 
