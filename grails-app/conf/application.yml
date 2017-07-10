@@ -86,6 +86,8 @@ grails:
             cookiename: 'puzzlesession'
             sethttponly: true
             springsecuritycompatibility: false
+    dbconsole:
+        enabled: true
 endpoints:
     jmx:
         unique-names: true
@@ -140,14 +142,15 @@ environments:
                     secret: 'test'
     production:
         dataSource:
+            dialect: org.hibernate.dialect.MySQL5InnoDBDialect
+            driverClassName: com.mysql.jdbc.Driver
             dbCreate: none
-            url: jdbc:h2:./prodDb;MVCC=TRUE;LOCK_TIMEOUT=10000;DB_CLOSE_ON_EXIT=FALSE
             properties:
                 jmxEnabled: true
                 initialSize: 5
-                maxActive: 50
+                maxActive: 2
                 minIdle: 5
-                maxIdle: 25
+                maxIdle: 2
                 maxWait: 10000
                 maxAge: 600000
                 timeBetweenEvictionRunsMillis: 5000

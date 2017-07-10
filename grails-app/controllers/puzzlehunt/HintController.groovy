@@ -219,5 +219,5 @@ class HintController {
         params: [hintid: params.hintid, 
             notice: "note updated"]
     }
-    
+
 }

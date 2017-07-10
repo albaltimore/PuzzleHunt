@@ -4,6 +4,8 @@ import grails.converters.JSON
 
 class LoginController {
 
+    def propertiesService
+
     def index() { }
 
     def login() {
@@ -19,6 +21,20 @@ class LoginController {
         } else {
             flash.message = "Invalid Credentials"
             redirect action: "index"
+        }
+    }
+
+    def getFavicon() {
+        def bootstrapPath = grailsApplication.config.getProperty("puzzlehunt.resourcePath")
+        def rs = propertiesService.favicon
+
+        if (rs) {
+            def f = new File("${bootstrapPath}/${rs.filename}")
+            def extension = rs.filename.substring(rs.filename.lastIndexOf(".") + 1).toLowerCase()
+
+            render file:f, contentType: "png"
+        } else {
+            render status: 404
         }
     }
 }

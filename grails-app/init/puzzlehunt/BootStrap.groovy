@@ -6,6 +6,7 @@ import groovy.json.JsonSlurper
 class BootStrap {
 
     GrailsApplication grailsApplication
+    def propertiesService
 
     def init = { servletContext ->
         loadFromPath()
@@ -42,7 +43,7 @@ class BootStrap {
         config.puzzles.each {
             puzzles[it.id] = new Puzzle(xCor: it.xcor, yCor: it.ycor, name: it.name, solution: it.solution, round: rounds[it.round], timeLimit: it.timeLimit ?: null)
             puzzles[it.id].partialSolutions = it.hints.collect { k, v ->
-                def ptl = new PartialSolution(trigger: k, hint: v ?: "You're on the right track, keep going!")
+                def ptl = new PartialSolution(partialSolution: k, hint: v ?: "You're on the right track, keep going!")
                 ptl.save()
                 ptl
             }
@@ -60,6 +61,7 @@ class BootStrap {
         }
 
         config.rounds.each {
+            rounds[it.id].requiredPuzzles = it.requiredPuzzles.collect {i -> puzzles[i]}
             rounds[it.id].background = resources[it.background]
         }
 
@@ -82,13 +84,19 @@ class BootStrap {
             puzzles[it.id].save()
         }
 
+        if (config.favicon != null) {
+            propertiesService.favicon = resources[config.favicon]
+        }
+
         players.each {k,v->v.save(flush:true)}
         puzzles.each{k,v->v.save(flush:true)}
         resources.each{k,v->v.save(flush:true)}
         rounds.each{k,v->v.save(flush:true)}
 
-        println players
-        println puzzles
-        println resources
+        println "favicon ${config.favicon}  ${propertiesService.favicon}"
+
+        //        println players
+        //        println puzzles
+        //        println resources
     }
 }
