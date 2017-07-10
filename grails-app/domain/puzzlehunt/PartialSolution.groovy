@@ -1,7 +1,7 @@
 package puzzlehunt
 
 class PartialSolution {
-    String trigger
+    String partialSolution
     String hint
 
     static constraints = {

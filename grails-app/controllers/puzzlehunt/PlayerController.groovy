@@ -23,7 +23,7 @@ class PlayerController {
         def timedStarted = PuzzleStart.findAllByPlayer player collect {println it.puzzle.name; it.puzzle.id}
 
         def rounds = [:]
-        def puzzles = player.getSolvablePuzzles().collect { p ->
+        def puzzles = player.solvablePuzzles.collect { p ->
             def started = p.timeLimit ? (p.id in timedStarted) : true
             def startTime = p.id in timedStarted ? PuzzleStart.findByPlayerAndPuzzle(player, p).startTime : null
             if (!(p.round.id in rounds)) {
@@ -93,7 +93,10 @@ class PlayerController {
             return
         }
 
-        def hn = new Hint(player:player, puzzle:puzzle, question: params.question)
+        def hn = new Hint(player:player, 
+                          puzzle:puzzle, 
+                          question: params.question,
+                          createTime: new Date())
         hn.save()
         player.lastHint = System.currentTimeMillis()
         player.save(flush: true)

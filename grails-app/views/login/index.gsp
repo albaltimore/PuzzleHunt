@@ -9,6 +9,7 @@
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <link rel="shortcut icon" type="image/png" href="${createLink(controller: "login", action: "getFavicon")}"/>
     <asset:stylesheet src="login/login.css"/>
     <title>Login</title>
 </head>

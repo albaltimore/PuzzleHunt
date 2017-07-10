@@ -39,6 +39,7 @@
         <g:form useToken="true">
         <g:hiddenField name="hintid" value="${hintid}" />
         <textarea type="notes" name="entrynotes" class="notes-entry">${notes}</textarea><br/>
+        <g:actionSubmit action="claimDetail" value="Claim" width="100" class="update-button"/>
         <g:actionSubmit action="updateNote" value="Update Note" width="100" class="update-button"/>
         <g:actionSubmit action="toggle" value="${action}" width="100" class="update-button"/>
         </g:form>

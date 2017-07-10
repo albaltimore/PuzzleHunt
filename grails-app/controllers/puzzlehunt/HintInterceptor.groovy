@@ -4,7 +4,7 @@ package puzzlehunt
 class HintInterceptor {
 
     HintInterceptor() {
-        match(controller: "hint")
+        match controller: "hint"
     }
 
     int order = 100
