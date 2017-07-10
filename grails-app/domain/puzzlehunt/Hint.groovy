@@ -9,7 +9,7 @@ class Hint {
     Player lastOwner
     Long nexi
     Long phone
-    Boolean closed
+    Boolean closed = false
     Date createTime
 
     static constraints = {

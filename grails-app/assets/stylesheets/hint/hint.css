@@ -65,6 +65,12 @@ table, th, tc, td, .hint-table {
     font-size: 17px
 }
 
+.error-cell {
+    font-family: avenir demi, helvetica neue, helvetica, arial, sans-serif;
+    color: red;
+    font-size: 17px
+}
+
 .claim-button {
     background: none;
     margin:10px 2px 2px 5px;

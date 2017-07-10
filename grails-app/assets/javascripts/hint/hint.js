@@ -3,7 +3,6 @@
 
 function clearHintQueue() {
     console.log('clearing hints');
-    $("#statusLabel").innerHTML = "";
     $("#ownedTable tr").remove();
     $("#hintTable tr").remove();
     var row= $('<tr border="1"> \
@@ -80,26 +79,28 @@ function reloadHintQueue() {
         });
 
         hintTable.on("click", ".claim", function(){
-            $("#statusLabel").innerHTML = "";
-            if (this.innerHTML === "claim")
-            {
+            $("#statusLabel").empty();
+            if (this.innerHTML === "claim") {
                 $.post("claim", {hintid: this.id}, function (response) {
-                    if (response.error)
-                    {
-                        $("#statusLabel").text = "Cannot claim multiple hints";
+                    if (response.error) {
+$                       ("#statusLabel").append("Cannot claim multiple hints");
+                        return;
                     }
-                    else
-                    {
+                    else {
                         console.log("requested hint");
                         this.innerHTML = response.action;
                         var ownerClass = "owner_" + this.id;
                         $("#" + ownerClass + "").text(response.owner);
+                        
+                        var row = $(this).closest('tr');
+                        
+                        var ownedTable = $("#ownedTable");
+                        ownedTable.append(row);
                     }
 
                 }.bind(this));
             }
-            else
-            {
+            else {
                 $.post("unclaim", {hintid: this.id}, function (response) {
                     console.log("requested hint");
                     this.innerHTML = response.action;
@@ -116,16 +117,14 @@ function reloadHintQueue() {
         });
         
         ownedTable.on("click", ".claim", function(){
-            $("#statusLabel").innerHTML = "";
-            if (this.innerHTML === "claim")
-            {
+            $("#statusLabel").empty();
+            if (this.innerHTML === "claim") {
                 $.post("claim", {hintid: this.id}, function (response) {
-                    if (response.error)
-                    {
-                        $("#statusLabel").text = "Cannot claim multiple hints";
+                    if (response.error) {
+$                       ("#statusLabel").append("Cannot claim multiple hints");
+                        return;
                     }
-                    else
-                    {
+                    else {
                         console.log("requested hint");
                         this.innerHTML = response.action;
                         var ownerClass = "owner_" + this.id;
@@ -134,13 +133,13 @@ function reloadHintQueue() {
 
                 }.bind(this));
             }
-            else
-            {
+            else {
                 $.post("unclaim", {hintid: this.id}, function (response) {
                     console.log("requested hint");
                     this.innerHTML = response.action;
                     var ownerClass = "owner_" + this.id;
                     $("#" + ownerClass + "").text(response.owner);
+                    $(this).closest('tr').remove();
 
                 }.bind(this));
             }
@@ -161,7 +160,7 @@ $(document).ready(function () {
     var ownedTable = $('<table id="ownedTable" class="owned-table"> \
                       </table>');
     var buffer = $('</br></br></br></br>');
-    var status = $('<label id="statusLabel" class="status-cell"></label></br></br></br>');
+    var status = $('<label id="statusLabel" class="error-cell"></label></br></br></br>');
     
     $("#rootPane").append(status);
     $("#rootPane").append(ownedTable);
