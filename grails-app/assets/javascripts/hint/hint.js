@@ -13,7 +13,6 @@ function clearHintQueue() {
                     <td width="90" class="bloomberg-title-cell">Last Owner</td> \
                     <td width="70" class="bloomberg-title-cell">Status</td> \
                     <td width="55" class="bloomberg-title-cell"></td> \
-                    <td width="55" class="bloomberg-title-cell"></td> \
                 </tr>');
     var urgentrow= $('<tr border="1"> \
                     <td width="70" class="bloomberg-title-owned">Player</td> \
@@ -22,7 +21,6 @@ function clearHintQueue() {
                     <td width="90" class="bloomberg-title-owned">Owner</td> \\n\
                     <td width="90" class="bloomberg-title-owned">Last Owner</td> \
                     <td width="70" class="bloomberg-title-owned">Status</td> \
-                    <td width="55" class="bloomberg-title-owned"></td> \
                     <td width="55" class="bloomberg-title-owned"></td> \
                 </tr>');
     $("#hintTable").append(row);
@@ -47,9 +45,6 @@ function reloadHintQueue() {
                 <td width="90" class="bloomberg-cell">' + hint.lastOwner + '</td> \
                 <td width="70" class="bloomberg-cell">' + hint.action + '</td> \
                 <td width="55" class="bloomberg-cell"> \
-                    <button id="' + hint.id + '" "type="submit" class="claim-button claim">' + hint.status + '</button> \
-                </td> \
-                <td width="55" class="bloomberg-cell"> \
                     <button id="' + hint.id + '" type="submit" class="claim-button details">Details</button> \
                 </td> \
             </tr>');
@@ -67,9 +62,6 @@ function reloadHintQueue() {
                 <td width="90" class="bloomberg-cell-owned ' + ownerClass + '" id="' + ownerClass + '">' + hint.owner + '</td> \\n\
                 <td width="90" class="bloomberg-cell-owned">' + hint.lastOwner + '</td> \
                 <td width="70" class="bloomberg-cell-owned">' + hint.action + '</td> \
-                <td width="55" class="bloomberg-cell-owned"> \
-                    <button id="' + hint.id + '" "type="submit" class="claim-button claim">' + hint.status + '</button> \
-                </td> \
                 <td width="55" class="bloomberg-cell"> \
                     <button id="' + hint.id + '" type="submit" class="claim-button details">Details</button> \
                 </td> \
@@ -78,71 +70,9 @@ function reloadHintQueue() {
             ownedTable.append(hintRow);
         });
 
-        hintTable.on("click", ".claim", function(){
-            $("#statusLabel").empty();
-            if (this.innerHTML === "claim") {
-                $.post("claim", {hintid: this.id}, function (response) {
-                    if (response.error) {
-$                       ("#statusLabel").append("Cannot claim multiple hints");
-                        return;
-                    }
-                    else {
-                        console.log("requested hint");
-                        this.innerHTML = response.action;
-                        var ownerClass = "owner_" + this.id;
-                        $("#" + ownerClass + "").text(response.owner);
-                        
-                        var row = $(this).closest('tr');
-                        
-                        var ownedTable = $("#ownedTable");
-                        ownedTable.append(row);
-                    }
-
-                }.bind(this));
-            }
-            else {
-                $.post("unclaim", {hintid: this.id}, function (response) {
-                    console.log("requested hint");
-                    this.innerHTML = response.action;
-                    var ownerClass = "owner_" + this.id;
-                    $("#" + ownerClass + "").text(response.owner);
-
-                }.bind(this));
-            }
-        });
-
         hintTable.on("click", ".details", function(){
             console.log("showing hint details");
             window.location.href = "/hint/details?hintid=" + this.id;
-        });
-        
-        ownedTable.on("click", ".claim", function(){
-            $("#statusLabel").empty();
-            if (this.innerHTML === "claim") {
-                $.post("claim", {hintid: this.id}, function (response) {
-                    if (response.error) {
-$                       ("#statusLabel").append("Cannot claim multiple hints");
-                        return;
-                    }
-                    else {
-                        console.log("requested hint");
-                        this.innerHTML = response.action;
-                        var ownerClass = "owner_" + this.id;
-                        $("#" + ownerClass + "").text(response.owner);
-                    }
-
-                }.bind(this));
-            }
-            else {
-                $.post("unclaim", {hintid: this.id}, function (response) {
-                    console.log("requested hint");
-                    this.innerHTML = response.action;
-                    var ownerClass = "owner_" + this.id;
-                    $("#" + ownerClass + "").text(response.owner);
-                    $(this).closest('tr').remove();
-
-                }.bind(this));
-            }
         });
 
         ownedTable.on("click", ".details", function(){
