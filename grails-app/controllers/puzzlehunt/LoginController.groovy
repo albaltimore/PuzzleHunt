@@ -4,6 +4,8 @@ import grails.converters.JSON
 
 class LoginController {
 
+    int order = 10
+
     def propertiesService
 
     def index() { }
@@ -27,12 +29,13 @@ class LoginController {
     def getFavicon() {
         def bootstrapPath = grailsApplication.config.getProperty("puzzlehunt.resourcePath")
         def rs = propertiesService.favicon
-
+        println "favicon ${rs}"
         if (rs) {
+            println "favicon data ${rs.filename}"
             def f = new File("${bootstrapPath}/${rs.filename}")
             def extension = rs.filename.substring(rs.filename.lastIndexOf(".") + 1).toLowerCase()
 
-            render file:f, contentType: "png"
+            render file:f, contentType: "image/png"
         } else {
             render status: 404
         }

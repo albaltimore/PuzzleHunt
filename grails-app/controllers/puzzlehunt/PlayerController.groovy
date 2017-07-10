@@ -143,7 +143,7 @@ class PlayerController {
         def rs = Resource.findByAccessor(params.accessor)
         def player = Player.findById session.playerId
 
-        if (rs && (!rs.puzzle || player.hasSolved(rs.puzzle) ||
+        if (rs && !rs.role && (!rs.puzzle || player.hasSolved(rs.puzzle) ||
                 (!rs.mustSolve && player.isSolvable(rs.puzzle)))) {
             def f = new File("${bootstrapPath}/${rs.filename}")
             def extension = rs.filename.substring(rs.filename.lastIndexOf(".") + 1).toLowerCase()

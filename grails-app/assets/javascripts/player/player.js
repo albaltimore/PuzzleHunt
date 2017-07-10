@@ -189,6 +189,7 @@ function clearPoints() {
 }
 
 var rounds = {};
+var selectedRound;
 function reloadMap(openPuzzleId) {
     clearPanes();
     $.get("getPuzzles", function (playerData) {
@@ -196,24 +197,63 @@ function reloadMap(openPuzzleId) {
         var rootPane = $("#rootPane");
         var pMap = {};
 
+
+        function selectRound(roundId) {
+            selectedRound = roundId;
+            Object.keys(rounds).forEach(function (key) {
+                rounds[key].pane.css("display", key === selectedRound ? "block" : "none");
+            });
+        }
+
+        var titleDiv = $("<div class='greeting'></div>");
+        rootPane.append(titleDiv);
+
         playerData.rounds.forEach(function (round) {
+            if (!selectedRound) {
+                selectedRound = round.id;
+            }
             if (rounds[round.id]) {
                 return;
             }
             rounds[round.id] = round;
-            var paneDiv = $("<div style='margin: auto; width: " + round.width + "px ;height: " + round.height + "px'>");
+            var paneDiv = $("<div style='margin: auto; width: " + round.width + "px ;height: " + round.height + "px; border: 10px ridge gold'>");
             rootPane.append(paneDiv);
             var img = $("<img src=getResource?accessor=" + round.background + " style='position: absolute; z-index: 1'>");
             paneDiv.append(img);
+            rounds[round.id].pane = paneDiv;
 
             var puzzlePoints = $("<div style='position: absolute; z-index: 2; width: " + round.width + "px; height: " + round.height + "px'>");
             paneDiv.append(puzzlePoints);
             rounds[round.id].pointsDiv = puzzlePoints;
 
-            if (0 && round.name !== "Ghosts") {
+            if (round.id !== selectedRound) {
                 paneDiv.css("display", "none");
             }
         });
+
+        if (playerData.rounds.length > 1) {
+            var desLabel = $("<label>Welcome. Please choose a floor: </label>");
+            titleDiv.append(desLabel);
+            var links = [];
+            Object.keys(rounds).sort().forEach(function (key) {
+                var link = $("<label style='cursor: pointer; color: #59A0E6'></label>");
+                link.text("Floor " + key);
+                links.push(link);
+                links.push($("<div style='height: 1em; width: 3px; background-color: gold; display: inline-block; margin: 0 10px'>|</div>"));
+                link.click(function () {
+                    selectRound(key);
+                });
+            });
+            links.pop();
+            var linkDiv = $("<div style='margin: auto; display: table'></div>");
+            titleDiv.append(linkDiv);
+            links.forEach(function (link) {
+                linkDiv.append(link);
+            });
+        } else {
+            var desLabel = $("<label>Welcome to The Lexington Hotel</label>");
+            titleDiv.append(desLabel);
+        }
 
         playerData.puzzles.forEach(function (puzzle) {
             pMap[puzzle.id] = puzzle;

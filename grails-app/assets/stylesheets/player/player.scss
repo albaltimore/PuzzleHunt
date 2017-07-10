@@ -8,6 +8,23 @@ and open the template in the editor.
     Author     : Aleks
 */
 
+@font-face {
+    font-family: "ParkLaneNF";
+    src: url("../fonts/ParkLaneNF.otf")
+}
+
+.greeting {
+    border: 10px ridge gold;
+    font-family: ParkLaneNF;
+    background-color: #171;
+    color: gold;
+    margin: auto;
+    font-size: 48px;
+    padding: 8px 30px;
+    display: table;
+    margin-bottom: 40px;
+}
+
 .puzzlePoint {
     position: absolute;
 

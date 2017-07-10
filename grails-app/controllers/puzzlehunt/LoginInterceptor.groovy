@@ -7,6 +7,8 @@ class LoginInterceptor {
         matchAll().excludes controller: "login" excludes uri: "/error" excludes uri: "/notFound" excludes controller: "healthcheck"
     }
 
+    int order = 10
+
     boolean before() {
         if (!session.playerId) {
             redirect controller: "login"
