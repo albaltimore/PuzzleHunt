@@ -141,31 +141,38 @@ class HintController {
     def claimDetail() {
         def retMsg = ""
         def uh = Hint.findById(params.hintid)
-        if (uh.owner) {
-            retMsg = "Hint already claimed"
+        if (params.claimAction == "unclaim") {
+            // unclaim hint
+            uh.owner = null
+            uh.save(flush : true)
         }
         else {
-            def ap = Player.findById(session.playerId)
-            def ownedList = Hint.findAll("FROM Hint as h WHERE h.owner=:owner AND\n\
-                                          (h.closed IS NULL or h.closed=FALSE)",
-                [owner: ap])
-
-            if (ownedList) {
-                println "Hinter cannot claim additional hints"
-                retMsg = "Hinter cannot claim additional hints"
+            if (uh.owner) {
+                retMsg = "Hint already claimed"
             }
             else {
-                if (ap) {
-                    // claim hint
-                    def count = Hint.executeUpdate("UPDATE Hint h SET h.owner = :owner \n\
-                                                    WHERE h.id = int(:hintid) AND h.owner = null", 
-                        [owner: ap, hintid: params.hintid])
-                    if (count > 0) {
-                        retMsg = "Hint request claimed"
-                    } else {
-                        def nh = Hint.findById(params.hintid)
-                        def name = (nh && nh.owner) ? nh.owner.name : "ERROR RELOAD"
-                        retMsg = "Hint already claimed"
+                def ap = Player.findById(session.playerId)
+                def ownedList = Hint.findAll("FROM Hint as h WHERE h.owner=:owner AND\n\
+                                              (h.closed IS NULL or h.closed=FALSE)",
+                    [owner: ap])
+
+                if (ownedList) {
+                    println "Hinter cannot claim additional hints"
+                    retMsg = "Hinter cannot claim additional hints"
+                }
+                else {
+                    if (ap) {
+                        // claim hint
+                        def count = Hint.executeUpdate("UPDATE Hint h SET h.owner = :owner \n\
+                                                        WHERE h.id = int(:hintid) AND h.owner = null", 
+                            [owner: ap, hintid: params.hintid])
+                        if (count > 0) {
+                            retMsg = "Hint request claimed"
+                        } else {
+                            def nh = Hint.findById(params.hintid)
+                            def name = (nh && nh.owner) ? nh.owner.name : "ERROR RELOAD"
+                            retMsg = "Hint already claimed"
+                        }
                     }
                 }
             }
@@ -177,7 +184,6 @@ class HintController {
     
     def unclaim() {
         def uh = Hint.findById(params.hintid)
-        def ap = Player.findById(session.playerId)
         def ret = [ owner : "--", action : "claim" ]
         // unclaim hint
         uh.owner = null
@@ -203,6 +209,7 @@ class HintController {
                     solution: uh.puzzle.solution,
                     notes: uh.notes,
                     notice: params.notice,
+                    claimAction : uh.owner ? "unclaim" : "claim",
                     action : uh.closed ? "re-open" : "done"])
         }
         else {
