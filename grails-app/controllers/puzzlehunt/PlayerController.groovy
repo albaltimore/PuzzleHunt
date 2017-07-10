@@ -93,7 +93,10 @@ class PlayerController {
             return
         }
 
-        def hn = new Hint(player:player, puzzle:puzzle, question: params.question)
+        def hn = new Hint(player:player, 
+                          puzzle:puzzle, 
+                          question: params.question,
+                          createTime: new Date())
         hn.save()
         player.lastHint = System.currentTimeMillis()
         player.save(flush: true)
