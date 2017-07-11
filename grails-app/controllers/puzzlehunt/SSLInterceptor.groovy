@@ -15,6 +15,7 @@ class SSLInterceptor {
         if (!request.isSecure && grailsApplication.config.getProperty("puzzlehunt.useSSL")) {
             def url = request.requestURL
             if (url.substring(0, HTTP_PROTOCOL.length()) == HTTP_PROTOCOL) {
+                println "rerouting ssl"
                 def newUrl = 'https://' + url.substring(HTTP_PROTOCOL.length())
                 redirect url: newUrl
                 return false
