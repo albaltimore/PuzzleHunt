@@ -12,6 +12,8 @@ class Puzzle {
     Round round
     Long timeLimit
     Set<RequiredPuzzle> requiredPuzzles
+    boolean disableHint = false
+    boolean statusBoost = false
 
     def getPartialSolution(input) {
         def ret = null

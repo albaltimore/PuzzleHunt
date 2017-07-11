@@ -6,15 +6,20 @@ class Player {
     String role
     Long lastHint = 0
     long hintRegen = 1000 * 60 * 20
+    int hintCount = 0
+    int hintMaxCount = 1
+    int playerStatusBonus = 0
+    PlayerStatus playerStatus
 
     static constraints = {
         name unique: true
         role nullable: true
         lastHint nullable: true
+        playerStatus nullable: true
     }
 
     def getSolvedPuzzles() {
-        Attempt.where { player == this } findAll {it.isCorrect} *.puzzle
+        Attempt.where { player == this } findAll {it.isCorrect} *.puzzle .unique()
     }
 
     def hasSolved(Puzzle puz) {
@@ -23,7 +28,7 @@ class Player {
 
     def getSolvablePuzzles() {
         def solved = getSolvedPuzzles()*.id
-        Puzzle.list().findAll { p-> p.id in solved || (!p.requiredPuzzles && (p.round.unlocked || !p.round.requiredPuzzles.size() || p.round.requiredPuzzles*.id.findAll {rp -> rp in solved} .size() )) || p.requiredPuzzles*.puzzle.findAll {rp -> rp.id in solved}.size() }
+        Puzzle.list().findAll { p-> p.id in solved || (!p.requiredPuzzles && (p.round.unlocked || !p.round.requiredPuzzles.size() || p.round.requiredPuzzles*.id.findAll {rp -> rp in solved} .size() )) || p.requiredPuzzles*.puzzle.findAll {rp -> rp.id in solved}.size() } .unique()
     }
 
     def isSolvable(Puzzle puzzle) {
@@ -33,6 +38,15 @@ class Player {
     def getLastSubmission() {
         def item = Attempt.where {timestamp == max(timestamp).of{ player==this } && player==this }.list()
         item.size() ? item.first().timestamp : 0
+    }
+
+    def getStatus() {
+        def cid = Attempt.where { player == this } findAll {it.isCorrect} *.puzzle findAll {it.statusBoost} .unique() .size()
+        cid+= playerStatusBonus
+
+        def stati = PlayerStatus.where { statusLevel == max(statusLevel).of{ statusLevel <= cid } } .list()
+        println "ps ${stati}"
+        stati.size() ? stati.first() : null
     }
 
     static hasMany = []

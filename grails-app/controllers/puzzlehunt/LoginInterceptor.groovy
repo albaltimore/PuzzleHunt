@@ -10,7 +10,7 @@ class LoginInterceptor {
     int order = 10
 
     boolean before() {
-        if (!session.playerId) {
+        if (!session.playerId || !session.playerName || ! Player.findByNameAndId(session.playerName, session.playerId)) {
             redirect controller: "login"
             return false
         }

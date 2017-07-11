@@ -35,13 +35,14 @@ class BootStrap {
         def puzzles = [:]
         def resources = [:]
         def rounds = [:]
+        def statuses = []
 
         config.rounds.each {
             rounds[it.id] = new Round(name: it.name, width: it.width, height: it.height)
         }
 
         config.puzzles.each {
-            puzzles[it.id] = new Puzzle(xCor: it.xcor, yCor: it.ycor, name: it.name, solution: it.solution, round: rounds[it.round], timeLimit: it.timeLimit ?: null)
+            puzzles[it.id] = new Puzzle(xCor: it.xcor, yCor: it.ycor, name: it.name, solution: it.solution, round: rounds[it.round], timeLimit: it.timeLimit ?: null, disableHint: it.disableHint ?: false, statusBoost: it.statusBoost ?: false)
             puzzles[it.id].partialSolutions = it.hints.collect { k, v ->
                 def ptl = new PartialSolution(partialSolution: k, hint: v ?: "You're on the right track, keep going!")
                 ptl.save()
@@ -86,6 +87,11 @@ class BootStrap {
 
         if (config.favicon != null) {
             propertiesService.favicon = resources[config.favicon]
+        }
+
+        config.statuses.each {
+            println "add status ${it}"
+            new PlayerStatus(statusLevel: it.level, resource: resources[it.resource], name: it.name, hintCount: it.hintCount ?: 0, hintTime: it.hintTime ?: 0, puzzleTime: it.puzzleTime ?: 0).save()
         }
 
         players.each {k,v->v.save(flush:true)}

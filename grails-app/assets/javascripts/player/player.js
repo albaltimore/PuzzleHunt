@@ -5,17 +5,12 @@ function showDialog(text, cb) {
     var modal = $("#modal");
     var modalRoot = $("#modal-root");
     modal.css("visibility", "visible");
-    modalRoot.css("height", "150px");
-    modalRoot.css("width", "400px");
     modalRoot.empty();
 
-    var pane = $("<div style='position:absolute; width:100%; height 100%' />");
+    var pane = $("<div style='position: relative; max-width: 700px; padding: 20px' />");
     var label = $("<label class='modal-label' />");
     pane.append(label);
-    pane.append($("<br/>"));
-    var close = $("<input type='button' value='close' class='modal-button-close' />");
-    close.css("left", "115px");
-    close.css("top", "80px");
+    var close = $("<input type='button' value='close' class='modal-button-close'  style='left: 50%; transform: translate(-50%); position: relative; display: block' />");
     close.click(function () {
         pane.remove();
         modal.css("visibility", "hidden");
@@ -42,7 +37,8 @@ function showConfirmDialog(text, yText, nText, cb) {
     var closeDiv = $("<div style='position: relative; left: 50%; transform: translate(-50%); display: inline-block' />");
     pane.append(closeDiv);
 
-    var close = $("<input type='button' value='" + yText + "' class='modal-button-close' />");
+    var close = $("<input type='button' class='modal-button-close' />");
+    close.val(yText);
     close.click(function () {
         pane.remove();
         modal.css("visibility", "hidden");
@@ -50,7 +46,8 @@ function showConfirmDialog(text, yText, nText, cb) {
     });
     closeDiv.append(close);
 
-    var closeNo = $("<input type='button' value='" + nText + "' class='modal-button-close' />");
+    var closeNo = $("<input type='button' class='modal-button-close' />");
+    closeNo.val(nText);
     closeNo.click(function () {
         pane.remove();
         modal.css("visibility", "hidden");
@@ -66,8 +63,6 @@ function showLoading(text) {
     var modal = $("#modal");
     var modalRoot = $("#modal-root");
     modal.css("visibility", "visible");
-    modalRoot.css("height", "100px");
-    modalRoot.css("width", "300px");
     modalRoot.empty();
 
     var pane = $("<div style='position:absolute; width:100%; height 100%' />");
@@ -86,7 +81,7 @@ function closeLoading() {
 }
 
 function showHintDialog(puzzleId, puzzleName, hintText) {
-    $.get("nextHintTime", function (nextHintTime) {
+    $.get("nextHintTime", function (nextHintData) {
         var modal = $("#modal");
         var modalRoot = $("#modal-root");
         modal.css("visibility", "visible");
@@ -96,9 +91,7 @@ function showHintDialog(puzzleId, puzzleName, hintText) {
 
         var pane = $("<div style='padding: 20px; 20px; 20px; 20px; max-width: 500px; position: relative' />");
 
-
         modalRoot.append(pane);
-
 
         pane.append($("<label style='color: white; display: block; font-size: 24px;'>To request your next hint, please enter as much detailed information as possible about what you have tried so far.</label>"));
 
@@ -113,14 +106,18 @@ function showHintDialog(puzzleId, puzzleName, hintText) {
 
         var timer = setInterval(function () {
 
-            var left = Math.max(0, nextHintTime - new Date().getTime()) / 1000;
-            if (left <= 0) {
-                availableLabel.text("Your hint is available now...");
+            var left = Math.max(0, nextHintData.time - new Date().getTime()) / 1000;
+            if (nextHintData.left) {
+                if (nextHintData.max <= 1) {
+                    availableLabel.text("A hint is available now...");
+                } else {
+                    availableLabel.text(nextHintData.left + " out of " + nextHintData.max + " hints are available.");
+                }
             } else {
                 var pad = function (t) {
                     return t < 10 ? '0' + parseInt(t) : parseInt(t);
                 };
-                availableLabel.text("Next hint available in: " + pad((left / 3600) % 60) + ":" + pad((left / 60) % 60) + ":" + pad(left % 60));
+                availableLabel.text("No hints left. Next hint in: " + pad((left / 3600) % 60) + ":" + pad((left / 60) % 60) + ":" + pad(left % 60));
             }
 
         }, 25);
@@ -143,6 +140,8 @@ function showHintDialog(puzzleId, puzzleName, hintText) {
                     showHintDialog(puzzleId, puzzleName, hintRequest);
                 });
 
+            }).fail(function () {
+                showDialog("Something went wrong! :(");
             });
         });
         closeDiv.append(close);
@@ -156,7 +155,6 @@ function showHintDialog(puzzleId, puzzleName, hintText) {
             modal.css("visibility", "hidden");
         });
         closeDiv.append(closeNo);
-
     });
 }
 
@@ -190,6 +188,8 @@ function clearPoints() {
 
 var rounds = {};
 var selectedRound;
+var playerStatus;
+
 function reloadMap(openPuzzleId) {
     clearPanes();
     $.get("getPuzzles", function (playerData) {
@@ -205,8 +205,20 @@ function reloadMap(openPuzzleId) {
             });
         }
 
-        var titleDiv = $("<div class='greeting'></div>");
-        rootPane.append(titleDiv);
+        var titleDiv = $("#titlePane");
+        titleDiv.css("display", "inline-block");
+        titleDiv.empty();
+
+        playerStatus = playerData.status;
+        var statusPane = $("#statusPane");
+        statusPane.empty();
+        if (!playerData.status) {
+            statusPane.css("display", "none");
+        } else {
+            statusPane.css("display", "inline-block");
+            statusPane.append($("<img src='getResource?accessor=" + playerStatus.resource + "' style='height: 70px; display: block; margin: auto'/>"));
+            statusPane.append($("<label style='font-size: 22px; font-family: sans-serif; display: block; text-align: center; cursor: pointer'>" + playerStatus.name + "</label>"));
+        }
 
         playerData.rounds.forEach(function (round) {
             if (!selectedRound) {
@@ -434,21 +446,22 @@ function reloadMap(openPuzzleId) {
                                 $.post("checkPuzzle", {id: puzzle.id, solution: solveEntry.val()}, function (data) {
                                     console.log(data);
                                     if (data.solved) {
-                                        reloadMap(puzzle.id)
+                                        reloadMap(puzzle.id);
                                     } else {
                                         statusLabel.text(data.message);
                                     }
                                 });
                             }
                         });
-
-                        var hintDiv = $("<div style='position: relative;  margin-top: 10px; margin-bottom: 5px; margin-right: 8px'>");
-                        pane.append(hintDiv);
-                        var hintLink = $("<label style='color: #59A0E6; text-decoration: underline; cursor: pointer; text-align: end; display: block'>Need a hint?</label>");
-                        hintDiv.append(hintLink);
-                        hintLink.click(function () {
-                            showHintDialog(puzzle.id, puzzle.name);
-                        });
+                        if (!puzzle.hintDisabled) {
+                            var hintDiv = $("<div style='position: relative;  margin-top: 10px; margin-bottom: 5px; margin-right: 8px'>");
+                            pane.append(hintDiv);
+                            var hintLink = $("<label style='color: #59A0E6; text-decoration: underline; cursor: pointer; text-align: end; display: block'>Need a hint?</label>");
+                            hintDiv.append(hintLink);
+                            hintLink.click(function () {
+                                showHintDialog(puzzle.id, puzzle.name);
+                            });
+                        }
                     } else {
                         var label = $("<label style='position: relative; color:white; font-size: 16px; text-align: center'></label>");
                         label.text("This is a timed puzzle. You have " + (puzzle.timeLimit / 60) + " minutes to solve it. You should gather your whole team!");
@@ -483,11 +496,26 @@ function reloadMap(openPuzzleId) {
 
 
 $(document).ready(function () {
-
     $(document).click(clearPanes);
     $("#modal").click(function (event) {
         event.stopPropagation();
     });
     reloadMap();
+
+    $("#statusPane").click(function () {
+        if (playerStatus) {
+            showDialog("You have achieved " + playerStatus.name + " hotel status\n" +
+                "You may now use the priority line\n" +
+                (playerStatus.hintTime ? "Your hint timer is decreased by " + playerStatus.hintTime + " seconds\n" : "") +
+                (playerStatus.hintCount ? "You may save up" + (playerStatus.hintCount + 1) + " hints\n" : "") +
+                (playerStatus.puzzleTime ? "Your speed puzzle timer is increased by " + playerStatus.puzzleTime + " seconds\n" : ""));
+        }
+    });
+
+    setInterval(function () {
+        if (!removePanes.length) {
+            reloadMap();
+        }
+    }, 1000 * 60 * 5);
 });
 

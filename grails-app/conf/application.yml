@@ -167,4 +167,6 @@ environments:
             plugin:
                 cookiesession:
                     setsecure: true
-                    #secret: pass as arg
+        puzzlehunt:
+            useSSL: true
+

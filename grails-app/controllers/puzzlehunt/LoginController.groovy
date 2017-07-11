@@ -14,6 +14,7 @@ class LoginController {
         def player = Player.findByNameAndPassword(params.username, params.password)
         if (player) {
             session.playerId = player.id
+            session.playerName = player.name
             if (player.role == "HINTER") {
                 redirect controller: "hint"
             }

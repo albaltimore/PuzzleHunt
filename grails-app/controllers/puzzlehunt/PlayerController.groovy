@@ -41,8 +41,9 @@ class PlayerController {
                 yCor: p.yCor,
                 name: p.name,
                 requiredPuzzles: p.requiredPuzzles.collect {rp -> [id: rp.puzzle.id, color: rp.color, points: rp.coordinates.collect {c -> [xCor: c.xCor, yCor: c.yCor]} ]},
+                hintDisabled: p.disableHint,
                 solved: p.id in solved,
-                timeLimit: p.timeLimit,
+                timeLimit: p.timeLimit ? p.timeLimit + (player.status?.puzzleTime ?: 0) : null,
                 started: started,
                 startTime: startTime,
                 roundId: p.round.id,
@@ -52,7 +53,17 @@ class PlayerController {
                 solvedFilename: p.id in solved ? p?.solvedResource?.filename : null,
             ]
         }
-        def ret = [puzzles: puzzles, rounds: rounds.values()]
+
+        def stat = player.status
+        def status = stat ? [
+            resource: stat.resource.accessor,
+            name: stat.name,
+            hintTime: stat.hintTime,
+            puzzleTime: stat.puzzleTime,
+            hintCount: stat.hintCount
+        ] : null
+
+        def ret = [puzzles: puzzles, rounds: rounds.values(), status: status]
         render ret as JSON
     }
 
@@ -69,17 +80,30 @@ class PlayerController {
 
     def nextHintTime() {
         def player = Player.findById(session.playerId)
-        def val = player.lastHint + player.hintRegen
-        render val
+        def totalTime = player.hintRegen - (player.status?.hintTime ?: 0) * 1000
+        def recentHints = Hint.findAllByPlayerAndCreateTimeGreaterThan(player, System.currentTimeMillis() - totalTime) ?: []
+        def maxHints = player.hintMaxCount + (player.status?.hintCount ?: 0)
+
+        println  recentHints*.createTime
+
+        def ret = [
+            max: maxHints,
+            left: Math.max(0, maxHints - recentHints.size()),
+            time: !recentHints.size() ? 0 : (recentHints*.createTime.max() ?: 0) + totalTime
+        ]
+
+        render ret as JSON
     }
 
     def requestHint() {
-        //TODO CHECK PUZZLE IS ACCESSIBLE
         def player = Player.findById(session.playerId)
 
+        def totalTime = player.hintRegen - (player.status?.hintTime ?: 0) * 1000
+        def recentHints = Hint.findAllByPlayerAndCreateTimeGreaterThan(player, System.currentTimeMillis() - totalTime) ?: []
+        def maxHints = player.hintMaxCount + (player.status?.hintCount ?: 0)
+        def left = Math.max(0, maxHints - recentHints.size())
 
-
-        if (System.currentTimeMillis() < player.lastHint + player.hintRegen) {
+        if (!left) {
             def ret = [error: "Hint requested too soon. Try later."]
             render ret as JSON
             return
@@ -87,18 +111,14 @@ class PlayerController {
 
         def puzzle = Puzzle.findById(params.id)
 
-        if (player.hasSolved(puzzle) || !player.isSolvable(puzzle)) {
+        if (player.hasSolved(puzzle) || !player.isSolvable(puzzle) || puzzle.disableHint) {
             def ret = [error: "You can't request a hint for this puzzle."]
             render ret as JSON
             return
         }
 
-        def hn = new Hint(player:player, 
-                          puzzle:puzzle, 
-                          question: params.question,
-                          createTime: new Date())
+        def hn = new Hint(player:player, puzzle:puzzle, question: params.question)
         hn.save()
-        player.lastHint = System.currentTimeMillis()
         player.save(flush: true)
 
         def ret = [success:true]
@@ -122,7 +142,7 @@ class PlayerController {
                 render ret as JSON
                 return
             }
-            if (pstart.startTime + puzzle.timeLimit * 1000 < System.currentTimeMillis()) {
+            if (pstart.startTime + (puzzle.timeLimit + (player.status?.puzzleTime ?: 0)) * 1000 < System.currentTimeMillis()) {
                 def ret = [solved: false, message: "You're out of time :("]
                 render ret as JSON
                 return

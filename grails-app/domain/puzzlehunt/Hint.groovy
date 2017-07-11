@@ -1,6 +1,6 @@
 package puzzlehunt
 
-class Hint {  
+class Hint {
     Player player
     Puzzle puzzle
     String question
@@ -10,7 +10,7 @@ class Hint {
     Long nexi
     Long phone
     Boolean closed = false
-    Date createTime
+    long createTime = System.currentTimeMillis()
 
     static constraints = {
         question nullable: true
@@ -21,6 +21,6 @@ class Hint {
         nexi nullable: true
         phone nullable: true
     }
-    
+
     static belongsTo = [puzzle: "puzzle", player: "player", owner: "player"]
 }

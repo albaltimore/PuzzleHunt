@@ -21,7 +21,8 @@ and open the template in the editor.
     margin: auto;
     font-size: 48px;
     padding: 8px 30px;
-    display: table;
+    display: inline-block;
+    margin: 0 20px;
     margin-bottom: 40px;
 }
 
@@ -88,4 +89,5 @@ and open the template in the editor.
 .modal-label {
     font-size: 24px;
     color: white;
+    white-space: pre-line;
 }
