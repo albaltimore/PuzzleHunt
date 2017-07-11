@@ -10,12 +10,14 @@ class Player {
     int hintMaxCount = 1
     int playerStatusBonus = 0
     PlayerStatus playerStatus
+    String contactInfo
 
     static constraints = {
         name unique: true
         role nullable: true
         lastHint nullable: true
         playerStatus nullable: true
+        contactInfo nullable: true
     }
 
     def getSolvedPuzzles() {

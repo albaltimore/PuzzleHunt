@@ -8,7 +8,6 @@
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
     <asset:stylesheet src="hint/hint.css"/>
-    <asset:stylesheet src="login/login.css"/>
     <asset:javascript src="hint/hint.js"/>
     <title class="hint-table">Hint Queue</title>
 </head>

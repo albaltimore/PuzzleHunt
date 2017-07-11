@@ -3,46 +3,79 @@
   To change this template file, choose Tools | Templates
   and open the template in the editor.
 -->
-
 <%@ page contentType="text/html;charset=UTF-8" %>
+
+<!DOCTYPE html>
 
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <asset:stylesheet src="hint/hint.css"/>
-        <asset:stylesheet src="login/login.css"/>
-        <title class="hint-table">Hint Details</title>
-    </head>
-    <body bgcolor="#000000">
-        <h1 class="bloomberg-headline">Hint Details</h1>
-        <g:form useToken="true" controller="hint">
-        <input type="submit" value="Back" class="claim-button"/>
-        </g:form>
-        <label class="status-cell">${notice}</label><br/><br/>
-        <label class="bloomberg-cell">Owner:</label>
-        <label class="details-cell">${hinterName}</label><br/><br/>
-        <label class="bloomberg-cell">Player:</label>
-        <label class="details-cell">${playerName}</label><br/><br/>
-        <label class="bloomberg-cell">Phone #:</label>
-        <label class="details-cell">${phone}</label><br/><br/>
-        <label class="bloomberg-cell">Nexi #:</label>
-        <label class="details-cell">${nexi}</label><br/><br/>
-        <label class="bloomberg-cell">Puzzle:</label>
-        <label class="details-cell">${puzzleName}</label><br/><br/>
-        <label class="bloomberg-cell">Question:</label>
-        <label class="details-cell">${question}</label><br/><br/>
-        <label class="bloomberg-cell">Puzzle Link:</label>
-        <label class="details-cell">${puzzleLink}</label><br/><br/>
-        <label class="bloomberg-cell">Puzzle Solution:</label>
-        <label class="details-cell">${solution}</label><br/><br/>
-        <label class="bloomberg-cell">Notes:</label><br/>
-        <g:form useToken="true">
-        <g:hiddenField name="hintid" value="${hintid}" />
-        <g:hiddenField name="claimAction" value="${claimAction}" />
-        <textarea type="notes" name="entrynotes" class="notes-entry">${notes}</textarea><br/>
-        <g:actionSubmit action="claim" value="${claimAction}" width="100" class="update-button"/>
-        <g:actionSubmit action="updateNote" value="Update Note" width="100" class="update-button"/>
-        <g:actionSubmit action="toggle" value="${action}" width="100" class="update-button"/>
-        </g:form>
-    </body>
+    <asset:stylesheet src="hint/hint.css"/>
+    <asset:javascript src="hint/details.js"/>
+    <title class="hint-table">Hint Details</title>
+</head>
+<body style="background-color: black; font-family: sans-serif; font-size: 17px">
+
+    <div style="height:100%">
+        <a href="index"><label style="color: #59A0E6; cursor: pointer; font-size: 32px; float: left; height: 100%">Go Back</label></a>
+    </div>
+    <div style="margin: auto; width: 800px">
+        <label style="color: white; font-size: 36px">Hint Details</label>
+
+        <div style="height: 20px"></div>
+
+        <div>
+            <label class="bloomberg-cell">Owner</label>
+            <label id="ownerLabel" class="details-cell"></label>
+            <label id="ownerBonusLabel"></label>
+        </div>
+
+        <div>
+            <label class="bloomberg-cell">Requesting Team</label>
+            <label id="requestorLabel" class="details-cell"></label>
+        </div>
+        <div>
+            <label class="bloomberg-cell">Contact</label>
+            <label id="contactLabel" class="details-cell"></label>
+        </div>
+
+        <div style="height: 20px"></div>
+
+        <div>
+            <label class="bloomberg-cell">Puzzle Name</label>
+            <label id="nameLabel" class="details-cell"></label>
+        </div>
+
+        <div>
+            <label class="bloomberg-cell">Puzzle Answer</label>
+            <label id="answerLabel" class="details-cell"></label>
+        </div>
+
+        <div>
+            <a id="solutionLink" target="_blank" ><label style="color: #59A0E6; cursor: pointer">Solution Instructions</label></a>
+        </div>
+
+
+        <div style="height: 20px"></div>
+        <div>
+            <label class="bloomberg-cell">Request Data</label>
+            <label id="questionLabel" style="padding: 3px; display: block; white-space: pre-line; background-color: lightgray; color: black; height: 120px; overflow-y: auto; box-sizing: border-box"></label>
+        </div>
+
+
+        <div style="height: 20px"></div>
+        <div>
+            <label class="bloomberg-cell" style="display: block">Notes</label>
+            <textarea id="noteEntry" type="notes" class="notes-entry"></textarea>
+            <label id="updateNoteLink" style="color: #59A0E6; cursor: pointer; margin-top: 2px; float: right">Update Note</label>
+        </div>
+
+        <div id="actionsDiv"></div>
+
+    </div>
+    <div id="modal" style="visibility: hidden; position: absolute; left: 0px; right: 0px; top: 0px; bottom: 0px; z-index: 100">
+        <div id="modal-shade"></div>
+        <div id="modal-root"></div>
+    </div>
+</body>
 </html>

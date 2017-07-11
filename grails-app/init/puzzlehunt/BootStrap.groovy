@@ -57,7 +57,7 @@ class BootStrap {
         }
 
         config.resources.each {
-            resources[it.id] = new Resource(puzzle: puzzles[it.puzzle], filename: it.file, accessor: UUID.randomUUID().toString(), mustSolve: it.mustSolve ?: false)
+            resources[it.id] = new Resource(puzzle: puzzles[it.puzzle], filename: it.file, accessor: UUID.randomUUID().toString(), mustSolve: it.mustSolve ?: false, role: it.role ?: null)
             resources[it.id].save()
         }
 
@@ -69,6 +69,7 @@ class BootStrap {
         config.puzzles.each {
             puzzles[it.id].introResource = resources[it.introResource]
             if (it.solvedResource) puzzles[it.id].solvedResource = resources[it.solvedResource]
+            if (it.solutionResource) puzzles[it.id].solutionResource = resources[it.solutionResource]
 
             puzzles[it.id].requiredPuzzles = it.requires.collect {pid ->
                 def rp = new RequiredPuzzle(puzzle: puzzles[pid.puzzle], color: pid.color)

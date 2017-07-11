@@ -89,7 +89,7 @@ function showHintDialog(puzzleId, puzzleName, hintText) {
         //modalRoot.css("width", "500px");
         modalRoot.empty();
 
-        var pane = $("<div style='padding: 20px; 20px; 20px; 20px; max-width: 500px; position: relative' />");
+        var pane = $("<div style='padding: 20px; 20px; 20px; 20px; max-width: 600px; position: relative' />");
 
         modalRoot.append(pane);
 
@@ -103,6 +103,14 @@ function showHintDialog(puzzleId, puzzleName, hintText) {
         var hintEntry = $("<textarea style='resize: none; font-size: 16px; width: 100%; margin-top: 20px; height: 150px; box-sizing: border-box' />");
         pane.append(hintEntry);
         hintEntry.text(hintText ? hintText : "");
+
+
+        pane.append($("<label style='color: white; display: block; font-size: 24px; margin-top: 35px'>Tell us how to reach you! Either provide a phone number, or your room number so we can call you via Nexi.</label>"));
+        var contactEntry = $("<textarea style='resize: none; font-size: 16px; width: 100%; margin-top: 20px; height: 40px; box-sizing: border-box' />");
+        pane.append(contactEntry);
+        if (contactInfo) {
+            contactEntry.val(contactInfo);
+        }
 
         var timer = setInterval(function () {
 
@@ -130,8 +138,12 @@ function showHintDialog(puzzleId, puzzleName, hintText) {
         close.css("top", "430px");
         close.click(function () {
             var hintRequest = hintEntry.val();
-            if (!hintRequest) return;
-            $.post("requestHint", {id: puzzleId, question: hintRequest}, function (data) {
+            if (contactEntry.val()) {
+                contactInfo = contactEntry.val();
+            }
+            if (!hintRequest || !contactInfo) return;
+
+            $.post("requestHint", {id: puzzleId, question: hintRequest, contactInfo: contactInfo}, function (data) {
                 clearInterval(timer);
                 pane.remove();
                 modal.css("visibility", "hidden");
@@ -189,6 +201,7 @@ function clearPoints() {
 var rounds = {};
 var selectedRound;
 var playerStatus;
+var contactInfo;
 
 function reloadMap(openPuzzleId) {
     clearPanes();
@@ -208,6 +221,8 @@ function reloadMap(openPuzzleId) {
         var titleDiv = $("#titlePane");
         titleDiv.css("display", "inline-block");
         titleDiv.empty();
+
+        contactInfo = playerData.contactInfo;
 
         playerStatus = playerData.status;
         var statusPane = $("#statusPane");
@@ -507,7 +522,7 @@ $(document).ready(function () {
             showDialog("You have achieved " + playerStatus.name + " hotel status\n" +
                 "You may now use the priority line\n" +
                 (playerStatus.hintTime ? "Your hint timer is decreased by " + playerStatus.hintTime + " seconds\n" : "") +
-                (playerStatus.hintCount ? "You may save up" + (playerStatus.hintCount + 1) + " hints\n" : "") +
+                (playerStatus.hintCount ? "You may save up " + (playerStatus.hintCount + 1) + " hints\n" : "") +
                 (playerStatus.puzzleTime ? "Your speed puzzle timer is increased by " + playerStatus.puzzleTime + " seconds\n" : ""));
         }
     });

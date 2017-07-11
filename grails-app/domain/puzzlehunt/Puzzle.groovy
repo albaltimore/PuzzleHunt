@@ -8,6 +8,7 @@ class Puzzle {
     String solution
     Resource introResource
     Resource solvedResource
+    Resource solutionResource
     int xCor, yCor
     Round round
     Long timeLimit
@@ -27,6 +28,7 @@ class Puzzle {
         name unique: true
         introResource nullable: true
         solvedResource nullable: true
+        solutionResource nullable: true
         timeLimit nullable: true
     }
 

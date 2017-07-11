@@ -1,13 +1,22 @@
 package puzzlehunt
 
 import grails.converters.JSON
+import grails.transaction.Transactional
 
 class HintController {
+
+    private static final EXTENSION_TYPES = [ //TODO DEDUPE
+        "png": "image/png",
+        "jpg": "image/jpg",
+        "gif": "image/gif",
+        "pdf": "application/pdf",
+        "mp4": "video/mp4"
+    ]
 
     def index() {
 
     }
-    
+
     def getHints() {
         def pl = Player.findById(session.playerId)
         def ownedList = Hint.findByOwnerAndClosedNotEqual(pl,true)
@@ -21,7 +30,7 @@ class HintController {
                     puzzle: h.puzzle.name,
                     player: h.player.name,
                     owner: h.owner ? h.owner.name : "--",
-                    lastOwner: h.lastOwner ? h.lastOwner.name : "--",
+                    lastOwner: "--",
                     status: h.owner ? "unclaim" : "claim",
                     action : h.closed ? "closed" : "open",
                     createTime : h.createTime,
@@ -41,7 +50,7 @@ class HintController {
                 puzzle: h.puzzle.name,
                 player: h.player.name,
                 owner: h.owner ? h.owner.name : "--",
-                lastOwner: h.lastOwner ? h.lastOwner.name : "--",
+                lastOwner: "--",
                 status: h.owner ? "unclaim" : "claim",
                 action : h.closed ? "closed" : "open",
                 createTime : h.createTime,
@@ -50,145 +59,159 @@ class HintController {
             ]
             hdl.push(hd)
         }
-        
+
         def ret = [hints : hdl, owned : ohl]
         render ret as JSON
-    }
-
-    def requestHint() {
-        def pl = Player.findById(params.playerid)
-        def pu = Puzzle.findById(params.puzzleid)
-        
-        def prevHints = Hint.findAll("from Hint as h where h.puzzle=:puzzle and\n\
-                                      h.player=:player order by h.createTime desc",
-            [puzzle: pu, player: pl], [max: 1])
-        if (prevHints && prevHints.owner) {
-            def lastHinter = prevHints.owner
-            if (lastHinter) {
-                lh = lastHinter
-            }
-        }
-        def hn = new Hint(player:pl, 
-            puzzle:pu, 
-            owner: uu, 
-            lastOwner: lh,
-            question: params.question, 
-            notes: "NO NOTES")
-        hn.save()
     }
 
     def refreshlist() {
         redirect controller: "hint", action: "index"
     }
-    
-    def toggle() {
-        def uh = Hint.findById(params.hintid)
-        if (!uh.owner && !uh.closed) {
-            redirect controller: "hint", action: "details", 
-            params: [hintid: params.hintid, 
-                notice: "cannot close unclaimed hint"]
-        }
-        else {
-            if (uh.closed) {
-                uh.closed = false
-            }
-            else {
-                uh.closed = true
-            }
-            uh.save(flush : true)
-            redirect controller: "hint", action: "details", 
-            params: [hintid: params.hintid, 
-                notice: "ticket state updated"]
-        }
-    }
-    
-    def claim() {
-        def retMsg = ""
-        def uh = Hint.findById(params.hintid)
-        if (params.claimAction == "unclaim") {
-            // unclaim hint
-            uh.owner = null
-            uh.save(flush : true)
-        }
-        else {
-            if (uh.owner) {
-                retMsg = "Hint already claimed"
-            }
-            else {
-                def ap = Player.findById(session.playerId)
-                def ownedList = Hint.findAll("FROM Hint as h WHERE h.owner=:owner AND\n\
-                                              (h.closed IS NULL or h.closed=FALSE)",
-                    [owner: ap])
 
-                if (ownedList) {
-                    println "Hinter cannot claim additional hints"
-                    retMsg = "Hinter cannot claim additional hints"
-                }
-                else {
-                    if (ap) {
-                        // claim hint
-                        def count = Hint.executeUpdate("UPDATE Hint h SET h.owner = :owner \n\
-                                                        WHERE h.id = int(:hintid) AND h.owner = null", 
-                            [owner: ap, hintid: params.hintid])
-                        if (count > 0) {
-                            retMsg = "Hint request claimed"
-                        } else {
-                            def nh = Hint.findById(params.hintid)
-                            def name = (nh && nh.owner) ? nh.owner.name : "ERROR RELOAD"
-                            retMsg = "Hint already claimed"
-                        }
-                    }
-                }
-            }
+    @Transactional
+    def claimHint() {
+        def user = Player.findById(session.playerId)
+        def hint = Hint.findById(params.hintId)
+
+        if (hint.owner && hint.owner == user) {
+            render status: 500, text: "Already Owned"
+            return
         }
-        redirect controller: "hint", action: "details", 
-            params: [hintid: params.hintid, 
-                     notice: retMsg]
+        if (hint.owner && !params.steal) {
+            render status: 500, text: "Someone else owns this hint"
+            return
+        }
+
+        def ownedHints = Hint.findAllByOwnerAndClosedNotEqual(user, true)
+        if (ownedHints.size()) {
+            render status: 500, text: "Already own another hint"
+            return
+        }
+
+        hint.owner = user
+
+        if (!hint.save(flush: true)) {
+            render status: 500, text: "Unknown Error"
+            return
+        }
+
+        def ret = [success: true]
+        render ret as JSON
     }
-    
-    def unclaim() {
-        def uh = Hint.findById(params.hintid)
-        def ret = [ owner : "--", action : "claim" ]
-        // unclaim hint
-        uh.owner = null
-        uh.save(flush : true)
-        
-        render ret as JSON;
+
+    @Transactional
+    def unclaimHint() {
+        def user = Player.findById(session.playerId)
+        def hint = Hint.findById(params.hintId)
+
+        if (hint.owner && hint.owner == user) {
+            hint.owner = null
+            if(! hint.save(flush : true)) {
+                render status: 500
+                return
+            }
+        } else {
+            render status: 500
+            return
+        }
+
+        def ret = [ success: true]
+        render ret as JSON
     }
-    
+
+
     def details() {
-        if (params.hintid) {
-            println "showing details hintid:" + params.hintid
-            def uh = Hint.findById(params.hintid)
-            def hinterName = uh.owner ? uh.owner.name : "--"
-            def actionBlob = uh.closed ? "re-open" : "done"
-            render(view: "details", model: [hintid: params.hintid,
-                    hinterName: hinterName,
-                    playerName: uh.player.name,
-                    phone: uh.phone,
-                    nexi: uh.nexi,
-                    puzzleName: uh.puzzle.name,
-                    question: uh.question,
-                    puzzleLink: uh.puzzle?.solvedResource?.accessor,
-                    solution: uh.puzzle.solution,
-                    notes: uh.notes,
-                    notice: params.notice,
-                    claimAction : uh.owner ? "unclaim" : "claim",
-                    action : uh.closed ? "re-open" : "done"])
+        println params
+        if (!params.hintId) {
+            render status: 500
+            return
         }
-        else {
-            println "error, no hintid passed"
-        }
-    }
-    
-    def updateNote() {
-        println "param entry notes"
-        def uh = Hint.findById(params.hintid)
-        uh.notes = params.entrynotes
-        uh.save(flush : true)
-        redirect controller: "hint", action: "details", 
-        params: [hintid: params.hintid, 
-            notice: "note updated"]
+
     }
 
+    def getHintDetails() {
+        def hint = Hint.findById(params.hintId)
+        def user = Player.findById(session.playerId)
+        def ownedHints = Hint.findAllByOwnerAndClosedNotEqual(user, true)
+
+        def hintData = [
+            myName: user.name,
+            myHints: ownedHints.size(),
+            hintId: params.hintId,
+            hinterName: hint.owner?.name,
+            closed: hint.closed,
+            playerName: hint.player.name,
+            contactInfo: hint.contactInfo,
+            puzzleName: hint.puzzle.name,
+            question: hint.question,
+            solutionAccessor: hint.puzzle?.solutionResource?.accessor,
+            solution: hint.puzzle.solution,
+            notes: hint.notes
+        ]
+        render hintData as JSON
+    }
+
+
+    @Transactional
+    def updateNote() {
+        def hint = Hint.findById(params.hintId)
+        hint.notes = params.notes
+        hint.save(flush : true)
+
+        def ret = [success: true]
+        render ret as JSON
+    }
+
+    @Transactional
+    def closeHint() {
+        def user = Player.findById(session.playerId)
+        def hint = Hint.findById(params.hintId)
+
+        if (hint.owner != user) {
+            render status: 500, text: "You dont own this puzzle"
+            return
+        }
+
+        if (hint.closed)  {
+            render status: 500, text: "Already Closed"
+            return
+        }
+
+        hint.closed = true
+        hint.save(flush: true)
+
+        def ret = [success: true]
+        render ret as JSON
+    }
+
+    @Transactional
+    def reopenHint() {
+        def user = Player.findById(session.playerId)
+        def hint = Hint.findById(params.hintId)
+
+        if (!hint.closed)  {
+            render status: 500, text: "Not Closed"
+            return
+        }
+
+        hint.closed = false
+        hint.save(flush: true)
+
+        def ret = [success: true]
+        render ret as JSON
+    }
+
+    def getResource() {
+        def bootstrapPath = grailsApplication.config.getProperty("puzzlehunt.resourcePath")
+        def rs = Resource.findByAccessor(params.accessor)
+
+        if (rs) {
+            def f = new File("${bootstrapPath}/${rs.filename}")
+            def extension = rs.filename.substring(rs.filename.lastIndexOf(".") + 1).toLowerCase()
+
+            render file:f, contentType: EXTENSION_TYPES[extension]
+        } else {
+            render status: 404
+        }
+    }
 }

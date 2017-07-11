@@ -63,7 +63,7 @@ class PlayerController {
             hintCount: stat.hintCount
         ] : null
 
-        def ret = [puzzles: puzzles, rounds: rounds.values(), status: status]
+        def ret = [puzzles: puzzles, rounds: rounds.values(), status: status, contactInfo: player.contactInfo]
         render ret as JSON
     }
 
@@ -103,6 +103,11 @@ class PlayerController {
         def maxHints = player.hintMaxCount + (player.status?.hintCount ?: 0)
         def left = Math.max(0, maxHints - recentHints.size())
 
+        if (params.contactInfo) {
+            player.contactInfo = params.contactInfo
+            player.save(flush: true)
+        }
+
         if (!left) {
             def ret = [error: "Hint requested too soon. Try later."]
             render ret as JSON
@@ -117,8 +122,9 @@ class PlayerController {
             return
         }
 
-        def hn = new Hint(player:player, puzzle:puzzle, question: params.question)
+        def hn = new Hint(player:player, puzzle:puzzle, question: params.question, contactInfo: params.contactInfo)
         hn.save()
+
         player.save(flush: true)
 
         def ret = [success:true]

@@ -5,7 +5,7 @@ function clearHintQueue() {
     console.log('clearing hints');
     $("#ownedTable tr").remove();
     $("#hintTable tr").remove();
-    var row= $('<tr border="1"> \
+    var row = $('<tr border="1"> \
                     <td width="70" class="bloomberg-title-cell">Player</td> \
                     <td width="70" class="bloomberg-title-cell">Puzzle</td> \
                     <td width="200" class="bloomberg-title-cell">Question</td> \
@@ -14,7 +14,7 @@ function clearHintQueue() {
                     <td width="70" class="bloomberg-title-cell">Status</td> \
                     <td width="55" class="bloomberg-title-cell"></td> \
                 </tr>');
-    var urgentrow= $('<tr border="1"> \
+    var urgentrow = $('<tr border="1"> \
                     <td width="70" class="bloomberg-title-owned">Player</td> \
                     <td width="70" class="bloomberg-title-owned">Puzzle</td> \
                     <td width="200" class="bloomberg-title-owned">Question</td> \
@@ -48,10 +48,10 @@ function reloadHintQueue() {
                     <button id="' + hint.id + '" type="submit" class="claim-button details">Details</button> \
                 </td> \
             </tr>');
-            
+
             hintTable.append(hintRow);
         });
-        
+
         hintData.owned.forEach(function (hint) {
             var ownerClass = "owner_" + hint.id;
 
@@ -66,18 +66,18 @@ function reloadHintQueue() {
                     <button id="' + hint.id + '" type="submit" class="claim-button details">Details</button> \
                 </td> \
             </tr>');
-            
+
             ownedTable.append(hintRow);
         });
 
-        hintTable.on("click", ".details", function(){
+        hintTable.on("click", ".details", function () {
             console.log("showing hint details");
-            window.location.href = "/hint/details?hintid=" + this.id;
+            window.location.href = "/hint/details?hintId=" + this.id;
         });
 
-        ownedTable.on("click", ".details", function(){
+        ownedTable.on("click", ".details", function () {
             console.log("showing hint details");
-            window.location.href = "/hint/details?hintid=" + this.id;
+            window.location.href = "/hint/details?hintId=" + this.id;
         });
     });
 }
@@ -85,13 +85,13 @@ function reloadHintQueue() {
 $(document).ready(function () {
     var header = $("<h1 class='bloomberg-headline'>Hint Queue</h1></br>");
     $("#rootPane").append(header);
-    var hintTable= $('<table id="hintTable" class="hint-table"> \
+    var hintTable = $('<table id="hintTable" class="hint-table"> \
                       </table>');
     var ownedTable = $('<table id="ownedTable" class="owned-table"> \
                       </table>');
     var buffer = $('</br></br></br></br>');
     var status = $('<label id="statusLabel" class="error-cell"></label></br></br></br>');
-    
+
     $("#rootPane").append(status);
     $("#rootPane").append(ownedTable);
     $("#rootPane").append(buffer);
