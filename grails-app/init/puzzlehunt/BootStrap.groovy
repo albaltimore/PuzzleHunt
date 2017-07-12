@@ -111,7 +111,7 @@ class BootStrap {
 
         config.statuses.each {
             println "add status ${it}"
-            new PlayerStatus(statusLevel: it.level, resource: resources[it.resource], name: it.name, hintCount: it.hintCount ?: 0, hintTime: it.hintTime ?: 0, puzzleTime: it.puzzleTime ?: 0).save()
+            new PlayerStatus(statusLevel: it.level, resource: resources[it.resource], name: it.name, hintCount: it.hintCount ?: 0, hintTime: it.hintTime ?: 0, puzzleTime: it.puzzleTime ?: 0, priorityLine: it.priorityLine ?: false).save()
         }
 
         players.each {k,v-> println "player ${v.name} ${v.password} ${v.role}" ; v.save(flush:true)}

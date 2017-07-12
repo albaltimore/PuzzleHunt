@@ -61,7 +61,8 @@ class PlayerController {
             name: stat.name,
             hintTime: stat.hintTime,
             puzzleTime: stat.puzzleTime,
-            hintCount: stat.hintCount
+            hintCount: stat.hintCount,
+            priorityLine: stat.priorityLine
         ] : null
 
         def ret = [puzzles: puzzles, rounds: rounds.values(), status: status, contactInfo: player.contactInfo]
