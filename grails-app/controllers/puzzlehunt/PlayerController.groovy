@@ -30,6 +30,7 @@ class PlayerController {
                 rounds[p.round.id] = [
                     id: p.round.id,
                     name: p.round.name,
+                    floorId: p.round.floorId,
                     background: p.round.background.accessor,
                     width: p.round.width,
                     height: p.round.height,

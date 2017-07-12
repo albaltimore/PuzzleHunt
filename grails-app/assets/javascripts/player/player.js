@@ -262,9 +262,11 @@ function reloadMap(openPuzzleId) {
             var desLabel = $("<label>Welcome. Please choose a floor: </label>");
             titleDiv.append(desLabel);
             var links = [];
-            Object.keys(rounds).sort().forEach(function (key) {
+            Object.keys(rounds).sort(function (a, b) {
+                return rounds[a].floorId - rounds[b].floorId;
+            }).forEach(function (key) {
                 var link = $("<label style='cursor: pointer; color: #59A0E6'></label>");
-                link.text("Floor " + key);
+                link.text("Floor " + rounds[key].floorId);
                 links.push(link);
                 links.push($("<div style='height: 1em; width: 3px; background-color: gold; display: inline-block; margin: 0 10px'>|</div>"));
                 link.click(function () {
@@ -292,7 +294,8 @@ function reloadMap(openPuzzleId) {
             puzzle.requiredPuzzles.filter(function (rp) {
                 return pMap[rp.id];
             }).forEach(function (rp) {
-                if (puzzle.roundId !== rp.roundId) {
+                if (puzzle.roundId !== pMap[rp.id].roundId) {
+                    console.log("nolinks", puzzle, rp);
                     return;
                 }
 
@@ -398,7 +401,7 @@ function reloadMap(openPuzzleId) {
                             pane.append(body);
                             pane.append(link);
                         } else if (introExtension === "link") {
-                            var link = $("<div style='padding: 30px; margin: auto; display: table'><a style='color: #59A0E6; font-size: 48px' target=\"_blank\" href=\"" + accessorUrl + "\">The Puzzle</a></div>");
+                            var link = $("<div style='padding: 30px; margin: auto; display: table'><a style='color: #59A0E6; font-size: 48px' target=\"_blank\" href=\"" + accessorUrl + "\">The Answer</a></div>");
                             pane.append(link);
                         } else {
                             body = $("<a target=\"_blank\" href=\"" + accessorUrl + "\"><img src=\"" + accessorUrl + "\" style='width:100%; margin-top: 10px; margin-bottom: 10px; max-height: 200px; overflow-y: auto'/></a>");

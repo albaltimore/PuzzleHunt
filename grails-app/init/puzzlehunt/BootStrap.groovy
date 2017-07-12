@@ -38,7 +38,7 @@ class BootStrap {
         def statuses = []
 
         config.rounds.each {
-            rounds[it.id] = new Round(name: it.name, width: it.width, height: it.height)
+            rounds[it.id] = new Round(name: it.name, width: it.width, height: it.height, floorId: it.floorId)
 
             if(!rounds[it.id].save()) {
                 println "Failed to save F ${it}"
