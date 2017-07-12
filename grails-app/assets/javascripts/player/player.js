@@ -532,11 +532,11 @@ $(document).ready(function () {
 
     $("#statusPane").click(function () {
         if (playerStatus) {
-            showDialog("You have achieved " + playerStatus.name + " hotel status\n" +
-                "You may now use the priority line\n" +
-                (playerStatus.hintTime ? "Your hint timer is decreased by " + playerStatus.hintTime + " seconds\n" : "") +
-                (playerStatus.hintCount ? "You may save up " + (playerStatus.hintCount + 1) + " hints\n" : "") +
-                (playerStatus.puzzleTime ? "Your speed puzzle timer is increased by " + playerStatus.puzzleTime + " seconds\n" : ""));
+            showDialog("You have achieved " + playerStatus.name + " hotel status!\n\n" +
+                (playerStatus.priorityLine ? "You may now use the priority line.\n" : "") +
+                (playerStatus.hintTime ? "Your hint timer is decreased by " + playerStatus.hintTime + " seconds.\n" : "") +
+                (playerStatus.hintCount ? "You may now store up to " + (playerStatus.hintCount + 1) + " hints.\n" : "") +
+                (playerStatus.puzzleTime ? "Your speed puzzle timer is increased by " + playerStatus.puzzleTime + " seconds.\n" : ""));
         }
     });
 

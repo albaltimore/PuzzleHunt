@@ -5,6 +5,7 @@ class PlayerStatus {
     long hintTime = 0
     long puzzleTime = 0
     int hintCount = 0
+    boolean priorityLine = false
     Resource resource
     String name
 
