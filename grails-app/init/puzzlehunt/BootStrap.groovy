@@ -39,26 +39,41 @@ class BootStrap {
 
         config.rounds.each {
             rounds[it.id] = new Round(name: it.name, width: it.width, height: it.height)
+
+            if(!rounds[it.id].save()) {
+                println "Failed to save F ${it}"
+            }
         }
+
+        println "All round ${rounds}"
 
         config.puzzles.each {
             puzzles[it.id] = new Puzzle(xCor: it.xcor, yCor: it.ycor, name: it.name, solution: it.solution, round: rounds[it.round], timeLimit: it.timeLimit ?: null, disableHint: it.disableHint ?: false, statusBoost: it.statusBoost ?: false)
             puzzles[it.id].partialSolutions = it.hints.collect { k, v ->
                 def ptl = new PartialSolution(partialSolution: k, hint: v ?: "You're on the right track, keep going!")
-                ptl.save()
+                if(!ptl.save()) {
+                    println "Failed to save AA ${k} ${v} ${puzzles[it.id]}"
+                }
                 ptl
             }
-            puzzles[it.id].save()
+            if(!puzzles[it.id].save()) {
+                def a = puzzles[it.id]
+                println "Failed to save A ${it} ${a.name} ${a.solution} ${a.round}"
+            }
         }
 
         config.players.each {
-            players[it.name] = new Player(name: it.name, password: it.password, round: rounds[it.round], role: it.role)
-            players[it.name].save()
+            players[it.name] = new Player(name: it.name, password: it.password, role: it.role)
+            if(!players[it.name].save()) {
+                println "Failed to save B ${it}"
+            }
         }
 
         config.resources.each {
             resources[it.id] = new Resource(puzzle: puzzles[it.puzzle], filename: it.file, accessor: UUID.randomUUID().toString(), mustSolve: it.mustSolve ?: false, role: it.role ?: null)
-            resources[it.id].save()
+            if(!resources[it.id].save()){
+                println "Failed to save C ${it}"
+            }
         }
 
         config.rounds.each {
@@ -78,12 +93,16 @@ class BootStrap {
                     co.save()
                     co
                 }
-                rp.save()
+                if(!rp.save()) {
+                    println "Failed to save D ${it}"
+                }
                 rp
             }
 
             println "puzzles ${puzzles[it.id].name} ${puzzles[it.id].requiredPuzzles*.puzzle*.name}"
-            puzzles[it.id].save()
+            if (!puzzles[it.id].save()) {
+                println "Failed to save E ${it}"
+            }
         }
 
         if (config.favicon != null) {
@@ -95,9 +114,9 @@ class BootStrap {
             new PlayerStatus(statusLevel: it.level, resource: resources[it.resource], name: it.name, hintCount: it.hintCount ?: 0, hintTime: it.hintTime ?: 0, puzzleTime: it.puzzleTime ?: 0).save()
         }
 
-        players.each {k,v->v.save(flush:true)}
+        players.each {k,v-> println "player ${v.name} ${v.password} ${v.role}" ; v.save(flush:true)}
         puzzles.each{k,v->v.save(flush:true)}
-        resources.each{k,v->v.save(flush:true)}
+        resources.each{k,v->println "resource ${v.filename} ${v.accessor} ${v.role}"; v.save(flush:true)}
         rounds.each{k,v->v.save(flush:true)}
 
         println "favicon ${config.favicon}  ${propertiesService.favicon}"
