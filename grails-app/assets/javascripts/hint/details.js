@@ -72,7 +72,7 @@ function showConfirmDialog(text, yText, nText, cb) {
 
 function updateNote(show) {
     console.log(show);
-    $.get("updateNote", {hintId: hintId, note: $("#noteEntry").text()}, function () {
+    $.get("updateNote", {hintId: hintId, notes: $("#noteEntry").val()}, function () {
         if (show) {
             showDialog("Success");
         }
@@ -105,6 +105,8 @@ $(document).ready(function () {
         $("#requestorLabel").text(data.playerName);
         $("#contactLabel").text(data.contactInfo);
 
+        $("#noteEntry").val(data.notes);
+
         $("#nameLabel").text(data.puzzleName);
         $("#answerLabel").text(data.solution);
         $("#questionLabel").text(data.question);
@@ -119,7 +121,9 @@ $(document).ready(function () {
                 $.post("reopenHint", {hintId: hintId}, function () {
                     location.reload();
                 }).fail(function () {
-                    showDialog("Failed");
+                    showDialog("Failed", function () {
+                        location.reload();
+                    });
                 });
             });
         } else {
@@ -130,7 +134,9 @@ $(document).ready(function () {
                     $.post("claimHint", {hintId: hintId}, function () {
                         location.reload();
                     }).fail(function () {
-                        showDialog("Failed");
+                        showDialog("Failed", function () {
+                            location.reload();
+                        });
                     });
                 });
             } else if (!data.myHints && data.myName !== data.hinterName) {
@@ -140,7 +146,9 @@ $(document).ready(function () {
                     $.post("claimHint", {hintId: hintId, steal: true}, function () {
                         location.reload();
                     }).fail(function () {
-                        showDialog("Failed");
+                        showDialog("Failed", function () {
+                            location.reload();
+                        });
                     });
                 });
             }
@@ -152,7 +160,9 @@ $(document).ready(function () {
                     $.post("unclaimHint", {hintId: hintId}, function () {
                         location.reload();
                     }).fail(function () {
-                        showDialog("Failed");
+                        showDialog("Failed", function () {
+                            location.reload();
+                        });
                     });
                 });
 
@@ -162,7 +172,9 @@ $(document).ready(function () {
                     $.post("closeHint", {hintId: hintId}, function () {
                         location.reload();
                     }).fail(function () {
-                        showDialog("Failed");
+                        showDialog("Failed", function () {
+                            location.reload();
+                        });
                     });
                 });
             }

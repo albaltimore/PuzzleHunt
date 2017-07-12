@@ -155,6 +155,8 @@ class HintController {
     @Transactional
     def updateNote() {
         def hint = Hint.findById(params.hintId)
+        println params 
+        println "NOTES ${params.notes}"
         hint.notes = params.notes
         hint.save(flush : true)
 

@@ -34,7 +34,7 @@ class Player {
     }
 
     def isSolvable(Puzzle puzzle) {
-        hasSolved(puzzle) || (!puzzle.requiredPuzzles && (puzzle.round.unlocked || !puzzle.round.requiredPuzzles.size() || puzzle.round.requiredPuzzles*.id.findAll {rp -> hasSolved(rp)} .size())) || puzzle.requiredPuzzles*.puzzle.findAll { p-> hasSolved(p) } .size()
+        hasSolved(puzzle) || (!puzzle.requiredPuzzles && (puzzle.round.unlocked || !puzzle.round.requiredPuzzles.size() || puzzle.round.requiredPuzzles*.puzzle.findAll {rp -> hasSolved(rp)} .size())) || puzzle.requiredPuzzles*.puzzle.findAll { p-> hasSolved(p) } .size()
     }
 
     def getLastSubmission() {
