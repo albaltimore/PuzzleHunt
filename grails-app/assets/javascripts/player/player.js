@@ -292,6 +292,10 @@ function reloadMap(openPuzzleId) {
             puzzle.requiredPuzzles.filter(function (rp) {
                 return pMap[rp.id];
             }).forEach(function (rp) {
+                if (puzzle.roundId !== rp.roundId) {
+                    return;
+                }
+
                 var points = [puzzle].concat(rp.points).concat([pMap[rp.id]]);
 
                 var thickness = 10;
@@ -381,7 +385,7 @@ function reloadMap(openPuzzleId) {
 
                     if (puzzle.solvedAccessor) {
                         var accessorUrl = "getResource?accessor=" + puzzle.solvedAccessor;
-                        var introExtension = puzzle.solvedFilename.substr(puzzle.introFilename.lastIndexOf(".") + 1).toLowerCase();
+                        var introExtension = puzzle.solvedFilename ? puzzle.solvedFilename.substr(puzzle.introFilename.lastIndexOf(".") + 1).toLowerCase() : "link";
 
                         if (introExtension === "pdf") {
                             var body = $("<object data='" + accessorUrl + "' style='width:100%; margin-top: 10px; margin-bottom: 3px; max-height: 200px; overflow-y: auto'/>");
@@ -392,6 +396,9 @@ function reloadMap(openPuzzleId) {
                             var body = $("<video style='width:100%; margin-top: 10px; margin-bottom: 3px; max-height: 200px; overflow-y: auto' controls><source src='" + accessorUrl + "' type='video/mp4' /></video>");
                             var link = $("<div style='margin-bottom: 10px'><a style='color: #59A0E6' target=\"_blank\" href=\"" + accessorUrl + "\">Download</a></div>");
                             pane.append(body);
+                            pane.append(link);
+                        } else if (introExtension === "link") {
+                            var link = $("<div style='padding: 30px; margin: auto; display: table'><a style='color: #59A0E6; font-size: 48px' target=\"_blank\" href=\"" + accessorUrl + "\">The Puzzle</a></div>");
                             pane.append(link);
                         } else {
                             body = $("<a target=\"_blank\" href=\"" + accessorUrl + "\"><img src=\"" + accessorUrl + "\" style='width:100%; margin-top: 10px; margin-bottom: 10px; max-height: 200px; overflow-y: auto'/></a>");
@@ -423,7 +430,7 @@ function reloadMap(openPuzzleId) {
                         }
 
                         var accessorUrl = "getResource?accessor=" + puzzle.introAccessor;
-                        var introExtension = puzzle.introFilename.substr(puzzle.introFilename.lastIndexOf(".") + 1).toLowerCase();
+                        var introExtension = puzzle.introFilename ? puzzle.introFilename.substr(puzzle.introFilename.lastIndexOf(".") + 1).toLowerCase() : "link";
 
                         if (introExtension === "pdf") {
                             var body = $("<object data='" + accessorUrl + "' style='width:100%; margin-top: 10px; margin-bottom: 3px; max-height: 200px; overflow-y: auto'/>");
@@ -434,6 +441,9 @@ function reloadMap(openPuzzleId) {
                             var body = $("<video style='width:100%; margin-top: 10px; margin-bottom: 3px; max-height: 200px; overflow-y: auto' controls><source src='" + accessorUrl + "' type='video/mp4' /></video>");
                             var link = $("<div style='margin-bottom: 10px'><a style='color: #59A0E6' target=\"_blank\" href=\"" + accessorUrl + "\">Download</a></div>");
                             pane.append(body);
+                            pane.append(link);
+                        } else if (introExtension === "link") {
+                            var link = $("<div style='padding: 30px; margin: auto; display: table'><a style='color: #59A0E6; font-size: 48px' target=\"_blank\" href=\"" + accessorUrl + "\">The Puzzle</a></div>");
                             pane.append(link);
                         } else {
                             body = $("<a target=\"_blank\" href=\"" + accessorUrl + "\"><img src=\"" + accessorUrl + "\" style='width:100%; margin-top: 10px; margin-bottom: 10px; max-height: 200px; overflow-y: auto'/></a>");

@@ -174,10 +174,15 @@ class PlayerController {
 
         if (rs && !rs.role && (!rs.puzzle || player.hasSolved(rs.puzzle) ||
                 (!rs.mustSolve && player.isSolvable(rs.puzzle)))) {
-            def f = new File("${bootstrapPath}/${rs.filename}")
-            def extension = rs.filename.substring(rs.filename.lastIndexOf(".") + 1).toLowerCase()
 
-            render file:f, contentType: EXTENSION_TYPES[extension]
+            if (rs.linkUri) {
+                redirect url: rs.linkUri
+            } else if (rs.filename) {
+                def f = new File("${bootstrapPath}/${rs.filename}")
+                def extension = rs.filename.substring(rs.filename.lastIndexOf(".") + 1).toLowerCase()
+
+                render file:f, contentType: EXTENSION_TYPES[extension]
+            }
         } else {
             render status: 404
         }
