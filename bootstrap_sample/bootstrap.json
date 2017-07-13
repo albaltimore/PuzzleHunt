@@ -1,0 +1,120 @@
+{
+    "favicon": 0,
+    "players": [
+        {
+            "name": "ThisIsDefinitelyLegit",
+            "password": "1234"
+        },
+        {
+            "name": "A-Number-One Hinter",
+            "username": "NumberOne",
+            "password": "1234",
+            "role": "HINTER"
+        } ],
+    "statuses": [
+        {
+            "level": 1,
+            "resource": 2,
+            "name": "Awesome",
+            "hintTime": 60,
+            "hintCount": 0,
+            "puzzleTime": 0,
+            "priorityLine": false,
+            "puzzleSkips": 0
+        } ],
+    "rounds": [{
+            "id": 1,
+            "width": 547,
+            "height": 449,
+            "name": "Happy Sunny Day",
+            "floorId": 1,
+            "background": 1,
+            "requiredPuzzles": []
+        } ],
+    "puzzles": [
+        {
+            "id": 1,
+            "name": "Lunch Conundrum",
+            "solution": "Hot Dog",
+            "xcor": 170,
+            "ycor": 375,
+            "introResource": 3,
+            "solvedResource": 4,
+            "requires": [],
+            "round": 1,
+            "hints": {}
+        },
+        {
+            "id": 2,
+            "name": "Speed Puzzle",
+            "solution": "I'm Dizzy",
+            "xcor": 332,
+            "ycor": 360,
+            "introResource": 5,
+            "solvedResource": 5,
+            "requires": [],
+            "round": 1,
+            "hints": {},
+            "statusBoost": true,
+            "timeLimit": 600,
+            "disableHint": true
+        },
+        {
+            "id": 3,
+            "name": "Flappy Birdventure",
+            "solution": "I Hate this game",
+            "xcor": 90,
+            "ycor": 150,
+            "introResource": 6,
+            "solvedResource": 7,
+            "requires": [{ "puzzle": 1 }],
+            "round": 1,
+            "hints": {}
+        }],
+    "resources": [
+        {
+            "id": 0,
+            "file": "logo.png"
+        },
+        {
+            "id": 1,
+            "file": "background.png",
+            "round": 1,
+            "mustSolve": false
+        },
+        {
+            "id": 2,
+            "file": "status.jpg"
+        },
+        {
+            "id": 3,
+            "file": "hotdog_puzzle.jpg",
+            "puzzle": 1,
+            "mustSolve": false
+        },
+        {
+            "id": 4,
+            "file": "hotdog_reward.jpg",
+            "puzzle": 1,
+            "mustSolve": true
+        },
+        {
+            "id": 5,
+            "file": "speed_puzzle.gif",
+            "puzzle": 2,
+            "mustSolve": false
+        },
+        {
+            "id": 6,
+            "file": "flappybird_puzzle.gif",
+            "puzzle": 3,
+            "mustSolve": false
+        },
+        {
+            "id": 7,
+            "file": "flappybird_reward.jpg",
+            "puzzle": 3,
+            "mustSolve": true
+        }
+    ]
+}
