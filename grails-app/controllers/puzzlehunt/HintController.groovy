@@ -18,49 +18,20 @@ class HintController {
     }
 
     def getHints() {
-        def pl = Player.findById(session.playerId)
-        def ownedList = Hint.findByOwnerAndClosedNotEqual(pl,true)
-        def ohl = []
-        if (ownedList) {
-            // TODO - is there a way to do this together with findAll (without for loop)
-            for (def h in ownedList) {
-                def oh = [
-                    id: h.id,
-                    question: h.question,
-                    puzzle: h.puzzle.name,
-                    player: h.player.name,
-                    owner: h.owner ? h.owner.name : "--",
-                    lastOwner: "--",
-                    status: h.owner ? "unclaim" : "claim",
-                    action : h.closed ? "closed" : "open",
-                    createTime : h.createTime,
-                    open : h.closed ? false : true,
-                    orphan : h.owner ? false : true
-                ]
-                ohl.push(oh)
-            }
-        }
-        def hintList = Hint.findAll("from Hint as h order by h.owner desc, h.createTime desc")
-        def hdl = []
-        // TODO - is there a way to do this together with findAll (without for loop)
-        for (def h in hintList) {
-            def hd = [
-                id: h.id,
-                question: h.question,
-                puzzle: h.puzzle.name,
-                player: h.player.name,
-                owner: h.owner ? h.owner.name : "--",
-                lastOwner: "--",
-                status: h.owner ? "unclaim" : "claim",
-                action : h.closed ? "closed" : "open",
-                createTime : h.createTime,
-                open : h.closed ? false : true,
-                orphan : h.owner ? false : true
-            ]
-            hdl.push(hd)
-        }
+        def player = Player.findById(session.playerId)
 
-        def ret = [hints : hdl, owned : ohl]
+        def hints = Hint.list().collect {
+            [
+                id: it.id,
+                question: it.question,
+                puzzle: it.puzzle.name,
+                player: it.player.name,
+                owner: it.owner?.name,
+                createTime : it.createTime,
+                open : !it.closed,
+            ]
+        }
+        def ret = [myName: player.name, hints: hints]
         render ret as JSON
     }
 
@@ -144,6 +115,7 @@ class HintController {
             contactInfo: hint.contactInfo,
             puzzleName: hint.puzzle.name,
             question: hint.question,
+            puzzleAccessor: hint.puzzle?.introResource?.accessor,
             solutionAccessor: hint.puzzle?.solutionResource?.accessor,
             solution: hint.puzzle.solution,
             notes: hint.notes
@@ -155,7 +127,7 @@ class HintController {
     @Transactional
     def updateNote() {
         def hint = Hint.findById(params.hintId)
-        println params 
+        println params
         println "NOTES ${params.notes}"
         hint.notes = params.notes
         hint.save(flush : true)
