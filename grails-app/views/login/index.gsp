@@ -17,10 +17,10 @@
     <g:form useToken="true" action="login">
         <div style="margin: auto; width: 500px; padding-top: 100px; padding-bottom: 90px; left: 0px; right: 0px; font-size: 24px; ">
             <div style="position: relative">
-                <label class="bloomberg-headline">Bloomberg</label><br/>
+                <label class="bloomberg-headline" style="text-decoration: line-through; text-decoration-color: red;">Bloomberg</label><br/><br/><br/>
 
-                <label style="color:white; font-size: 44px">Mystery Hunt</label>
-                <label style="color: red; position: absolute; transform: rotate(-45deg); top: -5px; left: -20px; font-size: 48px; font-family: Segoe Script">Hack</label>
+                <label style="color:white; font-size: 44px">Case System</label>
+                <label style="color: red; position: absolute; transform: rotate(-5deg); top: 65px; left: 10px; font-size: 64px; font-family: Segoe Script">H.A.A.D.</label>
 
                 <div style="height: 40px"></div>
                 <g:if test="${flash.message}">
@@ -28,7 +28,7 @@
                     <div style="height: 30px" ></div>
                 </g:if>
 
-                <label style="color: #979797">Email:</label><br/>
+                <label style="color: #979797">Username:</label><br/>
                 <input type="text" name="username" placeholder="USERNAME" class="login-entry" value="" /><br/>
 
                 <label style="color: #979797">Password:</label><br/>
