@@ -20,7 +20,7 @@ function reloadHintQueue() {
             if (!Boolean(a.owner) !== !Boolean(b.owner)) {
                 return !Boolean(b.owner) - !Boolean(a.owner);
             }
-            return b.createTime - a.createTime;
+            return a.createTime - b.createTime;
         }).forEach(function (hint) {
 
             var createdAgo = (new Date().getTime() - hint.createTime) / (1000.0 * 60);
