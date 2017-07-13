@@ -11,9 +11,10 @@ class Hint {
     long createTime = System.currentTimeMillis()
 
     static constraints = {
-        notes nullable: true
+        notes nullable: true, maxSize: 10000
         owner nullable: true
         closed nullable: true
+        question maxSize: 10000
     }
 
     static belongsTo = [puzzle: "puzzle", player: "player", owner: "player"]
