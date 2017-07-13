@@ -111,6 +111,7 @@ $(document).ready(function () {
         $("#answerLabel").text(data.solution);
         $("#questionLabel").text(data.question);
         $("#solutionLink").attr("href", "getResource?accessor=" + encodeURIComponent(data.solutionAccessor));
+        $("#puzzleLink").attr("href", "getResource?accessor=" + encodeURIComponent(data.puzzleAccessor));
 
         var actionsDiv = $("#actionsDiv");
 
