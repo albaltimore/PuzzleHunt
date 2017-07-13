@@ -17,7 +17,7 @@
     <g:form useToken="true" action="login">
         <div style="margin: auto; width: 500px; padding-top: 100px; padding-bottom: 90px; left: 0px; right: 0px; font-size: 24px; ">
             <div style="position: relative">
-                <label class="bloomberg-headline" style="text-decoration: line-through; text-decoration-color: red;">Bloomberg</label><br/><br/><br/>
+                <label class="bloomberg-headline" >Bloomberg</label><br/><br/><br/>
 
                 <label style="color:white; font-size: 44px">Case System</label>
                 <label style="color: red; position: absolute; transform: rotate(-5deg); top: 65px; left: 10px; font-size: 64px; font-family: Segoe Script">H.A.A.D.</label>
