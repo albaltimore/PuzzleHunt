@@ -19,7 +19,7 @@
     <div style="height:100%">
         <a href="index"><label style="color: #59A0E6; cursor: pointer; font-size: 32px; float: left; height: 100%">Go Back</label></a>
     </div>
-    <div style="margin: auto; width: 800px">
+    <div style="margin: auto; width: 850px">
         <label style="color: white; font-size: 36px">Hint Details</label>
 
         <div style="height: 20px"></div>

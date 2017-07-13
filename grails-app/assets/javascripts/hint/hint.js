@@ -37,7 +37,7 @@ function reloadHintQueue() {
             var myColor = function () {
                 if (!hint.open) return "darkgray";
                 if (hintData.myName === hint.owner) return  "lightgreen";
-                if (!hint.owner && createdAgo < 10) return "lightred";
+                if (!hint.owner && createdAgo < 10) return "pink";
                 if (!hint.owner) return "red";
                 return "white";
             };
