@@ -100,13 +100,13 @@ function showHintDialog(puzzleId, puzzleName, hintText) {
         var availableLabel = $("<label style='color: white; display: block; font-size: 24px; margin-top: 20px;'></label>");
         pane.append(availableLabel);
 
-        var hintEntry = $("<textarea style='resize: none; font-size: 16px; width: 100%; margin-top: 20px; height: 150px; box-sizing: border-box' />");
+        var hintEntry = $("<textarea maxlength='1150' style='resize: none; font-size: 16px; width: 100%; margin-top: 20px; height: 150px; box-sizing: border-box' />");
         pane.append(hintEntry);
         hintEntry.text(hintText ? hintText : "");
 
 
         pane.append($("<label style='color: white; display: block; font-size: 24px; margin-top: 35px'>Tell us how to reach you! Either provide a phone number, or your room number so we can call you via Nexi.</label>"));
-        var contactEntry = $("<textarea style='resize: none; font-size: 16px; width: 100%; margin-top: 20px; height: 40px; box-sizing: border-box' />");
+        var contactEntry = $("<textarea maxlength='250' style='resize: none; font-size: 16px; width: 100%; margin-top: 20px; height: 40px; box-sizing: border-box' />");
         pane.append(contactEntry);
         if (contactInfo) {
             contactEntry.val(contactInfo);
