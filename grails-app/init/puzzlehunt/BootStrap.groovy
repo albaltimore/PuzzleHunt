@@ -63,9 +63,9 @@ class BootStrap {
         }
 
         config.players.each {
-            players[it.name] = new Player(name: it.username, password: it.password, role: it.role, description: it.name, email: it.email ?: null, room: it.room ?: null)
+            players[it.name] = new Player(name: it.name, password: it.password, role: it.role, description: it.description, email: it.email ?: null, room: it.room ?: null)
             if(!players[it.name].save()) {
-                println "Failed to save B ${it} ${players[it.name].description} ${players[it.name].email} ${players[it.name].room}"
+                println "Failed to save B ${it}"
             }
         }
 
