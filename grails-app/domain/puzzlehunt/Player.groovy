@@ -11,6 +11,9 @@ class Player {
     int playerStatusBonus = 0
     PlayerStatus playerStatus
     String contactInfo
+    String email
+    String room
+    String description
 
     static constraints = {
         name unique: true
@@ -18,6 +21,8 @@ class Player {
         lastHint nullable: true
         playerStatus nullable: true
         contactInfo nullable: true
+        email nullable: true
+        room nullable: true
     }
 
     def getSolvedPuzzles() {

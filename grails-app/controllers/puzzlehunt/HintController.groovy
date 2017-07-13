@@ -25,13 +25,13 @@ class HintController {
                 id: it.id,
                 question: it.question,
                 puzzle: it.puzzle.name,
-                player: it.player.name,
-                owner: it.owner?.name,
+                player: it.player.description,
+                owner: it.owner?.description,
                 createTime : it.createTime,
                 open : !it.closed,
             ]
         }
-        def ret = [myName: player.name, hints: hints]
+        def ret = [myName: player.description, hints: hints]
         render ret as JSON
     }
 
@@ -106,12 +106,12 @@ class HintController {
         def ownedHints = Hint.findAllByOwnerAndClosedNotEqual(user, true)
 
         def hintData = [
-            myName: user.name,
+            myName: user.description,
             myHints: ownedHints.size(),
             hintId: params.hintId,
-            hinterName: hint.owner?.name,
+            hinterName: hint.owner?.description,
             closed: hint.closed,
-            playerName: hint.player.name,
+            playerName: hint.player.description,
             contactInfo: hint.contactInfo,
             puzzleName: hint.puzzle.name,
             question: hint.question,
