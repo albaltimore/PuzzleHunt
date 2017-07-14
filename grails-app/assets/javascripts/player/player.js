@@ -412,7 +412,7 @@ function reloadMap(openPuzzleId) {
                         pane.append(label);
                     }
 
-                    link = $("<div style='margin-bottom: 10px'><a style='color: #59A0E6' target=\"_blank\" href=\"" + "getResource?accessor=" + puzzle.introAccessor + "\">Click here for Puzzle</a></div>");
+                    link = $("<div style='margin-bottom: 10px'><a style='color: #59A0E6' target=\"_blank\" href=\"" + "getResource?accessor=" + puzzle.introAccessor + "\">The Puzzle</a></div>");
                     pane.append(link);
                 } else if (solveable) {
                     var label = $("<label style='position: relative; color:yellow; font-size: 20px; text-align: center; top: 4px'></label>");
