@@ -1,0 +1,110 @@
+/*
+    Created on : May 14, 2017, 7:17:42 PM
+    Author     : dharmaquark
+*/
+
+body {
+  color: #eeeeee;
+}
+
+table {
+  border-collapse: collapse;
+  width: 100%;
+  background-color: #202020;
+  table-layout: fixed;
+}
+
+td {
+  word-wrap: break-word;
+  width: 20px;
+  border-right: solid 1px #000;
+  border-left: solid 1px #000;
+  text-align: center;
+  padding-left: 10px;
+}
+
+th {
+  text-align: left;
+  padding: 8px;
+  width: 100px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+tr {
+  border: none;
+}
+tr:nth-child(even){background-color: #303030}
+
+#locked {
+    background: #f00;
+    width: 15px;
+    height: 15px;
+    border-radius: 50%;
+}
+#unlocked {
+    background: #1ebf39;
+    width: 15px;
+    height: 15px;
+    border-radius: 50%;
+}
+#solved {
+    background: #0000FF;
+    width: 15px;
+    height: 15px;
+    border-radius: 50%;
+}
+
+#modal-shade {
+    position: fixed;
+    z-index: 9999;
+    top: 0;
+    left: 0;
+    width:100%;
+    height: 100%;
+    background: silver;
+    opacity: 0.5;
+    filter: alpha(opacity=50);
+}
+
+#modal-root {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    margin: 0 auto;
+    /*    width: 500px;
+        height: 500px;*/
+    background: black;
+    align-self: center;
+    z-index: 10000;
+}
+
+#modal {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    display: flex;
+}
+
+
+.modal-button-close {
+    background: none;
+    margin: 20px 10px 0 10px;
+    border: 3px solid white;
+    font-size: 18px;
+    color: white;
+    padding: 8px 60px 8px 60px;
+    cursor: pointer;
+}
+.modal-button-close:hover {
+    background-color: white;
+    color:black
+}
+
+.modal-label {
+    font-size: 24px;
+    color: white;
+    white-space: pre-line;
+}
