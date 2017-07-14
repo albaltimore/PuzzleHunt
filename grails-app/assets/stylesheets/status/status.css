@@ -37,6 +37,10 @@ tr {
 }
 tr:nth-child(even){background-color: #303030}
 
+.priority {
+    color: #ffbf00;
+}
+
 #locked {
     background: #f00;
     width: 15px;

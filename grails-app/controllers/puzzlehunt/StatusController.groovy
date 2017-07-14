@@ -1,6 +1,7 @@
 package puzzlehunt
 
 import grails.converters.JSON
+import java.text.SimpleDateFormat
 
 class StatusController {
 
@@ -9,11 +10,12 @@ class StatusController {
 
     def getStatus() {
         def players = Player.list().findResults {
-          it.role ? null :
+          it.role ? null : // i.e. PLAYER
           [
             name: it.description,
+            priorityLine: it.getStatus()?.priorityLine,
             solved: it.getSolvedPuzzles()*.name,
-            unlocked: it.getSolvablePuzzles()*.name
+            unlocked: it.getSolvablePuzzles()*.name,
           ]
         }
         def puzzles = Puzzle.list()
@@ -26,7 +28,8 @@ class StatusController {
         }
 
         def ret = [ players: players, puzzles: puzzles*.name ]
-        println "Game status fetched"
+        String timestamp = new SimpleDateFormat("yyyyMMdd-HH:mm:ss").format(new Date());
+        println timestamp+" Game status fetched"
         render ret as JSON
     }
 }
