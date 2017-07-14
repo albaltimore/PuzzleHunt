@@ -8,7 +8,6 @@ class Player {
     long hintRegen = 1000 * 60 * 20
     int hintCount = 0
     int hintMaxCount = 1
-    int playerStatusBonus = 0
     PlayerStatus playerStatus
     String contactInfo
     String email
@@ -49,10 +48,9 @@ class Player {
 
     def getStatus() {
         def cid = Attempt.where { player == this } findAll {it.isCorrect} *.puzzle findAll {it.statusBoost} .unique() .size()
-        cid+= playerStatusBonus
+        cid += (ActivityAttempt.where {player == this} *.statusPoints ?: [0]).sum()
 
         def stati = PlayerStatus.where { statusLevel == max(statusLevel).of{ statusLevel <= cid } } .list()
-        println "ps ${stati}"
         stati.size() ? stati.first() : null
     }
 

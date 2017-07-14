@@ -1,12 +1,11 @@
 package puzzlehunt
 
-
-class HintInterceptor {
+class RoleInterceptor {
 
     private static final CONTROLLERS = ['player', 'hint', 'status', 'admin']
     private static final ROLES = ["HINTER": ['hint', 'status'], "PRINTER": ['status'], "ADMIN": ['admin', 'hint', 'status'], "PLAYER" : ['player'] ]
 
-    HintInterceptor() {
+    RoleInterceptor() {
         CONTROLLERS.each {
             match controller: it
         }
@@ -15,8 +14,6 @@ class HintInterceptor {
     int order = 100
 
     boolean before() {
-        println "check perm ${controllerName}"
-
         def player = Player.findById(session.playerId)
         def role = player.role ?: "PLAYER"
 

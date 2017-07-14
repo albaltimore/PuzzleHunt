@@ -8,10 +8,11 @@ class Attempt {
     Player player
     Puzzle puzzle
     String answer
+    boolean isSkip = false
     long timestamp
 
     def getIsCorrect() {
-        cleanSolution(puzzle.solution) == cleanSolution(answer)
+        isSkip || cleanSolution(puzzle.solution) == cleanSolution(answer)
     }
 
     static belongsTo = [puzzle: "puzzle", player: "player"]
