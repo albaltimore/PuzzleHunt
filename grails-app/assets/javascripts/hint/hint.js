@@ -9,27 +9,31 @@ function reloadHintQueue() {
     $.get("getHints", function (hintData) {
         console.log(hintData);
 
-        hintData.hints.sort(function (a, b) {
+
+
+        hintData.hints.map(function (hint) {
+            var lastHints = hintData.hints.filter(function (otherHint) {
+                return otherHint.puzzle === hint.puzzle && otherHint.player === hint.player && otherHint.owner;
+            });
+            hint.lastOwner = lastHints.length ? lastHints[0].owner : "";
+
+            return hint;
+        }).sort(function (a, b) {
             if (a.open !== b.open) {
                 return b.open - a.open;
             }
-
             if ((a.owner === hintData.myName) !== (b.owner === hintData.myName)) {
                 return (b.owner === hintData.myName) - (a.owner === hintData.myName);
+            }
+            if ((a.lastOwner === hintData.myName) !== (b.lastOwner === hintData.myName)) {
+                return (b.lastOwner === hintData.myName) - (a.lastOwner === hintData.myName);
             }
             if (!Boolean(a.owner) !== !Boolean(b.owner)) {
                 return !Boolean(b.owner) - !Boolean(a.owner);
             }
             return a.createTime - b.createTime;
         }).forEach(function (hint) {
-
             var createdAgo = (new Date().getTime() - hint.createTime) / (1000.0 * 60);
-
-            var lastHints = hintData.hints.filter(function (otherHint) {
-                return otherHint.puzzle === hint.puzzle && otherHint.player === hint.player && otherHint.owner;
-            });
-            var lastOwner = lastHints.length ? lastHints[0].owner : "";
-
 
             var tr = $("<tr class='bloomberg-row' />");
             tableBody.append(tr);
@@ -57,14 +61,13 @@ function reloadHintQueue() {
                 window.location = "details?hintId=" + hint.id;
             });
 
-
             [
                 hint.player,
                 hint.puzzle,
                 hint.question,
                 hint.owner ? hint.owner : "(Nobody)",
                 createdAgo < 1 ? "< 1min ago" : Math.ceil(createdAgo) + "min ago",
-                lastOwner
+                hint.lastOwner
             ].forEach(function (it) {
                 var td = $("<td class='hintTableRow bloomberg-cell' />");
                 tr.append(td);
