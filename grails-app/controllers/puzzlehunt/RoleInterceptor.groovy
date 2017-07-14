@@ -4,7 +4,7 @@ package puzzlehunt
 class HintInterceptor {
 
     private static final CONTROLLERS = ['player', 'hint', 'status', 'admin']
-    private static final ROLES = ["HINTER": ['hint'], "PRINTER": ['hint', 'status'], "ADMIN": ['admin', 'hint', 'status'], "PLAYER" : ['player'] ]
+    private static final ROLES = ["HINTER": ['hint', 'status'], "PRINTER": ['status'], "ADMIN": ['admin', 'hint', 'status'], "PLAYER" : ['player'] ]
 
     HintInterceptor() {
         CONTROLLERS.each {
