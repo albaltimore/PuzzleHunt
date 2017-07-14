@@ -478,6 +478,9 @@ function reloadMap(openPuzzleId) {
                                     } else {
                                         statusLabel.text(data.message);
                                     }
+                                }).fail(function (err) {
+                                    console.log(err);
+                                    statusLabel.text("Probably Incorrect");
                                 });
                             }
                         });
