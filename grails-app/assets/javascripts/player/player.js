@@ -202,7 +202,6 @@ var rounds = {};
 var selectedRound;
 var playerStatus;
 var contactInfo;
-var youtubeImg = "<img src='/assets/youtube.png' width='120' height='120' />";
 
 function reloadMap(openPuzzleId) {
     clearPanes();
@@ -402,7 +401,7 @@ function reloadMap(openPuzzleId) {
                             pane.append(body);
                             pane.append(link);
                         } else if (introExtension === "link") {
-                            var link = $("<div style='padding: 30px; margin: auto; display: table'><a style='color: #59A0E6; font-size: 36px' target=\"_blank\" href=\"" + accessorUrl + "\">" + youtubeImg + "</a></div>");
+                            var link = $("<div style='padding: 30px; margin: auto; display: table'><a style='color: #59A0E6; font-size: 36px' target=\"_blank\" href=\"" + accessorUrl + "\"><img src='" + asset_url(youtube.png) + "' width='120' height='120' /></a></div>");
                             pane.append(link);
                         } else {
                             body = $("<a target=\"_blank\" href=\"" + accessorUrl + "\"><img src=\"" + accessorUrl + "\" style='width:100%; margin-top: 10px; margin-bottom: 10px; max-height: 200px; overflow-y: auto'/></a>");
@@ -447,7 +446,7 @@ function reloadMap(openPuzzleId) {
                             pane.append(body);
                             pane.append(link);
                         } else if (introExtension === "link") {
-                            var link = $("<div style='padding: 30px; margin: auto; display: table'><a style='color: #59A0E6; font-size: 36px' target=\"_blank\" href=\"" + accessorUrl + "\">" + videoImg + "</a></div>");
+                            var link = $("<div style='padding: 30px; margin: auto; display: table'><a style='color: #59A0E6; font-size: 36px' target=\"_blank\" href=\"" + accessorUrl + "\"><img src='" + asset_url(youtube.png) + "' width='120' height='120' /></a></div>");
                             pane.append(link);
                         } else {
                             body = $("<a target=\"_blank\" href=\"" + accessorUrl + "\"><img src=\"" + accessorUrl + "\" style='width:100%; margin-top: 10px; margin-bottom: 10px; max-height: 200px; overflow-y: auto'/></a>");
