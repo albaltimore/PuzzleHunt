@@ -19,8 +19,10 @@ class StatusController {
         }
         def puzzles = Puzzle.list()
 
+        def caseHack = 'Case:'
+
         if (Player.findById(session.playerId).role == "PRINTER") {
-            puzzles = puzzles.findAll { ! it.disableHint }
+            puzzles = puzzles.findAll { !it.disableHint || it.name.substring(0, caseHack.length()) == caseHack }
         }
 
         def ret = [ players: players, puzzles: puzzles*.name ]
