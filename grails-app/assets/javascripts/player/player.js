@@ -236,7 +236,8 @@ function reloadMap(openPuzzleId) {
         }
 
         playerData.rounds.forEach(function (round) {
-            if (!selectedRound) {
+            console.log(round.id, parseInt(window.location.hash.substr(1)));
+            if (!selectedRound && round.id === parseInt(window.location.hash.substr(1))) {
                 selectedRound = round.id;
             }
             if (rounds[round.id]) {
@@ -258,6 +259,11 @@ function reloadMap(openPuzzleId) {
             }
         });
 
+
+        if (!selectedRound) {
+            selectRound("" + playerData.rounds[0].id);
+        }
+
         if (playerData.rounds.length > 1) {
             var desLabel = $("<label>Welcome. Please choose a floor: </label>");
             titleDiv.append(desLabel);
@@ -265,7 +271,7 @@ function reloadMap(openPuzzleId) {
             Object.keys(rounds).sort(function (a, b) {
                 return rounds[a].floorId - rounds[b].floorId;
             }).forEach(function (key) {
-                var link = $("<label style='cursor: pointer; color: #59A0E6'></label>");
+                var link = $("<a href='#" + rounds[key].floorId + "' ><label style='cursor: pointer; color: #59A0E6'></label></a>");
                 link.text("Floor " + rounds[key].floorId);
                 links.push(link);
                 links.push($("<div style='height: 1em; width: 3px; background-color: gold; display: inline-block; margin: 0 10px'>|</div>"));
