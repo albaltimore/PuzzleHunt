@@ -106,7 +106,7 @@ class BootStrap {
         }
 
         if (config.favicon != null) {
-            propertiesService.favicon = resources[config.favicon]
+            new Favicon(resource: resources[config.favicon]).save(flush: true)
         }
 
         config.statuses.each {
