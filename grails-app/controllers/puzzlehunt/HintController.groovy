@@ -117,7 +117,6 @@ class HintController {
             question: hint.question,
             puzzleAccessor: hint.puzzle?.introResource?.accessor,
             solutionAccessor: hint.puzzle?.solutionResource?.accessor,
-            solution: hint.puzzle.solution,
             notes: hint.notes
         ]
         render hintData as JSON
