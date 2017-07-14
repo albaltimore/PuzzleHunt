@@ -18,8 +18,9 @@ function reloadStatuses() {
         // construct the header row for teams up top.
         var headerTr = $("<tr><th><b>STATUS BOARD</b></th></tr>");
         statusData.puzzles.forEach(function (puzzleName) {
-            headerTr.append("<td>" + puzzleName + "</td>");
-            cols[puzzleName] = [];
+            var td = $("<td>" + puzzleName + "</td>");
+            headerTr.append(td);
+            cols[puzzleName] = [td];
         });
 
         tableBody.append(headerTr);

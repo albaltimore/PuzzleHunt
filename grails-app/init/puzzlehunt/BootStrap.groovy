@@ -114,6 +114,10 @@ class BootStrap {
             new PlayerStatus(statusLevel: it.level, resource: resources[it.resource], name: it.name, hintCount: it.hintCount ?: 0, hintTime: it.hintTime ?: 0, puzzleTime: it.puzzleTime ?: 0, priorityLine: it.priorityLine ?: false).save()
         }
 
+        config.activities.each {
+            new Activity(name: it.name).save(flush:true)
+        }
+
         players.each {k,v-> println "player ${v.name} ${v.password} ${v.role}" ; v.save(flush:true)}
         puzzles.each{k,v->v.save(flush:true)}
         resources.each{k,v->println "resource ${v.filename} ${v.accessor} ${v.role}"; v.save(flush:true)}
