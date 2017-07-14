@@ -4,36 +4,36 @@
 */
 
 body {
-  color: #eeeeee;
+    color: #eeeeee;
 }
 
 table {
-  border-collapse: collapse;
-  width: 100%;
-  background-color: #202020;
-  table-layout: fixed;
+    border-collapse: collapse;
+    width: 100%;
+    background-color: #202020;
+    table-layout: fixed;
 }
 
 td {
-  word-wrap: break-word;
-  width: 20px;
-  border-right: solid 1px #000;
-  border-left: solid 1px #000;
-  text-align: center;
-  padding-left: 10px;
+    word-wrap: break-word;
+    width: 20px;
+    border-right: solid 1px #000;
+    border-left: solid 1px #000;
+    text-align: center;
+    padding-left: 10px;
 }
 
 th {
-  text-align: left;
-  padding: 8px;
-  width: 100px;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  overflow: hidden;
+    text-align: left;
+    padding: 8px;
+    width: 100px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
 }
 
 tr {
-  border: none;
+    border: none;
 }
 tr:nth-child(even){background-color: #303030}
 
@@ -41,19 +41,19 @@ tr:nth-child(even){background-color: #303030}
     color: #ffbf00;
 }
 
-#locked {
+.locked {
     background: #f00;
     width: 15px;
     height: 15px;
     border-radius: 50%;
 }
-#unlocked {
+.unlocked {
     background: #1ebf39;
     width: 15px;
     height: 15px;
     border-radius: 50%;
 }
-#solved {
+.solved {
     background: #0000FF;
     width: 15px;
     height: 15px;
