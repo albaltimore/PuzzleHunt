@@ -47,11 +47,6 @@
         </div>
 
         <div>
-            <label class="details-name">Puzzle Answer</label>
-            <label id="answerLabel" class="details-cell"></label>
-        </div>
-
-        <div>
             <a id="puzzleLink" target="_blank" style="text-decoration: none"><label style="color: #59A0E6; cursor: pointer">The Puzzle</label></a>
             <label style="color: white"> | </label>
             <a id="solutionLink" target="_blank" style="text-decoration: none" ><label style="color: #59A0E6; cursor: pointer">Solution Instructions</label></a>
