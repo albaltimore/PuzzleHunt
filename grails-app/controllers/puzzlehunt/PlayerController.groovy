@@ -1,6 +1,7 @@
 package puzzlehunt
 
 import grails.converters.JSON
+import grails.transaction.Transactional
 
 class PlayerController {
 
@@ -100,13 +101,15 @@ class PlayerController {
         render ret as JSON
     }
 
+    @Transactional
     def requestHint() {
         def player = Player.findById(session.playerId)
 
         def totalTime = player.hintRegen - (player.status?.hintTime ?: 0) * 1000
-        def recentHints = Hint.findAllByPlayerAndCreateTimeGreaterThan(player, System.currentTimeMillis() - totalTime) ?: []
         def maxHints = player.hintMaxCount + (player.status?.hintCount ?: 0)
-        def left = Math.max(0, maxHints - recentHints.size())
+        def left = (1..maxHints).findAll {
+            (it - Hint.countByPlayerAndCreateTimeGreaterThan(player, System.currentTimeMillis() - totalTime * it)) > 0
+        }.size()
 
         if (params.contactInfo) {
             player.contactInfo = params.contactInfo

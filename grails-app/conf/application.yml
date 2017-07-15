@@ -147,10 +147,10 @@ environments:
             dbCreate: none
             properties:
                 jmxEnabled: true
-                initialSize: 5
-                maxActive: 2
-                minIdle: 5
-                maxIdle: 2
+                initialSize: 2
+                maxActive: 4
+                minIdle: 2
+                maxIdle: 4
                 maxWait: 10000
                 maxAge: 600000
                 timeBetweenEvictionRunsMillis: 5000
