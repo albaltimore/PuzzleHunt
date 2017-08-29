@@ -133,6 +133,7 @@ function showHintDialog(puzzleId, puzzleName, hintText) {
         var closeDiv = $("<div style='position: relative; left: 50%; transform: translate(-50%); display: inline-block' />");
         pane.append(closeDiv);
 
+        var hasRunOnce = false;
         var close = $("<input type='button' value='Request Hint' class='modal-button-close' />");
         close.css("left", "35px");
         close.css("top", "430px");
@@ -142,6 +143,11 @@ function showHintDialog(puzzleId, puzzleName, hintText) {
                 contactInfo = contactEntry.val();
             }
             if (!hintRequest || !contactInfo) return;
+
+            if (hasRunOnce) {
+                return;
+            }
+            hasRunOnce = true;
 
             $.post("requestHint", {id: puzzleId, question: hintRequest, contactInfo: contactInfo}, function (data) {
                 clearInterval(timer);
