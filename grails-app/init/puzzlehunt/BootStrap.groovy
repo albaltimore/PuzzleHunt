@@ -17,10 +17,11 @@ class BootStrap {
     def loadFromPath() {
 
         def bootstrapPath = grailsApplication.config.getProperty("puzzlehunt.bootstrapPath")
-
+        println "bootstrapping"
         if (Puzzle.list().size()) return
 
         if (!bootstrapPath) return
+        println "started $bootstrapPath"
 
         File f = new File(bootstrapPath + "/bootstrap.json")
 

@@ -22,6 +22,7 @@ class Player {
         contactInfo nullable: true
         email nullable: true
         room nullable: true
+        description nullable: true
     }
 
     def getSolvedPuzzles() {

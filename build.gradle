@@ -5,7 +5,7 @@ buildscript {
     }
     dependencies {
         classpath "org.grails:grails-gradle-plugin:$grailsVersion"
-        classpath "com.bertramlabs.plugins:asset-pipeline-gradle:2.14.3"
+        classpath "com.bertramlabs.plugins:asset-pipeline-gradle:2.14.8"
         classpath "org.grails.plugins:hibernate5:${gormVersion-".RELEASE"}"
     }
 }
@@ -17,8 +17,8 @@ apply plugin:"eclipse"
 apply plugin:"idea"
 apply plugin:"war"
 apply plugin:"org.grails.grails-web"
-apply plugin:"org.grails.grails-gsp"
 apply plugin:"asset-pipeline"
+apply plugin:"org.grails.grails-gsp"
 
 repositories {
     mavenLocal()
@@ -51,15 +51,16 @@ dependencies {
     runtime "org.glassfish.web:el-impl:2.1.2-b03"
     runtime "com.h2database:h2"
     runtime "org.apache.tomcat:tomcat-jdbc"
-    runtime "com.bertramlabs.plugins:asset-pipeline-grails:2.14.2"
+    runtime "com.bertramlabs.plugins:asset-pipeline-grails:2.14.8"
     testCompile "org.grails:grails-gorm-testing-support"
-    testCompile "org.grails.plugins:geb"
     testCompile "org.grails:grails-web-testing-support"
+    testCompile "org.grails.plugins:geb:1.1.2"
+    testRuntime "org.seleniumhq.selenium:selenium-chrome-driver:2.47.1"
     testRuntime "org.seleniumhq.selenium:selenium-htmlunit-driver:2.47.1"
     testRuntime "net.sourceforge.htmlunit:htmlunit:2.18"
 
-    compile "org.apache.derby:derbyclient:10.13.1.1"
-    compile 'org.grails.plugins:cookie-session:3.0.1'
+    compile "org.apache.derby:derbyclient:10.14.1.0"
+    compile 'org.grails.plugins:cookie-session:4.0.0'
     runtime 'mysql:mysql-connector-java:5.1.42'
 }
 
