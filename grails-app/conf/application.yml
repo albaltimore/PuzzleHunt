@@ -139,8 +139,8 @@ environments:
                     secret: 'test'
     production:
         dataSource:
-            dialect: org.hibernate.dialect.MySQL5InnoDBDialect
-            driverClassName: com.mysql.jdbc.Driver
+            dialect: org.hibernate.dialect.PostgreSQLDialect
+            driverClassName: org.postgresql.Driver
             dbCreate: none
             properties:
                 jmxEnabled: true

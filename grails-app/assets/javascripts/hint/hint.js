@@ -1,5 +1,5 @@
 /* global jQuery */
-//= require jquery-3.2.0
+//= require packaged/jquery/jquery
 
 
 function reloadHintQueue() {
