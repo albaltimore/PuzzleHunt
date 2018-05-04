@@ -87,6 +87,10 @@ class BootStrap {
             if (it.solvedResource) puzzles[it.id].solvedResource = resources[it.solvedResource]
             if (it.solutionResource) puzzles[it.id].solutionResource = resources[it.solutionResource]
 
+            if (it.iconReadyResource) puzzles[it.id].iconReadyResource = resources[it.iconReadyResource]
+            if (it.iconSolvedResource) puzzles[it.id].iconSolvedResource = resources[it.iconSolvedResource]
+            if (it.iconFailedResource) puzzles[it.id].iconFailedResource = resources[it.iconFailedResource]
+
             puzzles[it.id].requiredPuzzles = it.requires.collect {pid ->
                 def rp = new RequiredPuzzle(puzzle: puzzles[pid.puzzle], color: pid.color)
                 rp.coordinates = pid?.path.collect { point ->

@@ -23,7 +23,7 @@
 
 .puzzlePoint {
     position: absolute;
-
+    transform: translate(-50%, -50%);
     width: 30px;
     height: 30px;
     border-radius: 50%;

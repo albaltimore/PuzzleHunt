@@ -24,9 +24,14 @@ class PlayerController {
         def timedStarted = PuzzleStart.findAllByPlayer player collect {println it.puzzle.name; it.puzzle.id}
 
         def rounds = [:]
+        def stat = player.status
+
         def puzzles = player.solvablePuzzles.collect { p ->
             def started = p.timeLimit ? (p.id in timedStarted) : true
             def startTime = p.id in timedStarted ? PuzzleStart.findByPlayerAndPuzzle(player, p).startTime : null
+            def timeLimit = p.timeLimit ? p.timeLimit + (player.status?.puzzleTime ?: 0) : null
+            def failed = p.timeLimit && started && (startTime + timeLimit  < System.currentTimeMillis())
+
             if (!(p.round.id in rounds)) {
                 rounds[p.round.id] = [
                     id: p.round.id,
@@ -45,7 +50,7 @@ class PlayerController {
                 requiredPuzzles: p.requiredPuzzles.collect {rp -> [id: rp.puzzle.id, color: rp.color, points: rp.coordinates.collect {c -> [xCor: c.xCor, yCor: c.yCor]} ]},
                 hintDisabled: p.disableHint,
                 solved: p.id in solved,
-                timeLimit: p.timeLimit ? p.timeLimit + (player.status?.puzzleTime ?: 0) : null,
+                timeLimit: timeLimit,
                 started: started,
                 startTime: startTime,
                 roundId: p.round.id,
@@ -53,10 +58,10 @@ class PlayerController {
                 introFilename: started ? p?.introResource?.filename : null,
                 solvedAccessor: p.id in solved ? p?.solvedResource?.accessor : null,
                 solvedFilename: p.id in solved ? p?.solvedResource?.filename : null,
+                iconAccessor: p.id in solved ? p?.iconSolvedResource?.accessor : ( failed ? p.iconFailedResource?.accessor : p?.iconReadyResource?.accessor )
             ]
         }
 
-        def stat = player.status
         def status = stat ? [
             resource: stat.resource.accessor,
             name: stat.name,

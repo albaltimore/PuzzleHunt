@@ -15,6 +15,9 @@ class Puzzle {
     Set<RequiredPuzzle> requiredPuzzles
     boolean disableHint = false
     boolean statusBoost = false
+    Resource iconReadyResource
+    Resource iconSolvedResource
+    Resource iconFailedResource
 
     def getPartialSolution(input) {
         def ret = null
@@ -30,6 +33,9 @@ class Puzzle {
         solvedResource nullable: true
         solutionResource nullable: true
         timeLimit nullable: true
+        iconReadyResource nullable: true
+        iconSolvedResource nullable: true
+        iconFailedResource nullable: true
     }
 
     static mappedBy = [

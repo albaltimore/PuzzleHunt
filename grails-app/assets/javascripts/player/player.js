@@ -195,8 +195,10 @@ function clearPanes() {
 
 var puzzlePoints = [];
 function clearPoints() {
+    console.log("clearing points", puzzlePoints);
     clearPanes();
     puzzlePoints.forEach(function (puzzlePoint) {
+        console.log('remove point', puzzlePoint);
         if (puzzlePoint) {
             puzzlePoint.remove();
         }
@@ -210,7 +212,7 @@ var playerStatus;
 var contactInfo;
 
 function reloadMap(openPuzzleId) {
-    clearPanes();
+    clearPoints();
     $.get("getPuzzles", function (playerData) {
         console.log(playerData);
         var rootPane = $("#rootPane");
@@ -341,19 +343,25 @@ function reloadMap(openPuzzleId) {
         });
 
         playerData.puzzles.forEach(function (puzzle) {
-            var point = $("<div class='puzzlePoint' />");
+            if ( puzzle.iconAccessor) {
+                var pointDiv = false;
+                var point = $("<img src='" + "getResource?accessor=" + puzzle.iconAccessor + "' style='position: absolute; cursor: pointer; transform: translate(-50%, -50%)' />");
+            } else {
+                pointDiv = true;
+                point = $("<div class='puzzlePoint' />");
+            }
             puzzlePoints.push(point);
-            point.css("top", (puzzle.yCor - 15) + "px");
-            point.css("left", (puzzle.xCor - 15) + "px");
+            point.css("top", puzzle.yCor + "px");
+            point.css("left", puzzle.xCor + "px");
 
             var solveable = false;
 
             if (puzzle.solved) {
-                point.css("background-color", "green");
+                if (pointDiv) point.css("background-color", "green");
             } else if (!puzzle.requiredPuzzles.length || puzzle.requiredPuzzles.some(function (rp) {
                 return pMap[rp.id] && pMap[rp.id].solved;
             })) {
-                point.css("background-color", "yellow");
+                if (pointDiv) point.css("background-color", "yellow");
                 solveable = true;
             }
 

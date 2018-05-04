@@ -42,7 +42,8 @@
             "solvedResource": 4,
             "requires": [],
             "round": 1,
-            "hints": {}
+            "hints": {},
+            "iconReadyResource": 3
         },
         {
             "id": 2,
