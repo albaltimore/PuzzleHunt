@@ -10,7 +10,8 @@
             "username": "NumberOne",
             "password": "1234",
             "role": "HINTER"
-        } ],
+        }
+    ],
     "statuses": [
         {
             "level": 1,
@@ -21,8 +22,10 @@
             "puzzleTime": 0,
             "priorityLine": false,
             "puzzleSkips": 0
-        } ],
-    "rounds": [{
+        }
+    ],
+    "rounds": [
+        {
             "id": 1,
             "width": 547,
             "height": 449,
@@ -30,7 +33,8 @@
             "floorId": 1,
             "background": 1,
             "requiredPuzzles": []
-        } ],
+        }
+    ],
     "puzzles": [
         {
             "id": 1,
@@ -42,8 +46,7 @@
             "solvedResource": 4,
             "requires": [],
             "round": 1,
-            "hints": {},
-            "iconReadyResource": 3
+            "hints": {}
         },
         {
             "id": 2,
@@ -68,10 +71,15 @@
             "ycor": 150,
             "introResource": 6,
             "solvedResource": 7,
-            "requires": [{ "puzzle": 1 }],
+            "requires": [
+                {
+                    "puzzle": 1
+                }
+            ],
             "round": 1,
             "hints": {}
-        }],
+        }
+    ],
     "resources": [
         {
             "id": 0,

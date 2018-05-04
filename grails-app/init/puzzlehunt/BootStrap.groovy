@@ -15,7 +15,7 @@ class BootStrap {
     }
 
     def loadFromPath() {
-
+        
         def bootstrapPath = grailsApplication.config.getProperty("puzzlehunt.bootstrapPath")
         println "bootstrapping"
         if (Puzzle.list().size()) return
