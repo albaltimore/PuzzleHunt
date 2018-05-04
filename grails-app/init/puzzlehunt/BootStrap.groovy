@@ -98,8 +98,16 @@ class BootStrap {
                     co.save()
                     co
                 }
+
+                if (pid?.pathResource) {
+                    println it.pathResource
+                    rp.pathResource = resources[pid.pathResource.resource]
+                    rp.pathResourceXcor = pid.pathResource?.xcor
+                    rp.pathResourceYcor = pid.pathResource?.ycor
+                }
+
                 if(!rp.save()) {
-                    println "Failed to save D ${it}"
+                    println "Failed to save D $it - $rp"
                 }
                 rp
             }

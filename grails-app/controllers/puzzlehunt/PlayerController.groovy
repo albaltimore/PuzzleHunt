@@ -47,7 +47,14 @@ class PlayerController {
                 xCor: p.xCor,
                 yCor: p.yCor,
                 name: p.name,
-                requiredPuzzles: p.requiredPuzzles.collect {rp -> [id: rp.puzzle.id, color: rp.color, points: rp.coordinates.collect {c -> [xCor: c.xCor, yCor: c.yCor]} ]},
+                requiredPuzzles: p.requiredPuzzles.collect {rp -> [
+                        id: rp.puzzle.id,
+                        color: rp.color,
+                        points: rp.coordinates.collect {c -> [xCor: c.xCor, yCor: c.yCor]},
+                        pathResource: rp.pathResource?.accessor,
+                        pathResourceXcor: rp.pathResourceXcor,
+                        pathResourceYcor: rp.pathResourceYcor
+                ]},
                 hintDisabled: p.disableHint,
                 solved: p.id in solved,
                 timeLimit: timeLimit,

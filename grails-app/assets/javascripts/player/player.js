@@ -313,37 +313,43 @@ function reloadMap(openPuzzleId) {
                     return;
                 }
 
-                var points = [puzzle].concat(rp.points).concat([pMap[rp.id]]);
+                if (rp.pathResource) {
+                    var img = $("<img src='" + "getResource?accessor=" + rp.pathResource + "' />");
+                    img.css({top: rp.pathResourceYcor + "px", left: rp.pathResourceXcor + "px", position: 'absolute'});
+                    rounds[puzzle.roundId].pointsDiv.append(img);
+                } else {
+                    var points = [puzzle].concat(rp.points).concat([pMap[rp.id]]);
 
-                var thickness = 10;
-                var color = rp.color ? rp.color : "black";
-                for (var i = 0; i < points.length - 1; i++) {
-                    var a = points[i], b = points[i + 1];
-                    var x1 = a.xCor, y1 = a.yCor, x2 = b.xCor, y2 = b.yCor;
-                    var angle = Math.atan2((y1 - y2), (x1 - x2)) * (180 / Math.PI);
-                    var length = Math.sqrt((x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2));
+                    var thickness = 10;
+                    var color = rp.color ? rp.color : "black";
+                    for (var i = 0; i < points.length - 1; i++) {
+                        var a = points[i], b = points[i + 1];
+                        var x1 = a.xCor, y1 = a.yCor, x2 = b.xCor, y2 = b.yCor;
+                        var angle = Math.atan2((y1 - y2), (x1 - x2)) * (180 / Math.PI);
+                        var length = Math.sqrt((x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2));
 
-                    var l = $("<div  style='position: absolute; background-color: " + color + "'>");
-                    l.css("transform", "rotate(" + angle + "deg)");
-                    l.css("-ms-transform", "rotate(" + angle + "deg)");
-                    l.css("-webkit-transform", "rotate(" + angle + "deg)");
-                    l.css("height", thickness + "px");
-                    l.css("width", length + "px");
-                    l.css("top", ((y1 + y2) / 2 - thickness / 2) + "px");
-                    l.css("left", ((x1 + x2) / 2 - length / 2) + "px");
-                    rounds[puzzle.roundId].pointsDiv.append(l);
-                    if (i + 2 < points.length) {
-                        var c = $("<div style='position: absolute; width: " + (thickness) + "px; height: " + (thickness) + "px; background-color: " + color + "; border-radius: 50%' />");
-                        c.css("top", (b.yCor - thickness / 2) + "px");
-                        c.css("left", (b.xCor - thickness / 2) + "px");
-                        rounds[puzzle.roundId].pointsDiv.append(c);
+                        var l = $("<div  style='position: absolute; background-color: " + color + "'>");
+                        l.css("transform", "rotate(" + angle + "deg)");
+                        l.css("-ms-transform", "rotate(" + angle + "deg)");
+                        l.css("-webkit-transform", "rotate(" + angle + "deg)");
+                        l.css("height", thickness + "px");
+                        l.css("width", length + "px");
+                        l.css("top", ((y1 + y2) / 2 - thickness / 2) + "px");
+                        l.css("left", ((x1 + x2) / 2 - length / 2) + "px");
+                        rounds[puzzle.roundId].pointsDiv.append(l);
+                        if (i + 2 < points.length) {
+                            var c = $("<div style='position: absolute; width: " + (thickness) + "px; height: " + (thickness) + "px; background-color: " + color + "; border-radius: 50%' />");
+                            c.css("top", (b.yCor - thickness / 2) + "px");
+                            c.css("left", (b.xCor - thickness / 2) + "px");
+                            rounds[puzzle.roundId].pointsDiv.append(c);
+                        }
                     }
                 }
             });
         });
 
         playerData.puzzles.forEach(function (puzzle) {
-            if ( puzzle.iconAccessor) {
+            if (puzzle.iconAccessor) {
                 var pointDiv = false;
                 var point = $("<img src='" + "getResource?accessor=" + puzzle.iconAccessor + "' style='position: absolute; cursor: pointer; transform: translate(-50%, -50%)' />");
             } else {
