@@ -31,8 +31,7 @@ class PlayerController {
             def startTime = p.id in timedStarted ? PuzzleStart.findByPlayerAndPuzzle(player, p).startTime : null
             def timeLimit = p.timeLimit ? p.timeLimit + (player.status?.puzzleTime ?: 0) : null
             def failed = p.timeLimit && started && (startTime + (timeLimit * 1000)  < System.currentTimeMillis())
-            if(failed) println "failed $p.name $timeLimit"
-
+            
             if (!(p.round.id in rounds)) {
                 rounds[p.round.id] = [
                     id: p.round.id,
