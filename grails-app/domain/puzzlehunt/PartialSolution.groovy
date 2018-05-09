@@ -5,5 +5,6 @@ class PartialSolution {
     String hint
 
     static constraints = {
+        hint size: 0..<2048
     }
 }
