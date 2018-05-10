@@ -101,9 +101,12 @@ class BootStrap {
 
                 if (pid?.pathResource) {
                     println it.pathResource
-                    rp.pathResource = resources[pid.pathResource.resource]
-                    rp.pathResourceXcor = pid.pathResource?.xcor
-                    rp.pathResourceYcor = pid.pathResource?.ycor
+					rp.pathResource = pid?.pathResource.collect{ point ->
+						def co = new Coordinate(xCor: point.xcor, yCor: point.ycor)
+						def rs = new PathResource(resource: resources[point.resource], coordinate: co)
+						rs.save()
+						rs
+					}
                 }
 
                 if(!rp.save()) {

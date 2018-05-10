@@ -314,9 +314,11 @@ function reloadMap(openPuzzleId) {
                 }
 
                 if (rp.pathResource) {
-                    var img = $("<img src='" + "getResource?accessor=" + rp.pathResource + "' />");
-                    img.css({top: rp.pathResourceYcor + "px", left: rp.pathResourceXcor + "px", position: 'absolute'});
-                    rounds[puzzle.roundId].pointsDiv.append(img);
+					rp.pathResource.forEach(function (pr) {
+						var img = $("<img src='" + "getResource?accessor=" + pr.resource + "' />");
+						img.css({top: pr.coordinate.yCor  + "px", left: pr.coordinate.xCor + "px", position: 'absolute'});
+						rounds[puzzle.roundId].pointsDiv.append(img);
+					}
                 } else {
                     var points = [puzzle].concat(rp.points).concat([pMap[rp.id]]);
 

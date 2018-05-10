@@ -8,15 +8,13 @@ class RequiredPuzzle {
     Puzzle puzzle
     String color
 
-    Resource pathResource
-    Integer pathResourceXcor, pathResourceYcor
+    List<PathResource> pathResource
 
     static hasMany = [coordinates: Coordinate]
+	
     static constraints = {
         color nullable: true
 
         pathResource nullable: true
-        pathResourceXcor nullable: true
-        pathResourceYcor nullable: true
     }
 }
