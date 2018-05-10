@@ -78,7 +78,7 @@ function init() {
             roundDiv.append(link);
             link.click(function () {
                 showConfirmDialog("Are you sure you want to " + (round.unlocked ? "Lock" : "Unlock") + " round " + round.name, "Yes", "Cancel", function () {
-                    $.post("setRoundUnlocked", {round: round.id, unlocked: !round.unlocked}, function () {
+                    $.post("setRoundUnlocked", { round: round.id, unlocked: !round.unlocked }, function () {
                         console.log("succsess");
 
                         showDialog("Success", refresh);
