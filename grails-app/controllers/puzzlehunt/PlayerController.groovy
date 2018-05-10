@@ -51,7 +51,7 @@ class PlayerController {
                         id: rp.puzzle.id,
                         color: rp.color,
                         points: rp.coordinates.collect {c -> [xCor: c.xCor, yCor: c.yCor]},
-                        pathResource: rp.pathResource?.collect { pr -> [resource: pr.resource, xCor: pr.coordinate.xCor, yCor: pr.coordinate.yCor]},
+                        pathResource: rp.pathResource?.collect { pr -> [resource: pr.resource.accessor, xCor: pr.coordinate.xCor, yCor: pr.coordinate.yCor]},
                 ]},
                 hintDisabled: p.disableHint,
                 solved: p.id in solved,

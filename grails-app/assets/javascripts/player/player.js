@@ -316,9 +316,9 @@ function reloadMap(openPuzzleId) {
                 if (rp.pathResource) {
 					rp.pathResource.forEach(function (pr) {
 						var img = $("<img src='" + "getResource?accessor=" + pr.resource + "' />");
-						img.css({top: pr.coordinate.yCor  + "px", left: pr.coordinate.xCor + "px", position: 'absolute'});
+						img.css({top: pr.yCor  + "px", left: pr.xCor + "px", position: 'absolute'});
 						rounds[puzzle.roundId].pointsDiv.append(img);
-					}
+					});
                 } else {
                     var points = [puzzle].concat(rp.points).concat([pMap[rp.id]]);
 
