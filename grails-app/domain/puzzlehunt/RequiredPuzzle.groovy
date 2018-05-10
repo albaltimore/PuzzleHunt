@@ -10,7 +10,7 @@ class RequiredPuzzle {
 
     List<PathResource> pathResource
 
-    static hasMany = [coordinates: Coordinate]
+    static hasMany = [coordinates: Coordinate, pathResource: PathResource]
 	
     static constraints = {
         color nullable: true
