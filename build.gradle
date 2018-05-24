@@ -86,6 +86,7 @@ assets {
     ]
 }
 
+clean.dependsOn 'clientClean'
 clientDependencies {
     installDir 'grails-app/assets/packaged/packaged'
     fileExtensions 'scss'
