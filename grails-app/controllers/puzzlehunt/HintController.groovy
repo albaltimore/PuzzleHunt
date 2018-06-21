@@ -175,7 +175,7 @@ class HintController {
     }
 
     def getResource() {
-        def bootstrapPath = grailsApplication.config.getProperty("puzzlehunt.resourcePath")
+        def bootstrapPath = grailsApplication.config.puzzlehunt.resourcePath
         def rs = Resource.findByAccessor(params.accessor)
 
         if (rs) {

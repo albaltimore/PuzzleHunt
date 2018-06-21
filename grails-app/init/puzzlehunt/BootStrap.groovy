@@ -1,7 +1,12 @@
 package puzzlehunt
 
 import grails.core.GrailsApplication
+import grails.util.Environment
 import groovy.json.JsonSlurper
+
+import java.nio.file.Files
+import java.nio.file.Path
+import java.nio.file.Paths
 
 class BootStrap {
 
@@ -16,7 +21,7 @@ class BootStrap {
 
     def loadFromPath() {
         
-        def bootstrapPath = grailsApplication.config.getProperty("puzzlehunt.bootstrapPath")
+        def bootstrapPath = grailsApplication.config.puzzlehunt.resourcePath
         println "bootstrapping"
         if (Puzzle.list().size()) return
 
@@ -93,15 +98,15 @@ class BootStrap {
 
             puzzles[it.id].requiredPuzzles = it.requires.collect {pid ->
                 def rp = new RequiredPuzzle(puzzle: puzzles[pid.puzzle], color: pid.color)
-                rp.coordinates = pid?.path.collect { point ->
+                rp.coordinates = pid?.path?.collect { point ->
                     def co = new Coordinate(xCor: point.xcor, yCor: point.ycor)
                     co.save()
                     co
                 }
 
                 if (pid?.pathResource) {
-                    println it.pathResource
-					rp.pathResource = pid?.pathResource.collect{ point ->
+                    println pid?.pathResource
+					rp.pathResource = pid?.pathResource?.collect{ point ->
 						def rs = new PathResource(resource: resources[point.resource], xCor: point.xcor, yCor: point.ycor)
 						rs.save()
 						rs

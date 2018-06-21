@@ -109,8 +109,6 @@ puzzlehunt:
 
 environments:
     development:
-        puzzlehunt:
-            bootstrapPath: bootstrap
         dataSource:
             dbCreate: create-drop
             driverClassName: org.apache.derby.jdbc.ClientDriver
@@ -124,8 +122,6 @@ environments:
                     setsecure: false
                     secret: 'dev'
     test:
-        puzzlehunt:
-            bootstrapPath: bootstrap
         dataSource:
             dbCreate: update
             driverClassName: org.apache.derby.jdbc.ClientDriver

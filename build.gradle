@@ -5,7 +5,7 @@ buildscript {
     }
     dependencies {
         classpath "org.grails:grails-gradle-plugin:$grailsVersion"
-        classpath "com.bertramlabs.plugins:asset-pipeline-gradle:2.14.8"
+        classpath "com.bertramlabs.plugins:asset-pipeline-gradle:3.0.0"
         classpath "org.grails.plugins:hibernate5:${gormVersion-".RELEASE"}"
 
         classpath 'com.craigburke.gradle:client-dependencies:1.4.1'
@@ -28,6 +28,9 @@ repositories {
     mavenLocal()
     maven { url "https://repo.grails.org/grails/core" }
 }
+
+def resourcePath = "${System.properties['puzzlehunt.resourcePath'] ?: 'bootstrap'}/assets"
+def runAssetsPath = 'grails-app/assets/bootstrap'
 
 dependencies {
     compile "org.springframework.boot:spring-boot-starter-logging"
@@ -55,7 +58,7 @@ dependencies {
     runtime "org.glassfish.web:el-impl:2.1.2-b03"
     runtime "com.h2database:h2"
     runtime "org.apache.tomcat:tomcat-jdbc"
-    runtime "com.bertramlabs.plugins:asset-pipeline-grails:2.14.8"
+    runtime "com.bertramlabs.plugins:asset-pipeline-grails:3.0.0"
     testCompile "org.grails:grails-gorm-testing-support"
     testCompile "org.grails:grails-web-testing-support"
     testCompile "org.grails.plugins:geb:1.1.2"
@@ -63,17 +66,31 @@ dependencies {
     testRuntime "org.seleniumhq.selenium:selenium-htmlunit-driver:2.47.1"
     testRuntime "net.sourceforge.htmlunit:htmlunit:2.18"
 
-    compile "org.apache.derby:derbyclient:10.14.1.0"
+    assets 'com.bertramlabs.plugins:sass-asset-pipeline:3.0.0'
+
+    compile 'org.apache.derby:derbyclient:10.14.1.0'
     compile 'org.grails.plugins:cookie-session:4.0.0'
     runtime 'mysql:mysql-connector-java:5.1.42'
     runtime 'org.postgresql:postgresql:42.2.2.jre7'
 }
 
+task preBootRun(type: Copy) {
+    from resourcePath
+    into runAssetsPath
+}
+
+task preCleanAssets(type: Delete) {
+    delete runAssetsPath
+}
+
+
 bootRun {
     jvmArgs('-Dspring.output.ansi.enabled=always')
     addResources = true
+    dependsOn preBootRun
 }
 
+assetCompile.dependsOn preCleanAssets
 
 assets {
     minifyJs = true
@@ -84,7 +101,10 @@ assets {
         languageMode: 'ES6',
         targetLanguage: 'ES5'
     ]
+
+    from resourcePath
 }
+
 
 clientDependencies {
     installDir 'grails-app/assets/packaged/packaged'

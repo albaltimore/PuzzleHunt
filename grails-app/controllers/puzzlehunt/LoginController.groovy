@@ -28,7 +28,7 @@ class LoginController {
     }
 
     def getFavicon() {
-        def bootstrapPath = grailsApplication.config.getProperty("puzzlehunt.resourcePath")
+        def bootstrapPath = grailsApplication.config.puzzlehunt.resourcePath
         def rs = Favicon.first()?.resource
         println "favicon ${rs}"
         if (rs) {

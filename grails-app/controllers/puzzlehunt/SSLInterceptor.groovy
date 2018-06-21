@@ -11,7 +11,7 @@ class SSLInterceptor {
     final private String HTTP_PROTOCOL = 'http://'
 
     boolean before() {
-        if (!request.isSecure && grailsApplication.config.getProperty("puzzlehunt.useSSL")) {
+        if (!request.isSecure && grailsApplication.config.puzzlehunt.useSSL) {
             def url = request.requestURL
             if (url.substring(0, HTTP_PROTOCOL.length()) == HTTP_PROTOCOL) {
                 println "rerouting ssl ${request.isSecure} ${request.requestURL}"

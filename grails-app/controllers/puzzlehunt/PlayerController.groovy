@@ -151,7 +151,7 @@ class PlayerController {
 
     def checkPuzzle() {
         def player = Player.findById session.playerId
-        if (System.currentTimeMillis() <= player.lastSubmission  + (grailsApplication.config.getProperty("puzzlehunt.puzzleTimeout") as Long) ) {
+        if (System.currentTimeMillis() <= player.lastSubmission  + (grailsApplication.config.puzzlehunt.puzzleTimeout as Long) ) {
             def ret = [solved: false, message: "Too many submissions at once"]
             render ret as JSON
             return
@@ -186,7 +186,7 @@ class PlayerController {
     }
 
     def getResource() {
-        def bootstrapPath = grailsApplication.config.getProperty("puzzlehunt.resourcePath")
+        def bootstrapPath = grailsApplication.config.puzzlehunt.resourcePath
         def rs = Resource.findByAccessor(params.accessor)
         def player = Player.findById session.playerId
 
