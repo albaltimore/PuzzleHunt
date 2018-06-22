@@ -239,8 +239,8 @@ function reloadMap(openPuzzleId) {
             statusPane.css("display", "none");
         } else {
             statusPane.css("display", "inline-block");
-            statusPane.append($("<img src='getResource?accessor=" + playerStatus.resource + "' style='height: 70px; display: block; margin: auto'/>"));
-            statusPane.append($("<label style='font-size: 22px; font-family: sans-serif; display: block; text-align: center; cursor: pointer'>" + playerStatus.name + "</label>"));
+            statusPane.append($("<img src='getResource?accessor=" + playerStatus.resource + "'/>"));
+            statusPane.append($("<label >" + playerStatus.name + "</label>"));
         }
 
         playerData.rounds.forEach(function (round) {
@@ -252,7 +252,7 @@ function reloadMap(openPuzzleId) {
                 return;
             }
             rounds[round.id] = round;
-            var paneDiv = $("<div style='margin: auto; width: " + round.width + "px ;height: " + round.height + "px; border: 10px ridge gold'>");
+            var paneDiv = $("<div class='map-root' style='margin: auto; width: " + round.width + "px ;height: " + round.height + "px'>");
             rootPane.append(paneDiv);
             var img = $("<img src=getResource?accessor=" + round.background + " style='position: absolute; z-index: 1'>");
             paneDiv.append(img);
@@ -273,28 +273,26 @@ function reloadMap(openPuzzleId) {
         }
 
         if (playerData.rounds.length > 1) {
-            var desLabel = $("<label>Welcome. Please choose a floor: </label>");
+            var desLabel = $("<label class='greeting-title-multimap' />");
             titleDiv.append(desLabel);
             var links = [];
             Object.keys(rounds).sort(function (a, b) {
                 return rounds[a].floorId - rounds[b].floorId;
             }).forEach(function (key) {
-                var link = $("<a href='#" + rounds[key].floorId + "' ><label style='cursor: pointer; color: #59A0E6'></label></a>");
-                link.text("Floor " + rounds[key].floorId);
+                var link = $("<a class='greeting-title-multimap-map' href='#" + rounds[key].floorId + "' ></a>");
+                link.text(rounds[key].name);
                 links.push(link);
-                links.push($("<div style='height: 1em; width: 3px; background-color: gold; display: inline-block; margin: 0 10px'>|</div>"));
                 link.click(function () {
                     selectRound(key);
                 });
             });
-            links.pop();
             var linkDiv = $("<div style='margin: auto; display: table'></div>");
             titleDiv.append(linkDiv);
             links.forEach(function (link) {
                 linkDiv.append(link);
             });
         } else {
-            var desLabel = $("<label>Welcome to The Lexington Hotel</label>");
+            var desLabel = $("<label class='greeting-title-onemap' />");
             titleDiv.append(desLabel);
         }
 
@@ -353,10 +351,10 @@ function reloadMap(openPuzzleId) {
         playerData.puzzles.forEach(function (puzzle) {
             if (puzzle.iconAccessor) {
                 var pointDiv = false;
-                var point = $("<img src='" + "getResource?accessor=" + puzzle.iconAccessor + "' style='position: absolute; cursor: pointer; transform: translate(-50%, -50%)' />");
+                var point = $("<img class='puzzle-point puzzle-point-image' src='" + "getResource?accessor=" + puzzle.iconAccessor + "' style='position: absolute; cursor: pointer; transform: translate(-50%, -50%)' />");
             } else {
                 pointDiv = true;
-                point = $("<div class='puzzlePoint' />");
+                point = $("<div class='puzzle-point puzzle-point-div' />");
             }
             puzzlePoints.push(point);
             point.css("top", puzzle.yCor + "px");
@@ -365,11 +363,12 @@ function reloadMap(openPuzzleId) {
             var solveable = false;
 
             if (puzzle.solved) {
-                if (pointDiv) point.css("background-color", "green");
+                point.addClass('puzzle-point-solved');
+                //if (pointDiv) point.css("background-color", "green");
             } else if (!puzzle.requiredPuzzles.length || puzzle.requiredPuzzles.some(function (rp) {
                 return pMap[rp.id] && pMap[rp.id].solved;
             })) {
-                if (pointDiv) point.css("background-color", "yellow");
+                point.addClass('puzzle-point-available');
                 solveable = true;
             }
 

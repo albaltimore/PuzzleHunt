@@ -29,7 +29,7 @@ repositories {
     maven { url "https://repo.grails.org/grails/core" }
 }
 
-def resourcePath = "${System.properties['puzzlehunt.resourcePath'] ?: 'bootstrap'}/assets"
+def resourcePath = "${System.properties['puzzlehunt.resourcePath'] ?: System.properties['grails.puzzlehunt.resourcePath'] ?: 'bootstrap'}/assets"
 def runAssetsPath = 'grails-app/assets/bootstrap'
 
 dependencies {
