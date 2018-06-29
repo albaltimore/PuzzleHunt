@@ -55,5 +55,5 @@ class Player {
         stati.size() ? stati.first() : null
     }
 
-    static hasMany = []
+    static hasMany = [:]
 }

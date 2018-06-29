@@ -5,7 +5,7 @@
 
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-    <link rel="shortcut icon" type="image/png" href="${createLink(controller: " login ", action: "getFavicon ")}"/>
+    <link rel="shortcut icon" type="image/png" href="${assetPath(src: 'favicon.png')}"/>
     <asset:stylesheet src="player/player.css"/>
     <asset:stylesheet src="player/bootstrap.css"/>
     <asset:javascript src="player/player.js"/>
@@ -24,6 +24,7 @@
             <div id="statusPane" class="greeting greeting-status" style="display: none">
             </div>
         </div>
+        <div class="hint-notifier"><label></label></div>
     </div>
 </div>
 

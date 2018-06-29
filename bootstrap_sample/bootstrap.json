@@ -1,5 +1,4 @@
 {
-    "favicon": 0,
     "players": [
         {
             "name": "ThisIsDefinitelyLegit",
@@ -81,10 +80,6 @@
         }
     ],
     "resources": [
-        {
-            "id": 0,
-            "file": "logo.png"
-        },
         {
             "id": 1,
             "file": "background.png",

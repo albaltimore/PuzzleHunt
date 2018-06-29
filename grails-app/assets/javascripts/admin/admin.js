@@ -1,4 +1,5 @@
 /* global jQuery */
+
 //= require packaged/jquery/jquery
 
 function showDialog(text, cb) {
@@ -63,6 +64,12 @@ function refresh() {
     location.reload();
 }
 
+
+function dateString(d) {
+    var td = x => x < 10 ? '0' + x : x;
+    return td(d.getFullYear()) + '-' + td(d.getMonth() + 1) + '-' + td(d.getDate()) + 'T' + td(d.getHours()) + ":" + td(d.getMinutes()) + ":" + td(d.getSeconds())
+}
+
 function init() {
     $.get("getData", function (data) {
         console.log(data);
@@ -78,7 +85,7 @@ function init() {
             roundDiv.append(link);
             link.click(function () {
                 showConfirmDialog("Are you sure you want to " + (round.unlocked ? "Lock" : "Unlock") + " round " + round.name, "Yes", "Cancel", function () {
-                    $.post("setRoundUnlocked", { round: round.id, unlocked: !round.unlocked }, function () {
+                    $.post("setRoundUnlocked", {round: round.id, unlocked: !round.unlocked}, function () {
                         console.log("succsess");
 
                         showDialog("Success", refresh);
@@ -90,11 +97,21 @@ function init() {
             });
         });
 
+        var allPlayerOption = $("<option/>");
+        allPlayerOption.val("ALL");
+        allPlayerOption.text("All Teams");
+        $("#alertPlayerSelect").append(allPlayerOption);
+
         data.players.forEach(function (player) {
-            var option = $("<option></option>");
-            option.val(player.id);
-            option.text(player.description);
-            $("#playerSelect").append(option);
+            function addOption(widget) {
+                var option = $("<option></option>");
+                option.val(player.id);
+                option.text(player.description);
+                $(widget).append(option);
+            }
+
+            addOption("#playerSelect");
+            addOption("#alertPlayerSelect")
         });
 
         data.activities.forEach(function (activity) {
@@ -103,6 +120,11 @@ function init() {
             option.text(activity.name);
             $("#activitySelect").append(option);
         });
+
+        if (data.start) {
+
+            $("#startEntry").val(dateString(new Date(parseInt(data.start))));
+        }
     });
 }
 
@@ -141,6 +163,36 @@ $(document).ready(function () {
             console.log("succsess");
             showDialog("Success", refresh);
         }).fail(function (data) {
+            console.log(data);
+            showDialog("Error :(", refresh);
+        });
+    });
+
+    $("#startSubmit").click(function () {
+        $.post("setProperty", {name: "START", value: new Date($("#startEntry").val()).getTime()}, function () {
+            console.log("succsess");
+            showDialog("Success", refresh);
+        }).fail(function () {
+            console.log(data);
+            showDialog("Error :(", refresh);
+        });
+    });
+
+    $("#alertSubmit").click(function () {
+        if (!$("#alertTitle").val() || !$("#alertTargetTime").val() || !$("#alertPlayerSelect").val()) showDialog("You have to fill in all the fields.");
+        var player = $("#alertPlayerSelect").val();
+
+        $.post('createAlert', {
+            player: player === 'ALL' ? 'ALL' : parseInt(player),
+            title: $("#alertTitle").val(),
+            message: $("#alertMessage").val(),
+            targetTime: new Date($("#alertTargetTime").val()).getTime(),
+            leadTime: parseInt($("#alertLeadTime").val())
+        }, function () {
+
+            console.log("succsess");
+            showDialog("Success", refresh);
+        }).fail(function () {
             console.log(data);
             showDialog("Error :(", refresh);
         });

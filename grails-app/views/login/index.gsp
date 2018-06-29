@@ -6,38 +6,37 @@
 
 <%@ page contentType="text/html;charset=UTF-8" %>
 
-<html>
+    <html>
 
-<head>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-    <link rel="shortcut icon" type="image/png" href="${createLink(controller: " login ", action: "getFavicon ")}"/>
-    <asset:stylesheet src="login/login.css"/>
-    <asset:stylesheet src="login/bootstrap.css"/>
-    <title>Login</title>
-</head>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <link rel="shortcut icon" type="image/png" href="${assetPath(src: 'favicon.png')}" />
+        <asset:stylesheet src="login/login.css" />
+        <asset:stylesheet src="login/bootstrap.css" />
+        <title>Login</title>
+    </head>
 
-<body>
-<g:form useToken="true" action="login">
-    <div class="root-div">
-        <div class="content-div">
-            <label class="bloomberg-headline">Bloomberg</label>
+    <body>
+        <g:form useToken="true" action="login" controller="login">
+            <div class="root-div">
+                <div class="content-div">
+                    <label class="bloomberg-headline">Bloomberg</label>
 
-            <label class="logo-div"></label>
+                    <label class="logo-div"></label>
 
-            <g:if test="${flash.message}">
-                <label class="flash-message">${flash.message}</label>
-            </g:if>
+                    <g:if test="${flash.message}">
+                        <label class="flash-message">${flash.message}</label>
+                    </g:if>
+                    <label class="input-label">Username:</label>
+                    <input type="text" name="username" placeholder="USERNAME" class="login-entry" value="" />
 
-            <label class="input-label">Username:</label>
-            <input type="text" name="username" placeholder="USERNAME" class="login-entry" value=""/>
+                    <label class="input-label">Password:</label>
+                    <input type="password" name="password" placeholder="PASSWORD" class="login-entry" />
+                    <input type="submit" value="LOGIN" class="submit-button" />
+                </div>
+            </div>
 
-            <label class="input-label">Password:</label>
-            <input type="password" name="password" placeholder="PASSWORD" class="login-entry"/>
-            <input type="submit" value="LOGIN" class="submit-button"/>
-        </div>
-    </div>
+        </g:form>
+    </body>
 
-</g:form>
-</body>
-
-</html>
+    </html>

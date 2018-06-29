@@ -11,6 +11,7 @@
 
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <link rel="shortcut icon" type="image/png" href="${assetPath(src: 'favicon.png')}"/>
     <asset:stylesheet src="hint/hint.css"/>
     <asset:javascript src="hint/details.js"/>
     <title class="hint-table">Hint Details</title>

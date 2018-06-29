@@ -82,6 +82,8 @@ function closeLoading() {
 
 function showHintDialog(puzzleId, puzzleName, hintText) {
     $.get("nextHintTime", function (nextHintData) {
+        hintNext = nextHintData.time;
+
         var modal = $("#modal");
         var modalRoot = $("#modal-root");
         modal.css("visibility", "visible");
@@ -113,7 +115,6 @@ function showHintDialog(puzzleId, puzzleName, hintText) {
         }
 
         var timer = setInterval(function () {
-
             var left = Math.max(0, nextHintData.time - new Date().getTime()) / 1000;
             if (nextHintData.left) {
                 if (nextHintData.max <= 1) {
@@ -160,6 +161,10 @@ function showHintDialog(puzzleId, puzzleName, hintText) {
 
             }).fail(function () {
                 showDialog("Something went wrong! :(");
+            }).always(function () {
+                $.get("nextHintTime", function (nextHintData) {
+                    hintNext = nextHintData.time;
+                });
             });
         });
         closeDiv.append(close);
@@ -292,7 +297,7 @@ function reloadMap(openPuzzleId) {
                 linkDiv.append(link);
             });
         } else {
-            var desLabel = $("<label class='greeting-title-onemap' />");
+            desLabel = $("<label class='greeting-title-onemap' />");
             titleDiv.append(desLabel);
         }
 
@@ -312,11 +317,11 @@ function reloadMap(openPuzzleId) {
                 }
 
                 if (rp.pathResource) {
-					rp.pathResource.forEach(function (pr) {
-						var img = $("<img src='" + "getResource?accessor=" + pr.resource + "' />");
-						img.css({top: pr.yCor  + "px", left: pr.xCor + "px", position: 'absolute'});
-						rounds[puzzle.roundId].pointsDiv.append(img);
-					});
+                    rp.pathResource.forEach(function (pr) {
+                        var img = $("<img src='" + "getResource?accessor=" + pr.resource + "' />");
+                        img.css({top: pr.yCor + "px", left: pr.xCor + "px", position: 'absolute'});
+                        rounds[puzzle.roundId].pointsDiv.append(img);
+                    });
                 } else {
                     var points = [puzzle].concat(rp.points).concat([pMap[rp.id]]);
 
@@ -356,6 +361,7 @@ function reloadMap(openPuzzleId) {
                 pointDiv = true;
                 point = $("<div class='puzzle-point puzzle-point-div' />");
             }
+            point.addClass("round-" + puzzle.roundId);
             puzzlePoints.push(point);
             point.css("top", puzzle.yCor + "px");
             point.css("left", puzzle.xCor + "px");
@@ -553,12 +559,43 @@ function reloadMap(openPuzzleId) {
 
 
 
+var hintTimer;
+var hintNext;
+var hintLastAvailable;
+
 $(document).ready(function () {
     $(document).click(clearPanes);
     $("#modal").click(function (event) {
         event.stopPropagation();
     });
     reloadMap();
+
+    var hintWidget = $(".hint-notifier");
+    var hintLabel = hintWidget.find("label");
+
+    $.get("nextHintTime", function (nextHintData) {
+        hintNext = nextHintData.time;
+
+        hintTimer = setInterval(function () {
+            var nowTime = Date.now()
+            if (hintNext < nowTime) {
+                if (!hintLastAvailable) {
+                    hintLastAvailable = true;
+                    hintWidget.addClass('hint-notifier-available');
+                    hintLabel.text("");
+                }
+            } else {
+                var lpad = x => (x < 10 ? '0' : '') + parseInt(x);
+                var nextTime = hintNext - nowTime;
+                hintLabel.text(lpad(nextTime / 60 / 1000) + ":" + lpad((nextTime / 1000) % 60));
+                if (hintLastAvailable) {
+                    hintWidget.removeClass('hint-notifier-available');
+                    hintLastAvailable = false;
+                }
+            }
+
+        }, 25);
+    });
 
     $("#statusPane").click(function () {
         if (playerStatus) {

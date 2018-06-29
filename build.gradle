@@ -90,7 +90,7 @@ bootRun {
 }
 
 assetCompile.dependsOn preCleanAssets
-clean.dependsOn 'clientClean'
+clean.dependsOn 'clientClean', preCleanAssets
 
 assets {
     minifyJs = true

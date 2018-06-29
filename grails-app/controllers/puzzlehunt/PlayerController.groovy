@@ -1,7 +1,7 @@
 package puzzlehunt
 
 import grails.converters.JSON
-import grails.transaction.Transactional
+import grails.gorm.transactions.Transactional
 
 class PlayerController {
 
@@ -31,7 +31,7 @@ class PlayerController {
             def startTime = p.id in timedStarted ? PuzzleStart.findByPlayerAndPuzzle(player, p).startTime : null
             def timeLimit = p.timeLimit ? p.timeLimit + (player.status?.puzzleTime ?: 0) : null
             def failed = p.timeLimit && started && (startTime + (timeLimit * 1000)  < System.currentTimeMillis())
-            
+
             if (!(p.round.id in rounds)) {
                 rounds[p.round.id] = [
                     id: p.round.id,
@@ -76,7 +76,15 @@ class PlayerController {
             priorityLine: stat.priorityLine
         ] : null
 
-        def ret = [puzzles: puzzles, rounds: rounds.values(), status: status, contactInfo: player.contactInfo]
+
+        def alerts = Alert.findAllByPlayer(player).findAll { it.targetTime - (1000 * it.leadTime) < System.currentTimeMillis() } .collect { [
+            title: it.title,
+            message: it.message,
+            targetTime: it.targetTime,
+            leadTime: it.leadTime
+        ] }
+
+        def ret = [puzzles: puzzles, rounds: rounds.values(), status: status, contactInfo: player.contactInfo, alerts: alerts]
         render ret as JSON
     }
 
@@ -96,11 +104,14 @@ class PlayerController {
         def maxHints = player.hintMaxCount + (player.status?.hintCount ?: 0)
         def totalTime = player.hintRegen - (player.status?.hintTime ?: 0) * 1000
 
+        def start = (Property.findByName('START')?.value ?: 0) as Long
         def left = (1..maxHints).findAll {
-            (it - Hint.countByPlayerAndCreateTimeGreaterThan(player, System.currentTimeMillis() - totalTime * it)) > 0
+            def targetStart = System.currentTimeMillis() - totalTime * it
+            (it - Hint.countByPlayerAndCreateTimeGreaterThan(player, targetStart) - ((start >  targetStart) ? 1 : 0))  > 0
         }.size()
 
         def recentHints = Hint.findAllByPlayerAndCreateTimeGreaterThan(player, System.currentTimeMillis() - totalTime) ?: []
+        if (start > System.currentTimeMillis() - totalTime) recentHints.add(new Hint(createTime: start))
 
         def ret = [
             max: maxHints,
@@ -117,8 +128,11 @@ class PlayerController {
 
         def totalTime = player.hintRegen - (player.status?.hintTime ?: 0) * 1000
         def maxHints = player.hintMaxCount + (player.status?.hintCount ?: 0)
+
+        def start = (Property.findByName('START')?.value ?: 0) as Long
         def left = (1..maxHints).findAll {
-            (it - Hint.countByPlayerAndCreateTimeGreaterThan(player, System.currentTimeMillis() - totalTime * it)) > 0
+            def targetStart = System.currentTimeMillis() - totalTime * it
+            (it - Hint.countByPlayerAndCreateTimeGreaterThan(player, targetStart) - ((start >  targetStart) ? 1 : 0))  > 0
         }.size()
 
         if (params.contactInfo) {
@@ -185,6 +199,24 @@ class PlayerController {
         render ret as JSON
     }
 
+    def acknowlegeAlert() {
+        def player = Player.findById session.playerId
+        def alert = Alert.findByIdAndPlayer params.id, player
+        if (alert == null) {
+            render status: 500
+            return
+        }
+
+        alert.isAcknowleged = true;
+        if(!alert.save(flush: true)) {
+            render status: 500
+            return
+        }
+
+        def ret = [success:true]
+        render ret as JSON
+    }
+
     def getResource() {
         def bootstrapPath = grailsApplication.config.puzzlehunt.resourcePath
         def rs = Resource.findByAccessor(params.accessor)
@@ -199,6 +231,7 @@ class PlayerController {
                 def f = new File("${bootstrapPath}/${rs.filename}")
                 def extension = rs.filename.substring(rs.filename.lastIndexOf(".") + 1).toLowerCase()
 
+                response.addHeader 'Cache-Control', 'max-age=84600, public'
                 render file:f, contentType: EXTENSION_TYPES[extension]
             }
         } else {

@@ -125,10 +125,6 @@ class BootStrap {
             }
         }
 
-        if (config.favicon != null) {
-            new Favicon(resource: resources[config.favicon]).save(flush: true)
-        }
-
         config.statuses.each {
             println "add status ${it}"
             new PlayerStatus(statusLevel: it.level, resource: resources[it.resource], name: it.name, hintCount: it.hintCount ?: 0, hintTime: it.hintTime ?: 0, puzzleTime: it.puzzleTime ?: 0, priorityLine: it.priorityLine ?: false).save()
@@ -142,8 +138,6 @@ class BootStrap {
         puzzles.each{k,v->v.save(flush:true)}
         resources.each{k,v->println "resource ${v.filename} ${v.accessor} ${v.role}"; v.save(flush:true)}
         rounds.each{k,v->v.save(flush:true)}
-
-        println "favicon ${config.favicon}  ${propertiesService.favicon}"
 
         //        println players
         //        println puzzles
