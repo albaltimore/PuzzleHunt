@@ -1,4 +1,5 @@
 /* global jQuery */
+
 //= require packaged/jquery/jquery
 
 function showDialog(text, cb) {
@@ -182,8 +183,109 @@ function showHintDialog(puzzleId, puzzleName, hintText) {
 }
 
 
+var alertsMap = {};
+var alertRefreshInterval;
+var alertNext;
+
+function updateAlerts() {
+    console.log("update alerts");
+    alertNext = null;
+    var alertLabel$ = $(".alert");
+    var alertWindow$ = $(".alert-window");
+
+    alertLabel$.removeClass("alert-pending alert-available");
+
+    $.get('getAlerts', function (alerts) {
+        console.log(alerts);
+        var isPending = false;
+        var isAvalable = false;
+
+        if (alerts && alerts.length) {
+            alerts.forEach(alert => {
+                if (alertsMap[alert.id]) {
+                    alertsMap[alert.id].isAcknowledged = alert.isAcknowledged;
+                } else {
+                    alertsMap[alert.id] = alert;
+                }
+            });
+        }
+    }).fail(function (e) {
+        console.log(e);
+    }).always(function () {
+        if (!alertNext) alertNext = setTimeout(updateAlerts, 66000);
+    });
+
+    if (!alertRefreshInterval) {
+        $(document).click(function () {
+            alertWindow$.css('display', 'none');
+        });
+
+        alertLabel$.click(function (evt) {
+            evt.stopPropagation();
+            alertWindow$.css('display', 'block');
+        });
+
+        alertRefreshInterval = setInterval(() => {
+            var now = Date.now();
+            alertWindow$.empty();
+            var alertPending = false;
+            var alertAvailiable = false;
+            var createdAny = false;
+            alertLabel$.removeClass("alert-pending alert-available")
+            Object.keys(alertsMap).map(k => alertsMap[k]).sort((a, b) =>   {
+                if (a.isAcknowledged !== b.isAcknowledged) return Number(a.isAcknowledged) - Number(b.isAcknowledged);
+                if (a.targetTime !== b.targetTime) return b.targetTime - a.targetTime
+                return b.id - a.id;
+            }).forEach(function (alert) {
+                var alertDiv = $("<div class='alert-item' />");
+                alertWindow$.append(alertDiv);
+
+                var alertTitle = $("<label class='alert-title' />");
+                alertTitle.text(alert.title);
+                alertDiv.append(alertTitle);
+
+                var alertTime = $("<label class='alert-timestamp' />");
+                alertTime.text(new Date(alert.targetTime).toLocaleString());
+                alertDiv.append(alertTime);
+
+                var alertMessage = $("<label class='alert-message' />");
+                alertMessage.text(alert.message);
+                alertDiv.append(alertMessage);
+
+                if (!alert.isAcknowledged) {
+                    alertDiv.addClass("alert-item-available");
+                    var alertAck = $("<label class='alert-acknowledge' />");
+                    alertDiv.append(alertAck);
+                    alertAvailiable = true;
+                    alertAck.click(() => {
+                        $.post("acknowledgeAlert", {id: alert.id}, function (alertData) {
+                            console.log(alertData);
+                            alertAck.remove();
+
+                        }).fail(console.log).always(updateAlerts)
+                    });
+                    alertAvailiable = true;
+                } else if (alert.targetTime > now) {
+                    alertDiv.addClass('alert-item-pending');
+                    alertPending = true;
+                } else {
+                    alertDiv.addClass('alert-item-past');
+                }
+                createdAny = true;
+            });
+            if (alertAvailiable) {
+                alertLabel$.addClass("alert-available");
+            } else if (alertPending) {
+                alertLabel$.addClass("alert-pending")
+            }
+        }, 2500);
+    }
+}
+
+
 var removePanes = [];
 var removeTimers = [];
+
 function clearPanes() {
     console.log("clearing", removePanes);
     removePanes.forEach(function (pane) {
@@ -199,6 +301,7 @@ function clearPanes() {
 
 
 var puzzlePoints = [];
+
 function clearPoints() {
     console.log("clearing points", puzzlePoints);
     clearPanes();
@@ -558,7 +661,6 @@ function reloadMap(openPuzzleId) {
 }
 
 
-
 var hintTimer;
 var hintNext;
 var hintLastAvailable;
@@ -569,6 +671,7 @@ $(document).ready(function () {
         event.stopPropagation();
     });
     reloadMap();
+    updateAlerts();
 
     var hintWidget = $(".hint-notifier");
     var hintLabel = hintWidget.find("label");

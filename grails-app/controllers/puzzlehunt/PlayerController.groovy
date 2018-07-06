@@ -77,14 +77,8 @@ class PlayerController {
         ] : null
 
 
-        def alerts = Alert.findAllByPlayer(player).findAll { it.targetTime - (1000 * it.leadTime) < System.currentTimeMillis() } .collect { [
-            title: it.title,
-            message: it.message,
-            targetTime: it.targetTime,
-            leadTime: it.leadTime
-        ] }
 
-        def ret = [puzzles: puzzles, rounds: rounds.values(), status: status, contactInfo: player.contactInfo, alerts: alerts]
+        def ret = [puzzles: puzzles, rounds: rounds.values(), status: status, contactInfo: player.contactInfo]
         render ret as JSON
     }
 
@@ -97,6 +91,19 @@ class PlayerController {
         }
 
         new PuzzleStart(puzzle: puzzle, player: player, startTime: System.currentTimeMillis()).save(flush: true)
+    }
+
+    def getAlerts() {
+        def player = Player.findById(session.playerId)
+        def alerts = Alert.findAllByPlayer(player).findAll { it.targetTime - (1000 * it.leadTime) < System.currentTimeMillis() } .collect {[
+                id: it.id,
+                title: it.title,
+                message: it.message,
+                targetTime: it.targetTime,
+                leadTime: it.leadTime,
+                isAcknowledged: it.isAcknowledged
+        ]}
+        render alerts as JSON
     }
 
     def nextHintTime() {
@@ -199,7 +206,7 @@ class PlayerController {
         render ret as JSON
     }
 
-    def acknowlegeAlert() {
+    def acknowledgeAlert() {
         def player = Player.findById session.playerId
         def alert = Alert.findByIdAndPlayer params.id, player
         if (alert == null) {
@@ -207,7 +214,7 @@ class PlayerController {
             return
         }
 
-        alert.isAcknowleged = true;
+        alert.isAcknowledged = true;
         if(!alert.save(flush: true)) {
             render status: 500
             return

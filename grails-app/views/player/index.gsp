@@ -16,7 +16,7 @@
 <g:form useToken="true" style="visibility: hidden">
 </g:form>
 <div class="root-div">
-    <div id="rootPane" style="margin: auto; width: 100%; padding: 25px 0;">
+    <div id="rootPane">
         <div class="header-div">
             <div id="titlePane" class='greeting greeting-title' style="display: none">
             </div>
@@ -24,7 +24,12 @@
             <div id="statusPane" class="greeting greeting-status" style="display: none">
             </div>
         </div>
-        <div class="hint-notifier"><label></label></div>
+
+        <div class="notifiers">
+            <div class="hint-notifier"><label></label></div>
+
+            <div class="alert"><label></label><div class="alert-window" style="display: none"></div></div>
+        </div>
     </div>
 </div>
 

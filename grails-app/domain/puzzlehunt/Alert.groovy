@@ -2,7 +2,7 @@ package puzzlehunt
 
 class Alert {
     Player player
-    boolean isAcknowleged
+    boolean isAcknowledged
     String title
     String message
     long targetTime
