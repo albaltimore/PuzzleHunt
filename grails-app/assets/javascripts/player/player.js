@@ -29,7 +29,7 @@ function showConfirmDialog(text, yText, nText, cb) {
     modal.css("visibility", "visible");
     modalRoot.empty();
 
-    var pane = $("<div style='padding: 20px; 20px; 20px; 20px; max-width: 740px' />");
+    var pane = $("<div style='padding: 20px; max-width: 740px' />");
     var label = $("<label class='modal-label' />");
     pane.append(label);
     pane.append($("<br/>"));
@@ -92,7 +92,7 @@ function showHintDialog(puzzleId, puzzleName, hintText) {
         //modalRoot.css("width", "500px");
         modalRoot.empty();
 
-        var pane = $("<div style='padding: 20px; 20px; 20px; 20px; max-width: 600px; position: relative' />");
+        var pane = $("<div style='padding: 20px; max-width: 600px; position: relative' />");
 
         modalRoot.append(pane);
 
@@ -197,9 +197,6 @@ function updateAlerts() {
 
     $.get('getAlerts', function (alerts) {
         console.log(alerts);
-        var isPending = false;
-        var isAvalable = false;
-
         if (alerts && alerts.length) {
             alerts.forEach(alert => {
                 if (alertsMap[alert.id]) {
@@ -220,21 +217,27 @@ function updateAlerts() {
             alertWindow$.css('display', 'none');
         });
 
-        alertLabel$.click(function (evt) {
+
+        $(".alert > label").click(function (evt) {
             evt.stopPropagation();
-            alertWindow$.css('display', 'block');
+            alertWindow$.css('display', alertWindow$.css('display') === 'block' ? 'none' : 'block');
         });
+
+        alertWindow$.click(evt => evt.stopPropagation());
 
         alertRefreshInterval = setInterval(() => {
             var now = Date.now();
             alertWindow$.empty();
             var alertPending = false;
-            var alertAvailiable = false;
+            var alertAvailable = false;
             var createdAny = false;
-            alertLabel$.removeClass("alert-pending alert-available")
-            Object.keys(alertsMap).map(k => alertsMap[k]).sort((a, b) =>   {
+            alertLabel$.removeClass("alert-pending alert-available");
+            Object.keys(alertsMap).map(k => alertsMap[k]).sort((a, b) => {
                 if (a.isAcknowledged !== b.isAcknowledged) return Number(a.isAcknowledged) - Number(b.isAcknowledged);
-                if (a.targetTime !== b.targetTime) return b.targetTime - a.targetTime
+                if (a.targetTime !== b.targetTime) {
+                    if (a.isAcknowledged) return b.targetTime - a.targetTime;
+                    return a.targetTime - b.targetTime;
+                }
                 return b.id - a.id;
             }).forEach(function (alert) {
                 var alertDiv = $("<div class='alert-item' />");
@@ -256,7 +259,7 @@ function updateAlerts() {
                     alertDiv.addClass("alert-item-available");
                     var alertAck = $("<label class='alert-acknowledge' />");
                     alertDiv.append(alertAck);
-                    alertAvailiable = true;
+                    alertAvailable = true;
                     alertAck.click(() => {
                         $.post("acknowledgeAlert", {id: alert.id}, function (alertData) {
                             console.log(alertData);
@@ -264,7 +267,7 @@ function updateAlerts() {
 
                         }).fail(console.log).always(updateAlerts)
                     });
-                    alertAvailiable = true;
+                    alertAvailable = true;
                 } else if (alert.targetTime > now) {
                     alertDiv.addClass('alert-item-pending');
                     alertPending = true;
@@ -273,7 +276,7 @@ function updateAlerts() {
                 }
                 createdAny = true;
             });
-            if (alertAvailiable) {
+            if (alertAvailable) {
                 alertLabel$.addClass("alert-available");
             } else if (alertPending) {
                 alertLabel$.addClass("alert-pending")
@@ -285,6 +288,7 @@ function updateAlerts() {
 
 var removePanes = [];
 var removeTimers = [];
+var paneMaximized = false;
 
 function clearPanes() {
     console.log("clearing", removePanes);
@@ -322,7 +326,7 @@ var contactInfo;
 function reloadMap(openPuzzleId) {
     clearPoints();
     $.get("getPuzzles", function (playerData) {
-        console.log(playerData);
+        console.log('player data', playerData);
         var rootPane = $("#rootPane");
         var pMap = {};
 
@@ -361,6 +365,7 @@ function reloadMap(openPuzzleId) {
             }
             rounds[round.id] = round;
             var paneDiv = $("<div class='map-root' style='margin: auto; width: " + round.width + "px ;height: " + round.height + "px'>");
+            paneDiv.addClass("map-root-round-" + round.floorId);
             rootPane.append(paneDiv);
             var img = $("<img src=getResource?accessor=" + round.background + " style='position: absolute; z-index: 1'>");
             paneDiv.append(img);
@@ -485,13 +490,18 @@ function reloadMap(openPuzzleId) {
 
             point.click(function (evt) {
                 clearPanes();
-                var pane = $("<div style='position: absolute; background-color: black; width: 300px; border: 1px solid white; padding: 5px 5px 5px 5px; z-index: 100' />");
+                var pane = $("<div class='puzzle-pane'/>");
                 rounds[puzzle.roundId].pointsDiv.append(pane);
 
                 var rw = rounds[puzzle.roundId].width;
                 var rh = rounds[puzzle.roundId].height;
-                pane.css(puzzle.yCor < (rh / 2) ? "top" : "bottom", (puzzle.yCor < (rh / 2) ? puzzle.yCor : rh - puzzle.yCor) + "px");
-                pane.css(puzzle.xCor < (rw / 2) ? "left" : "right", (puzzle.xCor < (rw / 2) ? puzzle.xCor : rw - puzzle.xCor) + "px");
+
+                var setCoords = doClear => {
+                    pane.css(puzzle.yCor < (rh / 2) ? "top" : "bottom", doClear ? "" : ((puzzle.yCor < (rh / 2) ? puzzle.yCor : rh - puzzle.yCor) + "px"));
+                    pane.css(puzzle.xCor < (rw / 2) ? "left" : "right", doClear ? "" : ((puzzle.xCor < (rw / 2) ? puzzle.xCor : rw - puzzle.xCor) + "px"));
+                };
+
+                setCoords();
                 removePanes.push(pane);
                 pane.click(function (evt) {
                     evt.stopPropagation();
@@ -515,10 +525,24 @@ function reloadMap(openPuzzleId) {
                     });
                 }, 25));
 
+                var maximizeButton = $("<div class='puzzle-pane-maximize'/>");
+                pane.append(maximizeButton);
+                maximizeButton.click(() => {
+                    pane.toggleClass('puzzle-pane-maximized');
+                    paneMaximized = pane.hasClass('puzzle-pane-maximized');
+                    setCoords(paneMaximized);
+                });
+
+
+                console.log('pane maximized', paneMaximized);
+                if (paneMaximized) {
+                    maximizeButton.click();
+                }
+
                 console.log("puzzle", puzzle.solved);
                 if (puzzle.solved) {
                     console.log("solved", puzzle);
-                    var label = $("<label style='position: relative; color:green; font-size: 20px; text-align: center; top: 4px'></label>");
+                    var label = $("<label class='puzzle-pane-title' style='color: green' ></label>");
                     label.text(puzzle.name);
                     pane.append(label);
 
@@ -527,20 +551,22 @@ function reloadMap(openPuzzleId) {
                         var introExtension = puzzle.solvedFilename ? puzzle.solvedFilename.substr(puzzle.introFilename.lastIndexOf(".") + 1).toLowerCase() : "link";
 
                         if (introExtension === "pdf") {
-                            var body = $("<object data='" + accessorUrl + "' style='width:100%; margin-top: 10px; margin-bottom: 3px; max-height: 200px; overflow-y: auto'/>");
+                            var body = $("<object data='" + accessorUrl + "#view=FitH' class='puzzle-pane-content'/>");
                             var link = $("<div style='margin-bottom: 10px'><a style='color: #59A0E6' target=\"_blank\" href=\"" + accessorUrl + "\">Download</a></div>");
                             pane.append(body);
                             pane.append(link);
                         } else if (introExtension === "mp4") {
-                            var body = $("<video style='width:100%; margin-top: 10px; margin-bottom: 3px; max-height: 200px; overflow-y: auto' controls><source src='" + accessorUrl + "' type='video/mp4' /></video>");
+                            var body = $("<video class='puzzle-pane-content' controls><source src='" + accessorUrl + "' type='video/mp4' /></video>");
                             var link = $("<div style='margin-bottom: 10px'><a style='color: #59A0E6' target=\"_blank\" href=\"" + accessorUrl + "\">Download</a></div>");
                             pane.append(body);
                             pane.append(link);
                         } else if (introExtension === "link") {
-                            var link = $("<div style='padding: 30px; margin: auto; display: table'><a style='color: #59A0E6; font-size: 36px' target=\"_blank\" href=\"" + accessorUrl + "\"><img src='" + asset_url('youtube.png') + "' width='120' height='120' /></a></div>");
+                            var link = $("<iframe class='puzzle-pane-content' src='" + accessorUrl + "' frameborder='0' allow='autoplay; encrypted-media' allowfullscreen />");
                             pane.append(link);
                         } else {
-                            body = $("<a target=\"_blank\" href=\"" + accessorUrl + "\"><img src=\"" + accessorUrl + "\" style='width:100%; margin-top: 10px; margin-bottom: 10px; max-height: 200px; overflow-y: auto'/></a>");
+                            body = $("<a target=\"_blank\" href=\"" + accessorUrl + "\"  class='puzzle-pane-content-img' ><img src=\"" + accessorUrl + "\" class='puzzle-pane-content'/></a>");
+                            pane.append(body);
+                            body = $("<a target=\"_blank\" href=\"" + accessorUrl + "\"  class='puzzle-pane-content-background puzzle-pane-content'  style='background-image: url(\"" + accessorUrl + "\") ' /></a>");
                             pane.append(body);
                         }
                     } else {
@@ -551,7 +577,7 @@ function reloadMap(openPuzzleId) {
                     link = $("<div style='margin-bottom: 10px'><a style='color: #59A0E6' target=\"_blank\" href=\"" + "getResource?accessor=" + puzzle.introAccessor + "\">The Puzzle</a></div>");
                     pane.append(link);
                 } else if (solveable) {
-                    var label = $("<label style='position: relative; color:yellow; font-size: 20px; text-align: center; top: 4px'></label>");
+                    var label = $("<label class='puzzle-pane-title' style='color:yellow;'></label>");
                     label.text(puzzle.name);
                     pane.append(label);
 
@@ -561,7 +587,7 @@ function reloadMap(openPuzzleId) {
                             console.log(new Date().getTime(), endTime);
 
                             var ends = $("<div style='margin-top: 5px'></div>");
-                            var endLab = $("<label style='color: white; font-size: 18px; margin: auto; width: 100%'>Time Limit Expired!</label>");
+                            var endLab = $("<label style='color: white; margin: auto; width: 100%'>Time Limit Expired!</label>");
                             ends.append(endLab);
                             timers.push({widget: endLab, end: endTime});
 
@@ -572,31 +598,37 @@ function reloadMap(openPuzzleId) {
                         var introExtension = puzzle.introFilename ? puzzle.introFilename.substr(puzzle.introFilename.lastIndexOf(".") + 1).toLowerCase() : "link";
 
                         if (introExtension === "pdf") {
-                            var body = $("<object data='" + accessorUrl + "' style='width:100%; margin-top: 10px; margin-bottom: 3px; max-height: 200px; overflow-y: auto'/>");
+                            var body = $("<object data='" + accessorUrl + "#view=FitH' class='puzzle-pane-content'/>");
                             var link = $("<div style='margin-bottom: 10px'><a style='color: #59A0E6' target=\"_blank\" href=\"" + accessorUrl + "\">Download</a></div>");
                             pane.append(body);
                             pane.append(link);
                         } else if (introExtension === "mp4") {
-                            var body = $("<video style='width:100%; margin-top: 10px; margin-bottom: 3px; max-height: 200px; overflow-y: auto' controls><source src='" + accessorUrl + "' type='video/mp4' /></video>");
+                            var body = $("<video class='puzzle-pane-content' controls><source src='" + accessorUrl + "' type='video/mp4' /></video>");
                             var link = $("<div style='margin-bottom: 10px'><a style='color: #59A0E6' target=\"_blank\" href=\"" + accessorUrl + "\">Download</a></div>");
                             pane.append(body);
                             pane.append(link);
                         } else if (introExtension === "link") {
-                            var link = $("<div style='padding: 30px; margin: auto; display: table'><a style='color: #59A0E6; font-size: 36px' target=\"_blank\" href=\"" + accessorUrl + "\"><img src='" + asset_url('youtube.png') + "' width='120' height='120' /></a></div>");
+                            var link = $("<iframe class='puzzle-pane-content' src='" + accessorUrl + "' frameborder='0' allow='autoplay; encrypted-media' allowfullscreen />");
                             pane.append(link);
                         } else {
-                            body = $("<a target=\"_blank\" href=\"" + accessorUrl + "\"><img src=\"" + accessorUrl + "\" style='width:100%; margin-top: 10px; margin-bottom: 10px; max-height: 200px; overflow-y: auto'/></a>");
+                            body = $("<a target=\"_blank\" href=\"" + accessorUrl + "\" class='puzzle-pane-content-img'><img src=\"" + accessorUrl + "\" class='puzzle-pane-content'/></a>");
+                            pane.append(body);
+                            body = $("<a target=\"_blank\" href=\"" + accessorUrl + "\" class='puzzle-pane-content puzzle-pane-content-background'  style='background-image: url(\"" + accessorUrl + "\") ' /></a>");
                             pane.append(body);
                         }
 
-                        pane.append($("<span style='margin-right: 15px'><label style='color: white; font-size: 14px'>Solve</label></span>"));
-                        var solveEntry = $("<input type='text' style='width: 245px' placeholder='Type the solution then press <Enter>' />");
-                        pane.append(solveEntry);
 
-                        var statusDiv = $("<div style='position: relative; height: 20px; margin-top: 10px; margin-bottom: 5px; overflow-y: auto; background-color: #444444'/>");
+                        var solveDiv = $("<div style='flex: 0 0 auto; display: flex; margin: 2px 0'  />")
+                        pane.append(solveDiv);
+
+                        solveDiv.append($("<span style='margin-right: 15px; flex 0 0 auto'><label style='color: white'>Solve</label></span>"));
+                        var solveEntry = $("<input class='puzzle-pane-solve' type='text' placeholder='Type the solution then press <Enter>' />");
+                        solveDiv.append(solveEntry);
+
+                        var statusDiv = $("<div style='flex: 0 0 auto; margin-top: 10px; margin-bottom: 5px; overflow-y: auto; background-color: #444444; padding: 2px 4px'/>");
                         pane.append(statusDiv);
 
-                        var statusLabel = $("<label style='color: white;  display: inline-block'>Awaiting input...</label>");
+                        var statusLabel = $("<label style='color: white; line-height: 20px; display: inline-block'>Awaiting input...</label>");
                         statusDiv.append(statusLabel);
 
                         solveEntry.keydown(function (evt) {
@@ -621,16 +653,16 @@ function reloadMap(openPuzzleId) {
                             }
                         });
                         if (!puzzle.hintDisabled) {
-                            var hintDiv = $("<div style='position: relative;  margin-top: 10px; margin-bottom: 5px; margin-right: 8px'>");
+                            var hintDiv = $("<div style='position: relative;  margin-top: 5px; margin-bottom: 5px; margin-right: 8px'>");
                             pane.append(hintDiv);
-                            var hintLink = $("<label style='color: #59A0E6; text-decoration: underline; cursor: pointer; text-align: end; display: block'>Need a hint?</label>");
+                            var hintLink = $("<label style='color: #59A0E6; text-decoration: underline; cursor: pointer; text-align: end; display: block; flex 0 0 auto'>Need a hint?</label>");
                             hintDiv.append(hintLink);
                             hintLink.click(function () {
                                 showHintDialog(puzzle.id, puzzle.name);
                             });
                         }
                     } else {
-                        var label = $("<label style='position: relative; color:white; font-size: 16px; text-align: center'></label>");
+                        var label = $("<label style='position: relative; color:white; text-align: center'></label>");
                         label.text("This is a timed puzzle. You have " + (puzzle.timeLimit / 60) + " minutes to solve it. You should gather your whole team!");
                         var labDiv = $("<div style='position: relative; margin-top: 10px'>");
                         labDiv.append(label);
@@ -666,7 +698,10 @@ var hintNext;
 var hintLastAvailable;
 
 $(document).ready(function () {
-    $(document).click(clearPanes);
+    $(document).click(() => {
+        paneMaximized = false;
+        clearPanes();
+    });
     $("#modal").click(function (event) {
         event.stopPropagation();
     });
@@ -680,7 +715,7 @@ $(document).ready(function () {
         hintNext = nextHintData.time;
 
         hintTimer = setInterval(function () {
-            var nowTime = Date.now()
+            var nowTime = Date.now();
             if (hintNext < nowTime) {
                 if (!hintLastAvailable) {
                     hintLastAvailable = true;
@@ -698,6 +733,17 @@ $(document).ready(function () {
             }
 
         }, 25);
+    });
+
+    $.get('getInstructions', function (instructions) {
+        if(!instructions) return;
+        var pane = $(".greeting-links");
+        console.log(instructions);
+        instructions.forEach(instruction => {
+            var link = $("<a class='greeting-links-item' href='getResource?accessor=" + instruction.resource + "' target='_blank' />");
+            link.text(instruction.name);
+            pane.append(link);
+        });
     });
 
     $("#statusPane").click(function () {

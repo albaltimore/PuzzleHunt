@@ -82,6 +82,11 @@ class PlayerController {
         render ret as JSON
     }
 
+    def getInstructions() {
+        def instructions = Instruction.list(sort: 'orderNumber').collect { [name: it.name, resource: it.resource.accessor] }
+        render instructions as JSON
+    }
+
     def startTimedPuzzle() {
         def player = Player.findById(session.playerId)
         def puzzle = Puzzle.findById(params.id)

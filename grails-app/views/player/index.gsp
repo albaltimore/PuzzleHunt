@@ -9,7 +9,7 @@
     <asset:stylesheet src="player/player.css"/>
     <asset:stylesheet src="player/bootstrap.css"/>
     <asset:javascript src="player/player.js"/>
-    <title>Puzzle Hunt</title>
+    <title>PuzzleHunt</title>
 </head>
 
 <body>
@@ -18,11 +18,9 @@
 <div class="root-div">
     <div id="rootPane">
         <div class="header-div">
-            <div id="titlePane" class='greeting greeting-title' style="display: none">
-            </div>
-
-            <div id="statusPane" class="greeting greeting-status" style="display: none">
-            </div>
+            <div id="linksPane" class="greeting greeting-links"></div>
+            <div id="titlePane" class='greeting greeting-title' style="display: none"></div>
+            <div id="statusPane" class="greeting greeting-status" style="display: none"></div>
         </div>
 
         <div class="notifiers">
@@ -35,7 +33,6 @@
 
 <div id="modal" style="visibility: hidden">
     <div id="modal-shade"></div>
-
     <div id="modal-root"></div>
 </div>
 </body>

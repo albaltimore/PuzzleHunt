@@ -41,7 +41,6 @@ class BootStrap {
         def puzzles = [:]
         def resources = [:]
         def rounds = [:]
-        def statuses = []
 
         config.rounds.each {
             rounds[it.id] = new Round(name: it.name, width: it.width, height: it.height, floorId: it.floorId)
@@ -125,13 +124,17 @@ class BootStrap {
             }
         }
 
-        config.statuses.each {
+        config.statuses?.each {
             println "add status ${it}"
             new PlayerStatus(statusLevel: it.level, resource: resources[it.resource], name: it.name, hintCount: it.hintCount ?: 0, hintTime: it.hintTime ?: 0, puzzleTime: it.puzzleTime ?: 0, priorityLine: it.priorityLine ?: false).save()
         }
 
-        config.activities.each {
+        config.activities?.each {
             new Activity(name: it.name).save(flush:true)
+        }
+
+        config.instructions?.eachWithIndex { it, i ->
+            new Instruction(orderNumber: i, resource: resources[it.resource], name: it.name).save(flush: true)
         }
 
         players.each {k,v-> println "player ${v.name} ${v.password} ${v.role}" ; v.save(flush:true)}
