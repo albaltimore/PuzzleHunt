@@ -75,10 +75,14 @@ function updateNote(show) {
     $.get("updateNote", {hintId: hintId, notes: $("#noteEntry").val()}, function () {
         if (show) {
             showDialog("Success");
+        } else {
+            location.reload();
         }
     }).fail(function () {
         if (show) {
             showDialog("Could not update");
+        } else {
+            location.reload();
         }
     });
 }
@@ -119,7 +123,7 @@ $(document).ready(function () {
             actionsDiv.append(reopenBtn);
             reopenBtn.click(function () {
                 $.post("reopenHint", {hintId: hintId}, function () {
-                    location.reload();
+                    updateNote(false);
                 }).fail(function () {
                     showDialog("Failed", function () {
                         location.reload();
@@ -132,7 +136,7 @@ $(document).ready(function () {
                 actionsDiv.append(claimBtn);
                 claimBtn.click(function () {
                     $.post("claimHint", {hintId: hintId}, function () {
-                        location.reload();
+                        updateNote(false);
                     }).fail(function () {
                         showDialog("Failed", function () {
                             location.reload();
@@ -144,7 +148,7 @@ $(document).ready(function () {
                 actionsDiv.append(stealBtn);
                 stealBtn.click(function () {
                     $.post("claimHint", {hintId: hintId, steal: true}, function () {
-                        location.reload();
+                        updateNote(false);
                     }).fail(function () {
                         showDialog("Failed", function () {
                             location.reload();
@@ -158,7 +162,7 @@ $(document).ready(function () {
                 actionsDiv.append(unclaimBtn);
                 unclaimBtn.click(function () {
                     $.post("unclaimHint", {hintId: hintId}, function () {
-                        location.reload();
+                        updateNote(false);
                     }).fail(function () {
                         showDialog("Failed", function () {
                             location.reload();
@@ -170,7 +174,7 @@ $(document).ready(function () {
                 actionsDiv.append(closeBtn);
                 closeBtn.click(function () {
                     $.post("closeHint", {hintId: hintId}, function () {
-                        location.reload();
+                        updateNote(false);
                     }).fail(function () {
                         showDialog("Failed", function () {
                             location.reload();
