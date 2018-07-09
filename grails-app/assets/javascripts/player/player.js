@@ -548,7 +548,7 @@ function reloadMap(openPuzzleId) {
 
                     if (puzzle.solvedAccessor) {
                         var accessorUrl = "getResource?accessor=" + puzzle.solvedAccessor;
-                        var introExtension = puzzle.solvedFilename ? puzzle.solvedFilename.substr(puzzle.introFilename.lastIndexOf(".") + 1).toLowerCase() : "link";
+                        var introExtension = puzzle.solvedFilename ? puzzle.solvedFilename.substr(puzzle.solvedFilename.lastIndexOf(".") + 1).toLowerCase() : "link";
 
                         if (introExtension === "pdf") {
                             var body = $("<object data='" + accessorUrl + "#view=FitH' class='puzzle-pane-content'/>");
@@ -736,7 +736,7 @@ $(document).ready(function () {
     });
 
     $.get('getInstructions', function (instructions) {
-        if(!instructions) return;
+        if (!instructions) return;
         var pane = $(".greeting-links");
         console.log(instructions);
         instructions.forEach(instruction => {
