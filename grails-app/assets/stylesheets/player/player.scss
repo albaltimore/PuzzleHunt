@@ -3,6 +3,9 @@
     Author     : Aleks
 */
 
+$fa-font-path: "../packaged/font-awesome/fonts";
+@import '../packaged/font-awesome/scss/font-awesome';
+
 body {
     padding: 0;
     margin: 0;
@@ -35,14 +38,14 @@ body {
         position: absolute;
         padding: 2px 6px 2px 6px;
         top: 5px;
-        right: 5px;
+        right: 0px;
         color: white;
         cursor: pointer;
         z-index: 100;
-        border: 2px solid;
-        &:before {
-            content: "+";
-        }
+        font-size: 14px;
+
+        @extend .fa;
+        @extend .fa-window-maximize;
     }
 
     &-maximized {
@@ -58,9 +61,8 @@ body {
         font-size: 36px;
 
         & > .puzzle-pane-maximize {
-            &:before {
-                content: "-";
-            }
+            @extend .fa;
+            @extend .fa-window-minimize;
         }
         & .puzzle-pane-content {
             max-height: none;
@@ -89,6 +91,7 @@ body {
         margin-top: 4px;
         font-size: 20px;
         flex: 0 0 auto;
+        padding: 0 30px;
     }
 
     &-content {
