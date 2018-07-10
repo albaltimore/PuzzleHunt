@@ -21,7 +21,7 @@ class PlayerController {
     def getPuzzles() {
         def player = Player.get(session.playerId)
         def solved = player.solvedPuzzles*.id
-        def timedStarted = PuzzleStart.findAllByPlayer player collect {println it.puzzle.name; it.puzzle.id}
+        def timedStarted = PuzzleStart.findAllByPlayer player collect {it.puzzle.id}
 
         def rounds = [:]
         def stat = player.status

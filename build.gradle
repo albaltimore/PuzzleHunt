@@ -110,5 +110,6 @@ clientDependencies {
     fileExtensions 'scss'
     npm {
         jquery('3.2.1') { include 'jquery.js' }
+        'font-awesome' ('4.7.0') { include 'scss/**', 'fonts/**' }
     }
 }

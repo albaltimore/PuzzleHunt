@@ -548,7 +548,7 @@ function reloadMap(openPuzzleId) {
 
                     if (puzzle.solvedAccessor) {
                         var accessorUrl = "getResource?accessor=" + puzzle.solvedAccessor;
-                        var introExtension = puzzle.solvedFilename ? puzzle.solvedFilename.substr(puzzle.introFilename.lastIndexOf(".") + 1).toLowerCase() : "link";
+                        var introExtension = puzzle.solvedFilename ? puzzle.solvedFilename.substr(puzzle.solvedFilename.lastIndexOf(".") + 1).toLowerCase() : "link";
 
                         if (introExtension === "pdf") {
                             var body = $("<object data='" + accessorUrl + "#view=FitH' class='puzzle-pane-content'/>");
@@ -663,7 +663,7 @@ function reloadMap(openPuzzleId) {
                         }
                     } else {
                         var label = $("<label style='position: relative; color:white; text-align: center'></label>");
-                        label.text("This is a timed puzzle. You have " + (puzzle.timeLimit / 60) + " minutes to solve it. You should gather your whole team!");
+                        label.text("This is a timed puzzle. You have " + (puzzle.timeLimit / 60) + " minutes to solve it. You should Maximize the puzzle prompt and gather your whole team!");
                         var labDiv = $("<div style='position: relative; margin-top: 10px'>");
                         labDiv.append(label);
                         pane.append(labDiv);
@@ -671,7 +671,7 @@ function reloadMap(openPuzzleId) {
                         var startBtn = $("<label style='cursor: pointer; color: white; margin-top: 10px; color: lightgreen'>Ok, start!</label>");
                         pane.append(startBtn);
                         startBtn.click(function () {
-                            showConfirmDialog("Are you sure? You'll have " + (puzzle.timeLimit / 60) + " minutes to solve it. Gather your whole team!", "Start!", "Cancel", function () {
+                            showConfirmDialog("Are you sure? You'll have " + (puzzle.timeLimit / 60) + " minutes to solve it. Maximize the puzzle prompt and gather your whole team!", "Start!", "Cancel", function () {
                                 $.post("startTimedPuzzle", {id: puzzle.id}, function (data) {
                                     reloadMap(puzzle.id);
                                 });
@@ -736,7 +736,7 @@ $(document).ready(function () {
     });
 
     $.get('getInstructions', function (instructions) {
-        if(!instructions) return;
+        if (!instructions) return;
         var pane = $(".greeting-links");
         console.log(instructions);
         instructions.forEach(instruction => {
@@ -748,7 +748,7 @@ $(document).ready(function () {
 
     $("#statusPane").click(function () {
         if (playerStatus) {
-            showDialog("You have achieved " + playerStatus.name + " hotel status!\n\n" +
+            showDialog("You have achieved " + playerStatus.name + " house points!\n\n" +
                 (playerStatus.priorityLine ? "You may now use the priority line.\n" : "") +
                 (playerStatus.hintTime ? "Your hint timer is decreased by " + playerStatus.hintTime + " seconds.\n" : "") +
                 (playerStatus.hintCount ? "You may now store up to " + (playerStatus.hintCount + 1) + " hints.\n" : "") +
