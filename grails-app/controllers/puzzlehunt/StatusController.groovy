@@ -12,6 +12,7 @@ class StatusController {
         def players = Player.findAllByRole(null).collect {
             [
                 name: it.description,
+                login: it.name,
                 priorityLine: it.getStatus()?.priorityLine,
                 solved: it.getSolvedPuzzles()*.name,
                 unlocked: it.getSolvablePuzzles()*.name,
@@ -19,15 +20,15 @@ class StatusController {
         }
         def puzzles = Puzzle.list()
 
-        def caseHack = 'Case:'
 
-        if (Player.findById(session.playerId).role == "PRINTER") {
-            puzzles = puzzles.findAll { !it.disableHint || it.name.substring(0, caseHack.length()) == caseHack }
+        def showAll = Player.findById(session.playerId).role != "PRINTER"
+
+        if (!showAll) {
+            def introHack = 'Intro'
+            puzzles = puzzles.findAll { !it.disableHint || it.name.endsWith(introHack) }
         }
 
-        def ret = [ players: players, puzzles: puzzles*.name ]
-        //String timestamp = new SimpleDateFormat("yyyyMMdd-HH:mm:ss").format(new Date());
-        //println timestamp+" Game status fetched"
+        def ret = [ players: players, puzzles: puzzles*.name, showAll: showAll ]
         render ret as JSON
     }
 }
