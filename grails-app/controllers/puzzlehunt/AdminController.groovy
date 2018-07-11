@@ -11,7 +11,9 @@ class AdminController {
         def players = Player.findAllByRoleIsNull().collect { [id: it.id, name: it.name, description: it.description] }
         def activities = Activity.list().collect { [id: it.id, name: it.name] }
 
-        def ret = [rounds: rounds, players: players, activities: activities, start: Property.findByName('START')?.value]
+        def alerts = Alert.list().inject [:], { acc, it -> acc[it.batchId] = [title: it.title, targetTime: it.targetTime]; acc }
+
+        def ret = [rounds: rounds, players: players, activities: activities, start: Property.findByName('START')?.value, alerts: alerts]
         render ret as JSON
     }
 
@@ -75,8 +77,10 @@ class AdminController {
     }
 
     def createAlert() {
+        def batchId = UUID.randomUUID().toString()
+
         def createAlertPlayer = { p ->
-            if (!new Alert(player: p, title: params.title, message: params.message, targetTime: params.targetTime, leadTime: params.leadTime).save(flush: true)) {
+            if (!new Alert(player: p, title: params.title, message: params.message, targetTime: params.targetTime, leadTime: params.leadTime, batchId: batchId).save(flush: true)) {
                 render status: 500
                 return
             }
@@ -88,6 +92,14 @@ class AdminController {
             createAlertPlayer(Player.findById(params.player))
         }
 
+        def ret = [success: "true"]
+        render ret as JSON
+    }
+    def deleteAlertsByBatchId() {
+        Alert.findAllByBatchId(params.batchId).each {
+            it.delete(flush: true)
+        }
+        
         def ret = [success: "true"]
         render ret as JSON
     }

@@ -1,5 +1,8 @@
 package puzzlehunt
 
+import groovy.transform.ToString;
+
+@ToString(includeNames=true)
 class Puzzle {
     static final def Alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890".toCharArray()
     static final def cleanSolution = { it.toUpperCase().toCharArray().findAll {c -> c in Alphabet} .join()}

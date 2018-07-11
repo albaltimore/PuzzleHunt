@@ -53,9 +53,14 @@
 <h3>Create Alert</h3>
 
 <div>
-    <label>Target Time</label><input type="datetime-local" id="alertTargetTime"/>
-    <label>Lead Time (Seconds)</label><input type="number" min="0" step="60" id="alertLeadTime" value="300"  />
-    <label>Player</label><select style="width: 150px" id='alertPlayerSelect'><option/></select>
+    <label>Target Time</label>
+    <input type="datetime-local" id="alertTargetTime"/>
+    <label>Lead Time (Seconds)</label>
+    <input type="number" min="0" step="60" id="alertLeadTime" value="300"/>
+    <label>Player</label>
+    <select style="width: 150px" id='alertPlayerSelect'>
+        <option/>
+    </select>
     <br/>
     <input type="text" id="alertTitle" style="width: 200px" placeholder="Alert title here..."/>
     <br/>
@@ -64,11 +69,18 @@
     <input id='alertSubmit' type="button" value='Create'/>
 </div>
 
+<h3>Delete Alerts</h3>
+<div id="alertsDiv">
+
+</div>
+
 <div id="modal" style="visibility: hidden; position: absolute; left: 0; right: 0; top: 0; bottom: 0; z-index: 100">
     <div id="modal-shade"></div>
 
     <div id="modal-root"></div>
 </div>
+
+
 
 </body>
 

@@ -7,6 +7,7 @@ class Alert {
     String message
     long targetTime
     int leadTime
+    String batchId
 
 
     static constraints = {

@@ -82,7 +82,7 @@ class BootStrap {
         }
 
         config.rounds.each {
-            rounds[it.id].requiredPuzzles = it.requiredPuzzles.collect {i -> puzzles[i]}
+            rounds[it.id].requiredPuzzles = it.requiredPuzzles.collect {i -> new RequiredPuzzle(puzzle: puzzles[i])}
             rounds[it.id].background = resources[it.background]
         }
 
@@ -105,11 +105,11 @@ class BootStrap {
 
                 if (pid?.pathResource) {
                     println pid?.pathResource
-					rp.pathResource = pid?.pathResource?.collect{ point ->
-						def rs = new PathResource(resource: resources[point.resource], xCor: point.xcor, yCor: point.ycor)
-						rs.save()
-						rs
-					}
+                    rp.pathResource = pid?.pathResource?.collect{ point ->
+                        def rs = new PathResource(resource: resources[point.resource], xCor: point.xcor, yCor: point.ycor)
+                        rs.save()
+                        rs
+                    }
                 }
 
                 if(!rp.save()) {

@@ -121,8 +121,30 @@ function init() {
             $("#activitySelect").append(option);
         });
 
-        if (data.start) {
+        var alertsDiv = $("#alertsDiv");
+        Object.keys(data.alerts).forEach(k => {
+            var alert = data.alerts[k];
+            var alertsPane = $("<div></div>");
+            alertsDiv.append(alertsPane);
+            alertsPane.append($("<label>" + alert.title +  "</label>"));
+            alertsPane.append($("<label style='color: gray'>|</label>"));
+            alertsPane.append($("<label>" + new Date(alert.targetTime).toLocaleString() +  "</label>"));
 
+            var deleteButton = $("<label style='cursor: pointer; color: #59A0E6'>delete</label>")
+            alertsPane.append(deleteButton);
+            deleteButton.click(function () {
+                $.post("deleteAlertsByBatchId", {batchId: k}, function () {
+                    console.log("succsess");
+                    showDialog("Success", refresh);
+                }).fail(function (data) {
+                    console.log(data);
+                    showDialog("Error :(", refresh);
+                });
+            });
+
+        });
+
+        if (data.start) {
             $("#startEntry").val(dateString(new Date(parseInt(data.start))));
         }
     });
