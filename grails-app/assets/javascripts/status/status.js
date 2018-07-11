@@ -1,13 +1,96 @@
 /* global jQuery */
 //= require packaged/jquery/jquery
 
-function reloadStatuses() {
-    var tableBody = $("#statusTable");
-    tableBody.empty();
-    //$(".statusTableRow").detach();
+const REFRESH_INTERVAL = 30000;
+const BLANK_VALUE = "_";
 
+function paintStatusForTeam(team)
+{
+  console.log("paintStatusForTeam('"+team+"')");
+  $.get("getStatus", function(statusData) {
+
+    $("#statusTable tbody").remove(); // Remove all non-header rows.
+
+    var players = statusData.players.filter(function (player) { return player.login === team; });
+
+    var tbody = $( "<tbody></tbody>" );
+
+
+    if (players.length === 1) {
+      var player = players[0];
+      statusData.puzzles.forEach(function(puzzleName) {
+        var style;
+        if (player.unlocked.indexOf(puzzleName) >= 0) {
+          style = "unlocked";
+        }
+        if (player.solved.indexOf(puzzleName) >= 0) {
+          style = "solved";
+        }
+        if (!style) { return; }
+        var row = $( "<tr><td><div class='" + style + "' /></td><td>" + puzzleName + "</td></tr>");
+        console.log("append row for "+puzzleName + " with style=" + style );
+        tbody.append(row);
+      });
+    }
+
+    $("#statusTable").append(tbody);
+  });
+}
+
+function initTeamComboBox()
+{
+  if (initTeamComboBox.initialized) { return; }
+
+  initTeamComboBox.initialized = true;
+  $.get("getStatus", function(statusData) {
+     var id = "\"teamComboBox\"";
+     teamComboBox = "<select id=" + id + " onchange='onTeamChange("+id+")'>";
+     teamComboBox += "<option value='"+BLANK_VALUE+"'> -- Select a Team -- </option>";
+     statusData.players.forEach(function (player) {
+       teamComboBox += "<option value='" + player.login + "'>" 
+                  + player.name + "</option>";
+     });
+     teamComboBox += "</select>";
+     var headerTr = $("<thead><th>"+teamComboBox+"</th><th>Team &rarr; Puzzle Status</th></thead>");
+     $("#statusTable").append(headerTr);
+     $("#statusTable").addClass("oneTeamView");
+  });
+}
+
+function onTeamChange(element_id)
+{
+  console.log("onTeamChange("+element_id+")");
+  if (onTeamChange.lastTimeout) {
+    window.clearTimeout(onTeamChange.lastTimeout);
+  }
+  var selected_val = document.getElementById(element_id).value;
+  reloadStatuses(selected_val);
+  if (selected_val !== BLANK_VALUE)  {
+    onTeamChange.lastTimeout = window.setTimeout(
+      function() { 
+        $("#"+element_id).val(BLANK_VALUE); 
+        onTeamChange(element_id); 
+      }, REFRESH_INTERVAL*4);
+  }
+}
+
+function reloadStatuses(team) {
+    // If a particular team has been provided, or we have a past team
+    //  we've loaded for, carry on doing that.
+    if (team) { reloadStatuses.team = team; }
+    if (reloadStatuses.team) {
+      paintStatusForTeam(reloadStatuses.team);
+      return;
+    }
 
     $.get("getStatus", function (statusData) {
+
+        // If we're not supposed to show all puzzles, instead initialize a
+        //  Team Selection Combo Box, and bail. initTeamComboBox is idempotent.
+        if (!statusData.showAll) { return initTeamComboBox(); }
+
+        var tableBody = $("#statusTable");
+        tableBody.empty();
 
         var cols = {};
         // statusData contains lists of puzzles & players
@@ -70,6 +153,6 @@ function reloadStatuses() {
 
 $(document).ready(function () {
     reloadStatuses();
-    var intervalID = window.setInterval(reloadStatuses, 30000);
+    window.setInterval(reloadStatuses, REFRESH_INTERVAL);
 });
 
