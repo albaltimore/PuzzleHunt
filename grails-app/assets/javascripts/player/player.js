@@ -364,7 +364,7 @@ function reloadMap(openPuzzleId) {
                 return;
             }
             rounds[round.id] = round;
-            var paneDiv = $("<div class='map-root' style='margin: auto; width: " + round.width + "px ;height: " + round.height + "px'>");
+            var paneDiv = $("<div class='map-root' style='width: " + round.width + "px ;height: " + round.height + "px'>");
             paneDiv.addClass("map-root-round-" + round.floorId);
             rootPane.append(paneDiv);
             var img = $("<img src=getResource?accessor=" + round.background + " style='position: absolute; z-index: 1'>");
