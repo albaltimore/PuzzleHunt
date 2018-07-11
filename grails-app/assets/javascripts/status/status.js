@@ -153,6 +153,6 @@ function reloadStatuses(team) {
 
 $(document).ready(function () {
     reloadStatuses();
-    //var intervalID = window.setInterval(reloadStatuses, REFRESH_INTERVAL);
+    window.setInterval(reloadStatuses, REFRESH_INTERVAL);
 });
 
