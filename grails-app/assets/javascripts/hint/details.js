@@ -184,6 +184,26 @@ $(document).ready(function () {
             }
         }
 
+        var deleteHintBtn = $("<input type='button' class='claim-button' style='color: red' value='Delete' />");
+        actionsDiv.append(deleteHintBtn);
+        deleteHintBtn.click(function () {
+            if (data.role === "ADMIN") {
+                showConfirmDialog("Are you sure you want to delete this hint", "Yes", "Cancel", () => {
+                    $.post("deleteHint", {hintId: hintId}, function () {
+                        showDialog("Hint Request Deleted", () => {window.location = "/hint/index";});
+
+                    }).fail(function () {
+                        showDialog("Failed", function () {
+                            location.reload();
+                        });
+                    });
+                });
+            } else {
+                showDialog("You can't delete hints, but you can ask one of the following admins to do it for you!\n\n" + data.admins.join(", "));
+            }
+
+        });
+
 
         console.log(data);
     }).fail(function () {

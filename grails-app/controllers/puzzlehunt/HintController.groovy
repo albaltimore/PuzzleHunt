@@ -117,7 +117,9 @@ class HintController {
             question: hint.question,
             puzzleAccessor: hint.puzzle?.introResource?.accessor,
             solutionAccessor: hint.puzzle?.solutionResource?.accessor,
-            notes: hint.notes
+            notes: hint.notes,
+            role: user.role,
+            admins: Player.findAllByRole("ADMIN")*.description
         ]
         render hintData as JSON
     }
@@ -170,6 +172,21 @@ class HintController {
         hint.closed = false
         hint.save(flush: true)
 
+        def ret = [success: true]
+        render ret as JSON
+    }
+
+    @Transactional
+    def deleteHint() {
+        def user = Player.findById(session.playerId)
+        if (user.role != "ADMIN") {
+            render status: 500, text: "Cannot delete hints"
+            return
+        }
+
+        def hint = Hint.findById(params.hintId)
+        hint.delete(flush: true)
+        
         def ret = [success: true]
         render ret as JSON
     }
