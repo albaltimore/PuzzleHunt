@@ -48,11 +48,14 @@ class Player {
     }
 
     def getStatus() {
-        def cid = Attempt.where { player == this } findAll {it.isCorrect} *.puzzle findAll {it.statusBoost} .unique() .size()
-        cid += (ActivityAttempt.where {player == this} *.statusPoints ?: [0]).sum()
-
+        def cid = getStatusPoints()
         def stati = PlayerStatus.where { statusLevel == max(statusLevel).of{ statusLevel <= cid } } .list()
         stati.size() ? stati.first() : null
+    }
+
+    def getStatusPoints() {
+        def cid = (getSolvedPuzzles() *.statusBoost ?: [0]).sum()
+        cid + (ActivityAttempt.where {player == this} *.statusPoints ?: [0]).sum()
     }
 
     static hasMany = [:]
