@@ -53,7 +53,7 @@ class BootStrap {
         println "All round ${rounds}"
 
         config.puzzles.each {
-            puzzles[it.id] = new Puzzle(xCor: it.xcor, yCor: it.ycor, name: it.name, solution: it.solution, round: rounds[it.round], timeLimit: it.timeLimit ?: null, disableHint: it.disableHint ?: false, statusBoost: it.statusBoost ?: false)
+            puzzles[it.id] = new Puzzle(xCor: it.xcor, yCor: it.ycor, name: it.name, solution: it.solution, round: rounds[it.round], timeLimit: it.timeLimit ?: null, disableHint: it.disableHint ?: false, statusBoost: it.statusBoost ?: 0)
             puzzles[it.id].partialSolutions = it.hints.collect { k, v ->
                 def ptl = new PartialSolution(partialSolution: k, hint: v ?: "You're on the right track, keep going!")
                 if(!ptl.save()) {

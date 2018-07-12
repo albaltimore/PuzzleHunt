@@ -25,6 +25,7 @@ class PlayerController {
 
         def rounds = [:]
         def stat = player.status
+        def statPoints = player.statusPoints
 
         def puzzles = player.solvablePuzzles.collect { p ->
             def started = p.timeLimit ? (p.id in timedStarted) : true
@@ -73,7 +74,9 @@ class PlayerController {
             hintTime: stat.hintTime,
             puzzleTime: stat.puzzleTime,
             hintCount: stat.hintCount,
-            priorityLine: stat.priorityLine
+            priorityLine: stat.priorityLine,
+            level: stat.statusLevel,
+            points: statPoints
         ] : null
 
 

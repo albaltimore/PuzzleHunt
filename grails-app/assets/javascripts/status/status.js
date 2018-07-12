@@ -9,9 +9,11 @@ function paintStatusForTeam(team)
   console.log("paintStatusForTeam('"+team+"')");
   $.get("getStatus", function(statusData) {
 
-    $("#statusTable tbody").remove(); // Remove all non-header rows.
+    $("#statusTable tbody").remove(); // Remove current non-header content
 
     var players = statusData.players.filter(function (player) { return player.login === team; });
+
+
 
     var tbody = $( "<tbody></tbody>" );
 
@@ -64,6 +66,12 @@ function onTeamChange(element_id)
     window.clearTimeout(onTeamChange.lastTimeout);
   }
   var selected_val = document.getElementById(element_id).value;
+
+  // Clear the grid and tell users it's loading.
+  $("#statusTable tbody").remove();
+  var loading_content = $( "<tbody><tr><td>Loading...</td><td></td></tr></tbody>" )
+  $("#statusTable").append(loading_content);
+
   reloadStatuses(selected_val);
   if (selected_val !== BLANK_VALUE)  {
     onTeamChange.lastTimeout = window.setTimeout(
