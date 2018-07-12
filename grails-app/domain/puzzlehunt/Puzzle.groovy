@@ -17,7 +17,7 @@ class Puzzle {
     Long timeLimit
     Set<RequiredPuzzle> requiredPuzzles
     boolean disableHint = false
-    boolean statusBoost = false
+    int statusBoost = 0
     Resource iconReadyResource
     Resource iconSolvedResource
     Resource iconFailedResource

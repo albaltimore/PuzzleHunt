@@ -352,7 +352,7 @@ function reloadMap(openPuzzleId) {
         } else {
             statusPane.css("display", "inline-block");
             statusPane.append($("<img src='getResource?accessor=" + playerStatus.resource + "'/>"));
-            statusPane.append($("<label >" + playerStatus.name + "</label>"));
+            statusPane.append($("<label >" + playerStatus.points + "</label>"));
         }
 
         playerData.rounds.forEach(function (round) {
@@ -748,7 +748,7 @@ $(document).ready(function () {
 
     $("#statusPane").click(function () {
         if (playerStatus) {
-            showDialog("You have achieved " + playerStatus.name + " house points!\n\n" +
+            showDialog("You have reached the " + playerStatus.level + " House Point threshold, granting the following benefits:\n\n" +
                 (playerStatus.priorityLine ? "You may now use the priority line.\n" : "") +
                 (playerStatus.hintTime ? "Your hint timer is decreased by " + playerStatus.hintTime + " seconds.\n" : "") +
                 (playerStatus.hintCount ? "You may now store up to " + (playerStatus.hintCount + 1) + " hints.\n" : "") +
