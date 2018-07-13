@@ -26,36 +26,36 @@ class Player {
     }
 
     def getSolvedPuzzles() {
-        Attempt.where { player == this } findAll {it.isCorrect} *.puzzle .unique()
+        Attempt.where { player == this } findAll { it.isCorrect }*.puzzle.unique()
     }
 
     def hasSolved(Puzzle puz) {
-        Attempt.where { player == this && puzzle == puz } *.isCorrect .contains true
+        Attempt.where { player == this && puzzle == puz }*.isCorrect.contains true
     }
 
     def getSolvablePuzzles() {
         def solved = getSolvedPuzzles()*.id
-        Puzzle.list().findAll { p-> p.id in solved || (!p.requiredPuzzles && (p.round.unlocked || !p.round.requiredPuzzles.size() || p.round.requiredPuzzles*.id.findAll {rp -> rp in solved} .size() )) || p.requiredPuzzles*.puzzle.findAll {rp -> rp.id in solved}.size() } .unique()
+        Puzzle.list().findAll { p -> p.id in solved || (!p.requiredPuzzles && (p.round.unlocked || !p.round.requiredPuzzles.size() || p.round.requiredPuzzles*.puzzle*.id.findAll { rp -> rp in solved }.size())) || p.requiredPuzzles*.puzzle.findAll { rp -> rp.id in solved }.size() }.unique()
     }
 
     def isSolvable(Puzzle puzzle) {
-        hasSolved(puzzle) || (!puzzle.requiredPuzzles && (puzzle.round.unlocked || !puzzle.round.requiredPuzzles.size() || puzzle.round.requiredPuzzles*.puzzle.findAll {rp -> hasSolved(rp)} .size())) || puzzle.requiredPuzzles*.puzzle.findAll { p-> hasSolved(p) } .size()
+        hasSolved(puzzle) || (!puzzle.requiredPuzzles && (puzzle.round.unlocked || !puzzle.round.requiredPuzzles.size() || puzzle.round.requiredPuzzles*.puzzle.findAll { rp -> hasSolved(rp) }.size())) || puzzle.requiredPuzzles*.puzzle.findAll { p -> hasSolved(p) }.size()
     }
 
     def getLastSubmission() {
-        def item = Attempt.where {timestamp == max(timestamp).of{ player==this } && player==this }.list()
+        def item = Attempt.where { timestamp == max(timestamp).of { player == this } && player == this }.list()
         item.size() ? item.first().timestamp : 0
     }
 
     def getStatus() {
         def cid = getStatusPoints()
-        def stati = PlayerStatus.where { statusLevel == max(statusLevel).of{ statusLevel <= cid } } .list()
+        def stati = PlayerStatus.where { statusLevel == max(statusLevel).of { statusLevel <= cid } }.list()
         stati.size() ? stati.first() : null
     }
 
     def getStatusPoints() {
-        def cid = (getSolvedPuzzles() *.statusBoost ?: [0]).sum()
-        cid + (ActivityAttempt.where {player == this} *.statusPoints ?: [0]).sum()
+        def cid = (getSolvedPuzzles()*.statusBoost ?: [0]).sum()
+        cid + (ActivityAttempt.where { player == this }*.statusPoints ?: [0]).sum()
     }
 
     static hasMany = [:]
