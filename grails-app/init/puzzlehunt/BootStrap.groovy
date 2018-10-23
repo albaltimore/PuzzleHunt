@@ -1,12 +1,7 @@
 package puzzlehunt
 
 import grails.core.GrailsApplication
-import grails.util.Environment
 import groovy.json.JsonSlurper
-
-import java.nio.file.Files
-import java.nio.file.Path
-import java.nio.file.Paths
 
 class BootStrap {
 
@@ -20,7 +15,7 @@ class BootStrap {
     }
 
     def loadFromPath() {
-        
+
         def bootstrapPath = grailsApplication.config.puzzlehunt.resourcePath
         println "bootstrapping"
         if (Puzzle.list().size()) return
@@ -30,7 +25,7 @@ class BootStrap {
 
         File f = new File(bootstrapPath + "/bootstrap.json")
 
-        if(!f.exists()) {
+        if (!f.exists()) {
             System.err.println "Could not find bootstrap manifest"
             return
         }
@@ -45,7 +40,7 @@ class BootStrap {
         config.rounds.each {
             rounds[it.id] = new Round(name: it.name, width: it.width, height: it.height, floorId: it.floorId)
 
-            if(!rounds[it.id].save()) {
+            if (!rounds[it.id].save()) {
                 println "Failed to save F ${it}"
             }
         }
@@ -53,15 +48,15 @@ class BootStrap {
         println "All round ${rounds}"
 
         config.puzzles.each {
-            puzzles[it.id] = new Puzzle(xCor: it.xcor, yCor: it.ycor, name: it.name, solution: it.solution, round: rounds[it.round], timeLimit: it.timeLimit ?: null, disableHint: it.disableHint ?: false, statusBoost: it.statusBoost ?: 0)
+            puzzles[it.id] = new Puzzle(xCor: it.xcor, yCor: it.ycor, name: it.name, solution: it.solution, round: rounds[it.round], timeLimit: it.timeLimit ?: null, disableHint: it.disableHint ?: false, statusBoost: it.statusBoost ?: 0, requiredCount: it.requiresCount ?: 0)
             puzzles[it.id].partialSolutions = it.hints.collect { k, v ->
                 def ptl = new PartialSolution(partialSolution: k, hint: v ?: "You're on the right track, keep going!")
-                if(!ptl.save()) {
+                if (!ptl.save()) {
                     println "Failed to save AA ${k} ${v} ${puzzles[it.id]}"
                 }
                 ptl
             }
-            if(!puzzles[it.id].save()) {
+            if (!puzzles[it.id].save()) {
                 def a = puzzles[it.id]
                 println "Failed to save A ${it} ${a.name} ${a.solution} ${a.round}"
             }
@@ -69,20 +64,20 @@ class BootStrap {
 
         config.players.each {
             players[it.name] = new Player(name: it.name, password: it.password, role: it.role, description: it.description, email: it.email ?: null, room: it.room ?: null)
-            if(!players[it.name].save()) {
+            if (!players[it.name].save()) {
                 println "Failed to save B ${it}"
             }
         }
 
         config.resources.each {
-            resources[it.id] = new Resource(puzzle: puzzles[it.puzzle], filename: it.file, accessor: UUID.randomUUID().toString(), linkUri: it.link , mustSolve: it.mustSolve ?: false, role: it.role ?: null)
-            if(!resources[it.id].save()){
+            resources[it.id] = new Resource(puzzle: puzzles[it.puzzle], filename: it.file, accessor: UUID.randomUUID().toString(), linkUri: it.link, mustSolve: it.mustSolve ?: false, role: it.role ?: null)
+            if (!resources[it.id].save()) {
                 println "Failed to save C ${it}"
             }
         }
 
         config.rounds.each {
-            rounds[it.id].requiredPuzzles = it.requiredPuzzles.collect {i -> new RequiredPuzzle(puzzle: puzzles[i])}
+            rounds[it.id].requiredPuzzles = it.requiredPuzzles.collect { i -> new RequiredPuzzle(puzzle: puzzles[i]) }
             rounds[it.id].background = resources[it.background]
         }
 
@@ -95,7 +90,7 @@ class BootStrap {
             if (it.iconSolvedResource) puzzles[it.id].iconSolvedResource = resources[it.iconSolvedResource]
             if (it.iconFailedResource) puzzles[it.id].iconFailedResource = resources[it.iconFailedResource]
 
-            puzzles[it.id].requiredPuzzles = it.requires.collect {pid ->
+            puzzles[it.id].requiredPuzzles = it.requires.collect { pid ->
                 def rp = new RequiredPuzzle(puzzle: puzzles[pid.puzzle], color: pid.color)
                 rp.coordinates = pid?.path?.collect { point ->
                     def co = new Coordinate(xCor: point.xcor, yCor: point.ycor)
@@ -105,17 +100,25 @@ class BootStrap {
 
                 if (pid?.pathResource) {
                     println pid?.pathResource
-                    rp.pathResource = pid?.pathResource?.collect{ point ->
+                    rp.pathResource = pid?.pathResource?.collect { point ->
                         def rs = new PathResource(resource: resources[point.resource], xCor: point.xcor, yCor: point.ycor)
                         rs.save()
                         rs
                     }
                 }
 
-                if(!rp.save()) {
+                if (!rp.save()) {
                     println "Failed to save D $it - $rp"
                 }
                 rp
+            }
+
+            if (it?.pathResource) {
+                puzzles[it.id].pathResource = it?.pathResource?.collect { point ->
+                    def rs = new PathResource(resource: resources[point.resource], xCor: point.xcor, yCor: point.ycor)
+                    rs.save()
+                    rs
+                }
             }
 
             println "puzzles ${puzzles[it.id].name} ${puzzles[it.id].requiredPuzzles*.puzzle*.name}"
@@ -130,17 +133,17 @@ class BootStrap {
         }
 
         config.activities?.each {
-            new Activity(name: it.name).save(flush:true)
+            new Activity(name: it.name).save(flush: true)
         }
 
         config.instructions?.eachWithIndex { it, i ->
             new Instruction(orderNumber: i, resource: resources[it.resource], name: it.name).save(flush: true)
         }
 
-        players.each {k,v-> println "player ${v.name} ${v.password} ${v.role}" ; v.save(flush:true)}
-        puzzles.each{k,v->v.save(flush:true)}
-        resources.each{k,v->println "resource ${v.filename} ${v.accessor} ${v.role}"; v.save(flush:true)}
-        rounds.each{k,v->v.save(flush:true)}
+        players.each { k, v -> println "player ${v.name} ${v.password} ${v.role}"; v.save(flush: true) }
+        puzzles.each { k, v -> v.save(flush: true) }
+        resources.each { k, v -> println "resource ${v.filename} ${v.accessor} ${v.role}"; v.save(flush: true) }
+        rounds.each { k, v -> v.save(flush: true) }
 
         //        println players
         //        println puzzles

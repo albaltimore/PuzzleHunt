@@ -416,6 +416,15 @@ function reloadMap(openPuzzleId) {
         console.log(rounds);
         playerData.puzzles.forEach(function (puzzle) {
             pMap[puzzle.id] = puzzle;
+
+            if (puzzle.pathResource) {
+                puzzle.pathResource.forEach(function (pr) {
+                    var img = $("<img src='" + "getResource?accessor=" + pr.resource + "' />");
+                    img.css({top: pr.yCor + "px", left: pr.xCor + "px", position: 'absolute'});
+                    rounds[puzzle.roundId].pointsDiv.append(img);
+                });
+            }
+
             puzzle.requiredPuzzles.filter(function (rp) {
                 return pMap[rp.id];
             }).forEach(function (rp) {

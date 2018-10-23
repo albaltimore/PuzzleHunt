@@ -16,6 +16,8 @@ class Puzzle {
     Round round
     Long timeLimit
     Set<RequiredPuzzle> requiredPuzzles
+    List<PathResource> pathResource
+    int requiredCount = 0
     boolean disableHint = false
     int statusBoost = 0
     Resource iconReadyResource

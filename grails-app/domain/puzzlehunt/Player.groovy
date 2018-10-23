@@ -35,11 +35,12 @@ class Player {
 
     def getSolvablePuzzles() {
         def solved = getSolvedPuzzles()*.id
-        Puzzle.list().findAll { p -> p.id in solved || (!p.requiredPuzzles && (p.round.unlocked || !p.round.requiredPuzzles.size() || p.round.requiredPuzzles*.puzzle*.id.findAll { rp -> rp in solved }.size())) || p.requiredPuzzles*.puzzle.findAll { rp -> rp.id in solved }.size() }.unique()
+        Puzzle.list().findAll { p -> p.id in solved || (((!p.requiredPuzzles && (p.round.unlocked || !p.round.requiredPuzzles.size() || p.round.requiredPuzzles*.puzzle*.id.findAll { rp -> rp in solved }.size())) || p.requiredPuzzles*.puzzle.findAll { rp -> rp.id in solved }.size()) && p.requiredCount <= solved.size())  }.unique()
     }
 
     def isSolvable(Puzzle puzzle) {
-        hasSolved(puzzle) || (!puzzle.requiredPuzzles && (puzzle.round.unlocked || !puzzle.round.requiredPuzzles.size() || puzzle.round.requiredPuzzles*.puzzle.findAll { rp -> hasSolved(rp) }.size())) || puzzle.requiredPuzzles*.puzzle.findAll { p -> hasSolved(p) }.size()
+        def solved = getSolvedPuzzles()*.id
+        hasSolved(puzzle) || (((!puzzle.requiredPuzzles && (puzzle.round.unlocked || !puzzle.round.requiredPuzzles.size() || puzzle.round.requiredPuzzles*.puzzle.findAll { rp -> hasSolved(rp) }.size())) || puzzle.requiredPuzzles*.puzzle.findAll { p -> hasSolved(p) }.size()) && puzzle.requiredCount <= solved.size())
     }
 
     def getLastSubmission() {
