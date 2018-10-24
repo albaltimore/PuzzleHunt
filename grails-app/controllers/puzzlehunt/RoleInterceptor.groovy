@@ -36,6 +36,11 @@ class RoleInterceptor {
             return false
         }
 
+        if (!player.firstLoginTime) {
+            player.firstLoginTime = System.currentTimeMillis()
+            player.save(flush: true)
+        }
+
         true
     }
 

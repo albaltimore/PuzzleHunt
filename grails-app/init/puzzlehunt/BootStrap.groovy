@@ -56,9 +56,9 @@ class BootStrap {
                 }
                 ptl
             }
-            if (!puzzles[it.id].save()) {
+            if (!puzzles[it.id].save(failOnError: true)) {
                 def a = puzzles[it.id]
-                println "Failed to save A ${it} ${a.name} ${a.solution} ${a.round}"
+                println "Failed to save A ${it} $a"
             }
         }
 
@@ -118,6 +118,14 @@ class BootStrap {
                     def rs = new PathResource(resource: resources[point.resource], xCor: point.xcor, yCor: point.ycor)
                     rs.save()
                     rs
+                }
+            }
+
+            if (it?.hintResources) {
+                puzzles[it.id].hintResources = it.hintResources.collect { hr ->
+                    def hres = new HintResource(resource: resources[hr.resource], seconds: hr.seconds, description: hr.text)
+                    hres.save()
+                    hres
                 }
             }
 

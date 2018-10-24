@@ -1,7 +1,8 @@
 package puzzlehunt
 
 import grails.converters.JSON
-import grails.transaction.Transactional
+import grails.gorm.transactions.Transactional
+
 
 class HintController {
 
@@ -13,9 +14,7 @@ class HintController {
         "mp4": "video/mp4"
     ]
 
-    def index() {
-
-    }
+    def index() {}
 
     def getHints() {
         def player = Player.findById(session.playerId)
@@ -97,7 +96,6 @@ class HintController {
             render status: 500
             return
         }
-
     }
 
     def getHintDetails() {

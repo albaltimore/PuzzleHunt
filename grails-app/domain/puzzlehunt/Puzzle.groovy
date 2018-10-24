@@ -23,6 +23,7 @@ class Puzzle {
     Resource iconReadyResource
     Resource iconSolvedResource
     Resource iconFailedResource
+    List<Resource> hintResources
 
     def getPartialSolution(input) {
         def ret = null
@@ -30,7 +31,7 @@ class Puzzle {
         return ret
     }
 
-    static hasMany = [requiredPuzzles: RequiredPuzzle, partialSolutions: PartialSolution]
+    static hasMany = [requiredPuzzles: RequiredPuzzle, partialSolutions: PartialSolution, pathResource: PathResource, hintResources: HintResource]
 
     static constraints = {
         name unique: true

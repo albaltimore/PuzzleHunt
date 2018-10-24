@@ -13,6 +13,7 @@ class Player {
     String email
     String room
     String description
+    Long firstLoginTime
 
     static constraints = {
         name unique: true
@@ -23,19 +24,37 @@ class Player {
         email nullable: true
         room nullable: true
         description nullable: true
+        firstLoginTime nullable: true
     }
 
     def getSolvedPuzzles() {
-        Attempt.where { player == this } findAll { it.isCorrect }*.puzzle.unique()
+        Attempt.findAllByPlayerAndIsCorrect(this, true)*.puzzle.unique()
     }
 
     def hasSolved(Puzzle puz) {
         Attempt.where { player == this && puzzle == puz }*.isCorrect.contains true
     }
 
+    def firstSolution(Puzzle p) {
+        Attempt.findAllByPlayerAndPuzzleAndIsCorrect(this, p, true)*.timestamp.min()
+    }
+
+    def getUnlockTime(Puzzle p) {
+        //TODO handle all other cases
+
+        if (!p.requiredCount) return firstLoginTime
+        def times = Attempt.findAllByPlayerAndIsCorrect(this, true).collect {
+            firstSolution(it.puzzle)
+        }.findAll().sort()
+
+        if (times.size() < p.requiredCount) return null
+
+        times[p.requiredCount - 1]
+    }
+
     def getSolvablePuzzles() {
         def solved = getSolvedPuzzles()*.id
-        Puzzle.list().findAll { p -> p.id in solved || (((!p.requiredPuzzles && (p.round.unlocked || !p.round.requiredPuzzles.size() || p.round.requiredPuzzles*.puzzle*.id.findAll { rp -> rp in solved }.size())) || p.requiredPuzzles*.puzzle.findAll { rp -> rp.id in solved }.size()) && p.requiredCount <= solved.size())  }.unique()
+        Puzzle.list().findAll { p -> p.id in solved || (((!p.requiredPuzzles && (p.round.unlocked || !p.round.requiredPuzzles.size() || p.round.requiredPuzzles*.puzzle*.id.findAll { rp -> rp in solved }.size())) || p.requiredPuzzles*.puzzle.findAll { rp -> rp.id in solved }.size()) && p.requiredCount <= solved.size()) }.unique()
     }
 
     def isSolvable(Puzzle puzzle) {

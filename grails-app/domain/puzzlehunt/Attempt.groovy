@@ -10,13 +10,18 @@ class Attempt {
     String answer
     boolean isSkip = false
     long timestamp
+    boolean isCorrect
 
-    def getIsCorrect() {
-        isSkip || cleanSolution(puzzle.solution) == cleanSolution(answer)
-    }
+//    def getIsCorrect() {
+//        isSkip || cleanSolution(puzzle.solution) == cleanSolution(answer)
+//    }
 
     static belongsTo = [puzzle: "puzzle", player: "player"]
 
     static constraints = {
+    }
+
+    static boolean checkIfCorrect(Puzzle puzzle, String answer) {
+        cleanSolution(puzzle.solution) == cleanSolution(answer)
     }
 }

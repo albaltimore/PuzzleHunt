@@ -81,6 +81,70 @@ function closeLoading() {
     modal.css("visibility", "hidden");
 }
 
+function showHintResourcesDialog(puzzleId, puzzleName) {
+    $.get("getHintResources", {id: puzzleId}, function (hintResources) {
+
+        console.log(hintResources);
+
+        var modal = $("#modal");
+        var modalRoot = $("#modal-root");
+        modal.css("visibility", "visible");
+        modalRoot.empty();
+
+        var pane = $("<div style='padding: 20px; max-width: 600px; position: relative' />");
+        modalRoot.append(pane);
+
+        pane.append($(`<label style='color: white; display: block; font-size: 24px;'>${puzzleName}</label>`));
+
+
+        hintResources.forEach(hr => {
+            if (hr.filename && hr.accessor) {
+                var accessorUrl = "getResource?accessor=" + hr.accessor;
+                var extension = hr.filename ? hr.filename.substr(hr.filename.lastIndexOf(".") + 1).toLowerCase() : "link";
+
+                if (extension === "pdf") {
+                    var body = $("<object data='" + accessorUrl + "#view=FitH' class='puzzle-pane-content'/>");
+                    var link = $("<div style='margin-bottom: 10px'><a style='color: #59A0E6' target=\"_blank\" href=\"" + accessorUrl + "\">Download</a></div>");
+                    pane.append(body);
+                    pane.append(link);
+                } else if (extension === "mp4") {
+                    body = $("<video class='puzzle-pane-content' controls><source src='" + accessorUrl + "' type='video/mp4' /></video>");
+                    link = $("<div style='margin-bottom: 10px'><a style='color: #59A0E6' target=\"_blank\" href=\"" + accessorUrl + "\">Download</a></div>");
+                    pane.append(body);
+                    pane.append(link);
+                } else if (extension === "link") {
+                    link = $("<iframe class='puzzle-pane-content' src='" + accessorUrl + "' frameborder='0' allow='autoplay; encrypted-media' allowfullscreen />");
+                    pane.append(link);
+                } else {
+                    body = $("<a target=\"_blank\" href=\"" + accessorUrl + "\"  class='puzzle-pane-content-img' ><img src=\"" + accessorUrl + "\" class='puzzle-pane-content'/></a>");
+                    pane.append(body);
+                    body = $("<a target=\"_blank\" href=\"" + accessorUrl + "\"  class='puzzle-pane-content-background puzzle-pane-content'  style='background-image: url(\"" + accessorUrl + "\") ' /></a>");
+                    pane.append(body);
+                }
+            }
+            if (hr.description) {
+                pane.append($(`<label style='color: white; display: block; font-size: 18px;'>${hr.description}</label>`));
+            }
+            if (hr.unlockTime) {
+                pane.append($(`<label style='color: yellow; display: block; font-size: 18px;'>Next Hint avialiable at ${new Date(hr.unlockTime).toTimeString()}</label>`));
+            }
+        });
+
+
+        var closeDiv = $("<div style='position: relative; left: 50%; transform: translate(-50%); display: inline-block' />");
+        pane.append(closeDiv);
+
+        var closeNo = $("<input type='button' value='Close' class='modal-button-close' />");
+        closeNo.css("left", "285px");
+        closeNo.css("top", "430px");
+        closeNo.click(function () {
+            pane.remove();
+            modal.css("visibility", "hidden");
+        });
+        closeDiv.append(closeNo);
+    });
+}
+
 function showHintDialog(puzzleId, puzzleName, hintText) {
     $.get("nextHintTime", function (nextHintData) {
         hintNext = nextHintData.time;
@@ -670,6 +734,16 @@ function reloadMap(openPuzzleId) {
                                 showHintDialog(puzzle.id, puzzle.name);
                             });
                         }
+                        if (puzzle.hasHintResources) {
+                            hintDiv = $("<div style='position: relative;  margin-top: 5px; margin-bottom: 5px; margin-right: 8px'>");
+                            pane.append(hintDiv);
+                            hintLink = $("<label style='color: #59A0E6; text-decoration: underline; cursor: pointer; text-align: end; display: block; flex 0 0 auto'>Show Hints</label>");
+                            hintDiv.append(hintLink);
+                            hintLink.click(function () {
+                                showHintResourcesDialog(puzzle.id, puzzle.name);
+                            });
+                        }
+
                     } else {
                         var label = $("<label style='position: relative; color:white; text-align: center'></label>");
                         label.text("This is a timed puzzle. You have " + (puzzle.timeLimit / 60) + " minutes to solve it. You should Maximize the puzzle prompt and gather your whole team!");
