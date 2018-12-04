@@ -8,6 +8,8 @@ class PlayerController {
     def gameService
 
     def index() {
+        def player = Player.get(session.playerId)
+        return [player: player]
     }
 
     private static final EXTENSION_TYPES = [

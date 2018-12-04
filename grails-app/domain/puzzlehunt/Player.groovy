@@ -78,5 +78,17 @@ class Player {
         cid + (ActivityAttempt.where { player == this }*.statusPoints ?: [0]).sum()
     }
 
+    def getTeam() {
+        Team.withCriteria(uniqueResult: true) {
+            members {
+                idEq(id)
+            }
+        }
+    }
+
+    def getPendingTeamInvites() {
+        TeamInvite.getPendingInvites(this)
+    }
+
     static hasMany = [:]
 }
