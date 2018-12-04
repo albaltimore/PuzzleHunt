@@ -25,7 +25,7 @@
             </g:link>
         </g:else>
 
-        <g:link controller="teamInvite" action="index">
+        <g:link controller="teamInvite">
             <button type="button">View invites</button>
         </g:link>
 

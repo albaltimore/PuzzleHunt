@@ -36,7 +36,7 @@ class HintController {
     }
 
     def refreshlist() {
-        redirect controller: "hint", action: "index"
+        redirect controller: "hint"
     }
 
     @Transactional

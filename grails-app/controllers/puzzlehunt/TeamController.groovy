@@ -20,7 +20,7 @@ class TeamController {
         def player = Player.get(session.playerId)
         def team = player.team
         if (!team) {
-            redirect controller: "player", action: "index"
+            redirect controller: "player"
             return
         }
         return [team: team, id: params.id]
@@ -38,10 +38,10 @@ class TeamController {
         def team = Team.get(params.id)
 
         team.removeFromMembers(player).save(flush: true)
-        redirect controller: "player", action: "index"
+        redirect controller: "player"
     }
 
-    def finalizeTeam()  {
+    def finalizeTeam() {
         def team = Team.get(params.id)
         team.setIsFinalized(true)
         team.save(flush: true)
@@ -128,7 +128,6 @@ class TeamController {
                 level       : stat.statusLevel,
                 points      : statPoints
         ] : null
-
 
 
         def ret = [puzzles: puzzles, rounds: rounds.values(), status: status, contactInfo: team.contactInfo]
@@ -310,4 +309,18 @@ class TeamController {
         }
     }
 
+    def getAlerts() {
+        def player = Player.findById(session.playerId)
+        def alerts = Alert.findAllByPlayer(player).findAll {
+            it.targetTime - (1000 * it.leadTime) < System.currentTimeMillis()
+        }.collect {[
+                id            : it.id,
+                title         : it.title,
+                message       : it.message,
+                targetTime    : it.targetTime,
+                leadTime      : it.leadTime,
+                isAcknowledged: it.isAcknowledged
+        ]}
+        render alerts as JSON
+    }
 }

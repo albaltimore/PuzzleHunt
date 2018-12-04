@@ -3,8 +3,10 @@ package puzzlehunt
 
 class EventInterceptor {
 
+    int order = 200
+
     public EventInterceptor() {
-        match controller: "team", action: "index"
+        match controller: "team"
     }
 
     boolean before() {
