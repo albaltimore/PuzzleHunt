@@ -6,9 +6,9 @@
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <link rel="shortcut icon" type="image/png" href="${assetPath(src: 'favicon.png')}"/>
-    <asset:stylesheet src="player/player.css"/>
-    <asset:stylesheet src="player/bootstrap.css"/>
-    <asset:javascript src="player.js"/>
+    <asset:stylesheet src="team/team.css"/>
+    <asset:stylesheet src="team/bootstrap.css"/>
+    <asset:javascript src="team/team.js"/>
     <title>PuzzleHunt</title>
 </head>
 

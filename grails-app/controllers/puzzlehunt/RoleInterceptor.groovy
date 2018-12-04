@@ -2,9 +2,9 @@ package puzzlehunt
 
 class RoleInterceptor {
 
-    private static final CONTROLLERS = ['player', 'hint', 'status', 'admin']
+    private static final CONTROLLERS = ['player', 'hint', 'status', 'admin', 'team']
     private static
-    final ROLES = [HINTER: ['hint', 'status'], PRINTER: ['status'], ADMIN: ['admin', 'hint', 'status'], PLAYER: ['player']]
+    final ROLES = [HINTER: ['hint', 'status'], PRINTER: ['status'], ADMIN: ['admin', 'hint', 'status'], PLAYER: ['player', 'team']]
 
     RoleInterceptor() {
         CONTROLLERS.each {
@@ -23,13 +23,6 @@ class RoleInterceptor {
             redirect controller: 'login'
             return false
         }
-
-        if (role == 'PLAYER' && ((Property.findByName('START')?.value ?: 0) as Long) > System.currentTimeMillis()) {
-            flash.message = "The hunt hasn't started yet. It begins at ${new Date((Property.findByName('START')?.value ?: 0) as Long)}."
-            forward controller: 'login'
-            return false
-        }
-
 
         if (!(controllerName in ROLES[role])) {
             redirect controller: ROLES[role][0]

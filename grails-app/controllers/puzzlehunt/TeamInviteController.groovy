@@ -21,20 +21,20 @@ class TeamInviteController {
         } else {
             flash.message = "That player does not exist."
         }
-        redirect action: "newInvite", params: params
+        forward action: "newInvite", params: params
     }
 
     def acceptInvite() {
         def invite = TeamInvite.get(params.id)
         invite.accept()
 
-        redirect controller: "team", action: "show", id: invite.team.id
+        forward controller: "team", action: "show"
     }
 
     def declineInvite() {
         def invite = TeamInvite.get(params.id)
         invite.decline()
 
-        redirect action: "index"
+        forward action: "index"
     }
 }

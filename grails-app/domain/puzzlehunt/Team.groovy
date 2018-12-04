@@ -14,6 +14,8 @@ class Team {
     static constraints = {
         name unique: true
         lastHint nullable: true
+        teamStatus nullable: true
+        contactInfo nullable: true
     }
 
     static hasMany = [members: Player]

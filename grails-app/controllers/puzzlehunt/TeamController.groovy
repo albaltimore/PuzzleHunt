@@ -12,10 +12,17 @@ class TeamController {
             "mp4": "video/mp4"
     ]
 
+    def index() {}
+
     def newTeam() {}
 
     def show() {
-        def team = Team.get(params.id)
+        def player = Player.get(session.playerId)
+        def team = player.team
+        if (!team) {
+            redirect controller: "player", action: "index"
+            return
+        }
         return [team: team, id: params.id]
     }
 
@@ -38,15 +45,20 @@ class TeamController {
         def team = Team.get(params.id)
         team.setIsFinalized(true)
         team.save(flush: true)
-        redirect action: "show", id: params.id
+        redirect action: "index"
     }
 
     def unfinalizeTeam() {
-        // TODO: Conditional on the event having not started yet
-        def team = Team.get(params.id)
-        team.setIsFinalized(false)
-        team.save(flush: true)
-        redirect action: "show", id: params.id
+        def hasEventStarted = ((Property.findByName('START')?.value ?: 0) as Long) <= System.currentTimeMillis()
+        if (hasEventStarted) {
+            flash.message = "Cannot unfinalize a team after the event has started."
+        } else {
+            def team = Team.get(params.id)
+            team.setIsFinalized(false)
+            team.save(flush: true)
+            flash.message = "Team unfinalized"
+        }
+        forward action: "show"
     }
 
     def getPuzzles() {
@@ -62,8 +74,9 @@ class TeamController {
 
         def puzzles = team.solvablePuzzles.collect { p ->
             def started = p.timeLimit ? (p.id in timedStarted) : true
-            def startTime = p.id in timedStarted ? PuzzleStart.findAllByTeamAndPuzzle(team, p).startTime : null
+            def startTime = p.id in timedStarted ? PuzzleStart.findByTeamAndPuzzle(team, p).startTime : null
             def timeLimit = p.timeLimit ? p.timeLimit + (team.status?.puzzleTime ?: 0) : null
+
             def failed = p.timeLimit && started && (startTime + (timeLimit * 1000) < System.currentTimeMillis())
 
             if (!(p.round.id in rounds)) {
@@ -193,7 +206,7 @@ class TeamController {
 
         def puzzle = Puzzle.findById(params.id)
 
-        if (team.hasSolved(puzzle) || !team.isSolvable(puzzle) || team.disableHint) {
+        if (team.hasSolved(puzzle) || !team.isSolvable(puzzle) || puzzle.disableHint) {
             def ret = [error: "You can't request a hint for this puzzle."]
             render ret as JSON
             return
@@ -296,4 +309,5 @@ class TeamController {
             render status: 404
         }
     }
+
 }

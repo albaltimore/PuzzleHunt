@@ -8,6 +8,10 @@ class PlayerController {
 
     def index() {
         def player = Player.get(session.playerId)
+        if (player.team) {
+            redirect controller: "team", action: "index", id: player.team.id
+            return
+        }
         return [player: player]
     }
 
