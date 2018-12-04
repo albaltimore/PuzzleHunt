@@ -4,28 +4,28 @@
 const REFRESH_INTERVAL = 30000;
 const BLANK_VALUE = "_";
 
-function paintStatusForTeam(team)
+function paintStatusForTeam(teamName)
 {
   console.log("paintStatusForTeam('"+team+"')");
   $.get("getStatus", function(statusData) {
 
     $("#statusTable tbody").remove(); // Remove current non-header content
 
-    var players = statusData.players.filter(function (player) { return player.login === team; });
+    var teams = statusData.teams.filter(function (team) { return team.name === teamName; });
 
 
 
     var tbody = $( "<tbody></tbody>" );
 
 
-    if (players.length === 1) {
-      var player = players[0];
+    if (teams.length === 1) {
+      var team = teams[0];
       statusData.puzzles.forEach(function(puzzleName) {
         var style;
-        if (player.unlocked.indexOf(puzzleName) >= 0) {
+        if (team.unlocked.indexOf(puzzleName) >= 0) {
           style = "unlocked";
         }
-        if (player.solved.indexOf(puzzleName) >= 0) {
+        if (team.solved.indexOf(puzzleName) >= 0) {
           style = "solved";
         }
         if (!style) { return; }
@@ -48,9 +48,9 @@ function initTeamComboBox()
      var id = "\"teamComboBox\"";
      teamComboBox = "<select id=" + id + " onchange='onTeamChange("+id+")'>";
      teamComboBox += "<option value='"+BLANK_VALUE+"'> -- Select a Team -- </option>";
-     statusData.players.forEach(function (player) {
-       teamComboBox += "<option value='" + player.login + "'>" 
-                  + player.name + "</option>";
+     statusData.teams.forEach(function (team) {
+       teamComboBox += "<option value='" + team.name + "'>" 
+                  + team.name + "</option>";
      });
      teamComboBox += "</select>";
      var headerTr = $("<thead><th>"+teamComboBox+"</th><th>Team &rarr; Puzzle Status</th></thead>");
@@ -116,15 +116,15 @@ function reloadStatuses(team) {
 
         tableBody.append(headerTr);
 
-        statusData.players.forEach(function (player) {
+        statusData.teams.forEach(function (team) {
             var rowTr = $("<tr>");
-            rowTr.append("<th" + (player.priorityLine ? " class='priority'" : "") + ">" + player.name + "</th></tr>");
+            rowTr.append("<th" + (team.priorityLine ? " class='priority'" : "") + ">" + team.name + "</th></tr>");
             // ensure we go in the same order and cover all players every time.
             statusData.puzzles.forEach(function (puzzle) {
                 var style = "";
-                if (player.solved.indexOf(puzzle) >= 0) {
+                if (team.solved.indexOf(puzzle) >= 0) {
                     style = "solved";
-                } else if (player.unlocked.indexOf(puzzle) >= 0) {
+                } else if (team.unlocked.indexOf(puzzle) >= 0) {
                     style = "unlocked";
                 }
                 var td = $("<td><div class='" + style + "' /></td>");

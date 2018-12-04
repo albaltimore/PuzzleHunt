@@ -1,7 +1,7 @@
 package puzzlehunt
 
 class Hint {
-    Player player
+    Team team
     Puzzle puzzle
     String question
     String notes // notes from owner on how hint went
@@ -17,5 +17,5 @@ class Hint {
         question maxSize: 1200
     }
 
-    static belongsTo = [puzzle: "puzzle", player: "player", owner: "player"]
+    static belongsTo = [puzzle: "puzzle", team: "team", owner: "player"]
 }

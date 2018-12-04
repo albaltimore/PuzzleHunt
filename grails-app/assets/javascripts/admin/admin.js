@@ -109,10 +109,19 @@ function init() {
                 option.text(player.description);
                 $(widget).append(option);
             }
-
-            addOption("#playerSelect");
             addOption("#alertPlayerSelect")
         });
+
+        data.teams.forEach(function (team) {
+            function addOption(widget) {
+                var option = $("<option></option>");
+                option.val(team.id);
+                option.text(team.name);
+                $(widget).append(option);
+            }
+
+            addOption("teamSelect");
+        })
 
         data.activities.forEach(function (activity) {
             var option = $("<option></option>");
@@ -154,33 +163,33 @@ function init() {
 $(document).ready(function () {
     init();
 
-    $("#playerSelect").change(function () {
-        $("#setPlayerActivityDiv").css("display", "none");
+    $("#teamSelect").change(function () {
+        $("#setTeamActivityDiv").css("display", "none");
     });
 
     $("#activitySelect").change(function () {
-        $("#setPlayerActivityDiv").css("display", "none");
+        $("#setTeamActivityDiv").css("display", "none");
     });
 
-    $("#findPlayerActivityButton").click(function () {
-        $("#setPlayerActivityDiv").css("display", "none");
-        $.get("getPlayerActivityPoints", {
-            player: parseInt($("#playerSelect").val()),
+    $("#findTeamActivityButton").click(function () {
+        $("#setTeamActivityDiv").css("display", "none");
+        $.get("getTeamActivityPoints", {
+            team: parseInt($("#teamSelect").val()),
             activity: parseInt($("#activitySelect").val())
         }, function (data) {
-            $("#setPlayerActivityDiv").css("display", "block");
-            $("#playerActivityPointsValue").val(data.points);
+            $("#setTeamActivityDiv").css("display", "block");
+            $("#teamActivityPointsValue").val(data.points);
             console.log(data);
         }).fail(function (err) {
             console.log(err);
             showDialog("No Data Available");
         });
     });
-    $("#playerActivityPointsSubmit").click(function () {
-        $.post("setPlayerActivityPoints", {
-            player: parseInt($("#playerSelect").val()),
+    $("#teamActivityPointsSubmit").click(function () {
+        $.post("setTeamActivityPoints", {
+            player: parseInt($("#team").val()),
             activity: parseInt($("#activitySelect").val()),
-            points: $("#playerActivityPointsValue").val()
+            points: $("#teamActivityPointsValue").val()
         }, function (data) {
             console.log("succsess");
             showDialog("Success", refresh);

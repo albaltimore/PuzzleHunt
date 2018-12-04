@@ -2,7 +2,7 @@ package puzzlehunt
 
 class PuzzleStart {
     Puzzle puzzle
-    Player player
+    Team team
     long startTime
 
     static constraints = {

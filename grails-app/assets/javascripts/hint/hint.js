@@ -13,7 +13,7 @@ function reloadHintQueue() {
 
         hintData.hints.map(function (hint) {
             var lastHints = hintData.hints.filter(function (otherHint) {
-                return otherHint.puzzle === hint.puzzle && otherHint.player === hint.player && otherHint.owner;
+                return otherHint.puzzle === hint.puzzle && otherHint.team === hint.team && otherHint.owner;
             });
             hint.lastOwner = lastHints.length ? lastHints[0].owner : "";
 
@@ -62,7 +62,7 @@ function reloadHintQueue() {
             });
 
             [
-                hint.player,
+                hint.team,
                 hint.puzzle,
                 hint.question,
                 hint.owner ? hint.owner : "(Nobody)",

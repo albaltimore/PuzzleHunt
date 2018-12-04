@@ -106,7 +106,7 @@ $(document).ready(function () {
             $("#ownerBonusLabel").css("color", "green");
         }
 
-        $("#requestorLabel").text(data.playerName);
+        $("#requestorLabel").text(data.teamName);
         $("#contactLabel").text(data.contactInfo);
 
         $("#noteEntry").val(data.notes);

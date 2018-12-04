@@ -9,10 +9,9 @@ class StatusController {
     }
 
     def getStatus() {
-        def players = Player.findAllByRole(null).collect {
+        def teams = Team.all.collect {
             [
-                name: it.description,
-                login: it.name,
+                name: it.name,
                 priorityLine: it.getStatus()?.priorityLine,
                 solved: it.getSolvedPuzzles()*.name,
                 unlocked: it.getSolvablePuzzles()*.name,
@@ -28,7 +27,7 @@ class StatusController {
             puzzles = puzzles.findAll { !it.disableHint || it.name.endsWith(introHack) }
         }
 
-        def ret = [ players: players, puzzles: puzzles*.name, showAll: showAll ]
+        def ret = [ teams: teams, puzzles: puzzles*.name, showAll: showAll ]
         render ret as JSON
     }
 }

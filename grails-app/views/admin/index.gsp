@@ -20,25 +20,25 @@
 
 <div id='unlockDiv'></div>
 
-<h3>Player Status Bonus</h3>
+<h3>Team Status Bonus</h3>
 
 <div>
     <div>
-        <label>Player</label>
-        <select style="width: 150px" id='playerSelect'>
+        <label>Team</label>
+        <select style="width: 150px" id='teamSelect'>
             <option/>
         </select>
         <label>Activity</label>
         <select style="width: 150px" id='activitySelect'>
             <option/>
         </select>
-        <input id="findPlayerActivityButton" type='button' value="Find"/>
+        <input id="findTeamActivityButton" type='button' value="Find"/>
     </div>
 
-    <div id='setPlayerActivityDiv' style='display: none'>
+    <div id='setTeamActivityDiv' style='display: none'>
         <label>Points</label>
-        <input id="playerActivityPointsValue" type="number" min="0" step='1'/>
-        <input id='playerActivityPointsSubmit' type="button" value='Update'/>
+        <input id="teamActivityPointsValue" type="number" min="0" step='1'/>
+        <input id='teamActivityPointsSubmit' type="button" value='Update'/>
     </div>
 </div>
 

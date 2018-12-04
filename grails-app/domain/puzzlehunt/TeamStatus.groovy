@@ -1,6 +1,6 @@
 package puzzlehunt
 
-class PlayerStatus {
+class TeamStatus {
     int statusLevel
     long hintTime = 0
     long puzzleTime = 0
