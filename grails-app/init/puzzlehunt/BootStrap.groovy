@@ -137,7 +137,7 @@ class BootStrap {
 
         config.statuses?.each {
             println "add status ${it}"
-            new PlayerStatus(statusLevel: it.level, resource: resources[it.resource], name: it.name, hintCount: it.hintCount ?: 0, hintTime: it.hintTime ?: 0, puzzleTime: it.puzzleTime ?: 0, priorityLine: it.priorityLine ?: false).save()
+            new TeamStatus(statusLevel: it.level, resource: resources[it.resource], name: it.name, hintCount: it.hintCount ?: 0, hintTime: it.hintTime ?: 0, puzzleTime: it.puzzleTime ?: 0, priorityLine: it.priorityLine ?: false).save()
         }
 
         config.activities?.each {

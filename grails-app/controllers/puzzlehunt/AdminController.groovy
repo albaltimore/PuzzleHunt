@@ -9,11 +9,12 @@ class AdminController {
     def getData() {
         def rounds = Round.list().collect { [id: it.id, name: it.name, unlocked: it.unlocked] }
         def players = Player.findAllByRoleIsNull().collect { [id: it.id, name: it.name, description: it.description] }
+        def teams = Team.all.collect { [id: it.id, name: id.name]}
         def activities = Activity.list().collect { [id: it.id, name: it.name] }
 
         def alerts = Alert.list().inject [:], { acc, it -> acc[it.batchId] = [title: it.title, targetTime: it.targetTime]; acc }
 
-        def ret = [rounds: rounds, players: players, activities: activities, start: Property.findByName('START')?.value, alerts: alerts]
+        def ret = [rounds: rounds, players: players, activities: activities, start: Property.findByName('START')?.value, alerts: alerts, teams: teams]
         render ret as JSON
     }
 
@@ -29,10 +30,10 @@ class AdminController {
         render ret as JSON
     }
 
-    def getPlayerActivityPoints() {
-        def player = Player.findById(params.player)
+    def getTeamActivityPoints() {
+        def team = Team.findById(params.team)
         def activity = Activity.findById(params.activity)
-        def attempt = ActivityAttempt.findByPlayerAndActivity(player, activity)
+        def attempt = ActivityAttempt.findByTeamAndActivity(team, activity)
 
         if (attempt) {
             def ret = [points: attempt.statusPoints]
@@ -43,19 +44,19 @@ class AdminController {
         render ret as JSON
     }
 
-    def setPlayerActivityPoints() {
+    def setTeamActivityPoints() {
         println params
-        def player = Player.findById(params.player)
+        def team = Team.findById(params.team)
         def activity = Activity.findById(params.activity)
-        def attempt = ActivityAttempt.findByPlayerAndActivity(player, activity)
+        def attempt = ActivityAttempt.findByTeamAndActivity(team, activity)
 
         if (!attempt) {
-            attempt = new ActivityAttempt(player: player, activity: activity, statusPoints: Integer.parseInt(params.points))
+            attempt = new ActivityAttempt(team: team, activity: activity, statusPoints: Integer.parseInt(params.points))
         } else {
             attempt.statusPoints = Integer.parseInt(params.points)
         }
         if (!attempt.save(flush: true)) {
-            println "Failed To Save ${attempt.player} ${attempt.activty} ${attempt.points}"
+            println "Failed To Save ${attempt.team} ${attempt.activity} ${attempt.statusPoints}"
             render status: 500
         }
 

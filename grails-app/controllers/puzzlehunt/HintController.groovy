@@ -18,13 +18,14 @@ class HintController {
 
     def getHints() {
         def player = Player.findById(session.playerId)
+        def team = player.team
 
         def hints = Hint.list().collect {
             [
                 id: it.id,
                 question: it.question,
                 puzzle: it.puzzle.name,
-                player: it.player.description,
+                team: it.team.name,
                 owner: it.owner?.description,
                 createTime : it.createTime,
                 open : !it.closed,
@@ -35,7 +36,7 @@ class HintController {
     }
 
     def refreshlist() {
-        redirect controller: "hint", action: "index"
+        redirect controller: "hint"
     }
 
     @Transactional
@@ -109,7 +110,7 @@ class HintController {
             hintId: params.hintId,
             hinterName: hint.owner?.description,
             closed: hint.closed,
-            playerName: hint.player.description,
+            teamName: hint.team.name,
             contactInfo: hint.contactInfo,
             puzzleName: hint.puzzle.name,
             question: hint.question,

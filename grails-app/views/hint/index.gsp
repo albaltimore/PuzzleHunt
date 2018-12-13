@@ -21,7 +21,7 @@
             <table id="hintsTable" class="owned-table">
                 <tr>
                     <th class="bloomberg-title-cell">
-                        <label>Player</label>
+                        <label>Team</label>
                     </th>
                     <th class="bloomberg-title-cell">
                         <label>Puzzle</label>

@@ -384,13 +384,13 @@ function clearPoints() {
 
 var rounds = {};
 var selectedRound;
-var playerStatus;
+var teamStatus;
 var contactInfo;
 
 function reloadMap(openPuzzleId) {
     clearPoints();
-    $.get("getPuzzles", function (playerData) {
-        console.log('player data', playerData);
+    $.get("getPuzzles", function (teamData) {
+        console.log('team data', teamData);
         var rootPane = $("#rootPane");
         var pMap = {};
 
@@ -406,20 +406,20 @@ function reloadMap(openPuzzleId) {
         titleDiv.css("display", "inline-block");
         titleDiv.empty();
 
-        contactInfo = playerData.contactInfo;
+        contactInfo = teamData.contactInfo;
 
-        playerStatus = playerData.status;
+        teamStatus = teamData.status;
         var statusPane = $("#statusPane");
         statusPane.empty();
-        if (!playerData.status) {
+        if (!teamStatus) {
             statusPane.css("display", "none");
         } else {
             statusPane.css("display", "inline-block");
-            statusPane.append($("<img src='getResource?accessor=" + playerStatus.resource + "'/>"));
-            statusPane.append($("<label >" + playerStatus.points + "</label>"));
+            statusPane.append($("<img src='getResource?accessor=" + teamStatus.resource + "'/>"));
+            statusPane.append($("<label >" + teamStatus.points + "</label>"));
         }
 
-        playerData.rounds.forEach(function (round) {
+        teamData.rounds.forEach(function (round) {
             console.log(round.id, parseInt(window.location.hash.substr(1)));
             if (!selectedRound && round.id === parseInt(window.location.hash.substr(1))) {
                 selectedRound = round.id;
@@ -446,10 +446,10 @@ function reloadMap(openPuzzleId) {
 
 
         if (!selectedRound) {
-            selectRound("" + playerData.rounds[0].id);
+            selectRound("" + teamData.rounds[0].id);
         }
 
-        if (playerData.rounds.length > 1) {
+        if (teamData.rounds.length > 1) {
             var desLabel = $("<label class='greeting-title-multimap' />");
             titleDiv.append(desLabel);
             var links = [];
@@ -473,12 +473,12 @@ function reloadMap(openPuzzleId) {
             titleDiv.append(desLabel);
         }
 
-        playerData.puzzles.forEach(function (puzzle) {
+        teamData.puzzles.forEach(function (puzzle) {
             pMap[puzzle.id] = puzzle;
         });
 
         console.log(rounds);
-        playerData.puzzles.forEach(function (puzzle) {
+        teamData.puzzles.forEach(function (puzzle) {
             pMap[puzzle.id] = puzzle;
 
             if (puzzle.pathResource) {
@@ -534,7 +534,7 @@ function reloadMap(openPuzzleId) {
             });
         });
 
-        playerData.puzzles.forEach(function (puzzle) {
+        teamData.puzzles.forEach(function (puzzle) {
             if (puzzle.iconAccessor) {
                 var pointDiv = false;
                 var point = $("<img class='puzzle-point puzzle-point-image' src='" + "getResource?accessor=" + puzzle.iconAccessor + "' style='position: absolute; cursor: pointer; transform: translate(-50%, -50%)' />");
@@ -830,12 +830,12 @@ $(document).ready(function () {
     });
 
     $("#statusPane").click(function () {
-        if (playerStatus) {
-            showDialog("You have reached the " + playerStatus.level + " House Point threshold, granting the following benefits:\n\n" +
-                (playerStatus.priorityLine ? "You may now use the priority line.\n" : "") +
-                (playerStatus.hintTime ? "Your hint timer is decreased by " + playerStatus.hintTime + " seconds.\n" : "") +
-                (playerStatus.hintCount ? "You may now store up to " + (playerStatus.hintCount + 1) + " hints.\n" : "") +
-                (playerStatus.puzzleTime ? "Your speed puzzle timer is increased by " + playerStatus.puzzleTime + " seconds.\n" : ""));
+        if (teamStatus) {
+            showDialog("You have reached the " + teamStatus.level + " House Point threshold, granting the following benefits:\n\n" +
+                (teamStatus.priorityLine ? "You may now use the priority line.\n" : "") +
+                (teamStatus.hintTime ? "Your hint timer is decreased by " + teamStatus.hintTime + " seconds.\n" : "") +
+                (teamStatus.hintCount ? "You may now store up to " + (teamStatus.hintCount + 1) + " hints.\n" : "") +
+                (teamStatus.puzzleTime ? "Your speed puzzle timer is increased by " + teamStatus.puzzleTime + " seconds.\n" : ""));
         }
     });
 

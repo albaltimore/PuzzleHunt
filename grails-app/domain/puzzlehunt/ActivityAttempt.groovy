@@ -1,7 +1,7 @@
 package puzzlehunt
 
 class ActivityAttempt {
-    Player player
+    Team team
     Activity activity
     Integer statusPoints = 0
 
