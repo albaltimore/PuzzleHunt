@@ -1,6 +1,6 @@
 /* global jQuery */
 
-//= require packaged/jquery/jquery
+//= require jquery/jquery
 
 function showDialog(text, cb) {
     var modal = $("#modal");

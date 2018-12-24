@@ -9,7 +9,7 @@ class AdminController {
     def getData() {
         def rounds = Round.list().collect { [id: it.id, name: it.name, unlocked: it.unlocked] }
         def players = Player.findAllByRoleIsNull().collect { [id: it.id, name: it.name, description: it.description] }
-        def teams = Team.all.collect { [id: it.id, name: id.name]}
+        def teams = Team.list().collect { [id: it.id, name: it.name]}
         def activities = Activity.list().collect { [id: it.id, name: it.name] }
 
         def alerts = Alert.list().inject [:], { acc, it -> acc[it.batchId] = [title: it.title, targetTime: it.targetTime]; acc }

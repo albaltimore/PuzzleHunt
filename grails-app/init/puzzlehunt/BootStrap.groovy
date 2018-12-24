@@ -6,7 +6,6 @@ import groovy.json.JsonSlurper
 class BootStrap {
 
     GrailsApplication grailsApplication
-    def propertiesService
 
     def init = { servletContext ->
         loadFromPath()
@@ -36,6 +35,10 @@ class BootStrap {
         def puzzles = [:]
         def resources = [:]
         def rounds = [:]
+
+        config.properties?.each { k, v ->
+            new Property(name: k, value: "$v").save(flush: true)
+        }
 
         config.rounds.each {
             rounds[it.id] = new Round(name: it.name, width: it.width, height: it.height, floorId: it.floorId)

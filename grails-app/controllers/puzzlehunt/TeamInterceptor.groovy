@@ -1,13 +1,14 @@
 package puzzlehunt
 
 
-class EventInterceptor {
+class TeamInterceptor {
 
-    int order = 200
+    int order = 201
 
-    public EventInterceptor() {
-        match controller: "team"
+    public TeamInterceptor() {
+        match controller: 'team'
     }
+
 
     boolean before() {
         def player = Player.get(session.playerId)
@@ -15,10 +16,10 @@ class EventInterceptor {
         def hasEventStarted = ((Property.findByName('START')?.value ?: 0) as Long) <= System.currentTimeMillis()
 
         if (team && team.isFinalized && hasEventStarted) {
-            return true
-        } else {
-            redirect controller: "team", action: "show"
+            redirect controller: 'player'
+            false
         }
+        true
     }
 
     boolean after() { true }

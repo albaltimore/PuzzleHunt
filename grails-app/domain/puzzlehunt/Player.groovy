@@ -8,6 +8,7 @@ class Player {
     String room
     String description
     Long firstLoginTime
+    Team team
 
     static constraints = {
         name unique: true
@@ -16,18 +17,7 @@ class Player {
         room nullable: true
         description nullable: true
         firstLoginTime nullable: true
-    }
-
-    def getTeam() {
-        Team.withCriteria(uniqueResult: true) {
-            members {
-                idEq(id)
-            }
-        } as Team
-    }
-
-    def getPendingTeamInvites() {
-        TeamInvite.getPendingInvites(this)
+        team nullable: true
     }
 
     static hasMany = [:]

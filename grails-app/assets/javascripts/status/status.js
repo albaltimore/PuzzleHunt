@@ -1,5 +1,5 @@
 /* global jQuery */
-//= require packaged/jquery/jquery
+//= require jquery/jquery
 
 const REFRESH_INTERVAL = 30000;
 const BLANK_VALUE = "_";
@@ -106,7 +106,7 @@ function reloadStatuses(team) {
         //  status, solved puzzle names, & accessed puzzle names.
         console.log(statusData);
 
-        // construct the header row for teams up top.
+        // construct the header row for team up top.
         var headerTr = $("<tr><th><b>STATUS BOARD</b></th></tr>");
         statusData.puzzles.forEach(function (puzzleName) {
             var td = $("<td>" + puzzleName + "</td>");

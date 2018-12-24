@@ -2,23 +2,24 @@ package puzzlehunt
 
 class Team {
     String name
-    Set<Player> members
     boolean isFinalized = false
-    TeamStatus teamStatus
+    boolean isPublic = false
+    String teamKey = UUID.randomUUID().toString()
+    boolean hasStarted = false
+
     Long lastHint = 0
     long hintRegen = 1000 * 60 * 20
     int hintCount = 0
     int hintMaxCount = 1
     String contactInfo
+    Long unlockTime
 
     static constraints = {
         name unique: true
         lastHint nullable: true
-        teamStatus nullable: true
         contactInfo nullable: true
+        unlockTime nullable: true
     }
-
-    static hasMany = [members: Player]
 
     def getSolvedPuzzles() {
         Attempt.findAllByTeamAndIsCorrect(this, true)*.puzzle.unique()
@@ -26,23 +27,6 @@ class Team {
 
     def hasSolved(Puzzle puz) {
         Attempt.where { team == this && puzzle == puz }*.isCorrect.contains true
-    }
-
-    def firstSolution(Puzzle p) {
-        Attempt.findAllByTeamAndPuzzleAndIsCorrect(this, p, true)*.timestamp.min()
-    }
-
-    def getUnlockTime(Puzzle p) {
-        //TODO handle all other cases
-
-        if (!p.requiredCount) return 0
-        def times = Attempt.findAllByTeamAndIsCorrect(this, true).collect {
-            firstSolution(it.puzzle)
-        }.findAll().sort()
-
-        if (times.size() < p.requiredCount) return null
-
-        times[p.requiredCount - 1]
     }
 
     def getSolvablePuzzles() {
