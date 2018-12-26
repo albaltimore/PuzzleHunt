@@ -72,6 +72,8 @@ dependencies {
     runtime 'org.apache.derby:derbyclient:10.14.2.0'
     runtime 'mysql:mysql-connector-java:8.0.11'
     runtime 'org.postgresql:postgresql:42.2.3.jre7'
+
+    compile 'com.google.api-client:google-api-client:1.24.1'
 }
 
 task preBootRun(type: Copy) {
@@ -108,6 +110,7 @@ assets {
 clientDependencies {
     installDir 'grails-app/assets/packaged'
     fileExtensions 'scss'
+
     npm {
         jquery('3.2.1') { include 'jquery.js' }
         'font-awesome' ('4.7.0') { include 'scss/**', 'fonts/**' }

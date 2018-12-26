@@ -88,6 +88,7 @@ grails:
             springsecuritycompatibility: false
     dbconsole:
         enabled: true
+
 endpoints:
     jmx:
         unique-names: true
