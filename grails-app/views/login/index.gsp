@@ -14,7 +14,7 @@
     <asset:stylesheet src="login/login.css"/>
     <asset:stylesheet src="login/bootstrap.css"/>
     <asset:javascript src="login/index.js"/>
-
+    
     <meta name="google-signin-client_id"
           content="98624763155-ig63kk95v6jfs3803m7o53qpgbaqb1nm.apps.googleusercontent.com">
     <script src="https://apis.google.com/js/platform.js?onload=loadedGoogle" async defer></script>
@@ -23,6 +23,7 @@
 </head>
 
 <body>
+<div id="fb-root"></div>
 <g:form useToken="true" action="login" controller="login">
     <div class="root-div">
         <div class="content-div">
@@ -38,6 +39,7 @@
 
             <label class="input-label">Login or Create Account:</label>
             <div id="withGoogle" class="login-provider-button login-provider-button-google"></div>
+            <div id="withFacebook" class="fb-login-button login-provider-button login-provider-button-facebook" data-width="500" data-size="large" data-button-type="login_with" data-show-faces="false" data-auto-logout-link="false" data-use-continue-as="false" data-scope="email"></div>
 
 
             <label class="input-label">Username:</label>
@@ -54,6 +56,10 @@
 
 <g:form style="display: none" action="googleAuth" class="googleAuth">
     <g:textField name="idtoken" id="googleIdToken"/>
+</g:form>
+
+<g:form style="display: none" action="facebookAuth" class="facebookAuth">
+    <g:textField name="idtoken" id="facebookIdToken"/>
 </g:form>
 
 </body>

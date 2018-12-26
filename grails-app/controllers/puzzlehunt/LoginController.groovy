@@ -5,6 +5,7 @@ import com.google.api.client.googleapis.auth.oauth2.GoogleIdTokenVerifier
 import com.google.api.client.http.apache.ApacheHttpTransport
 import com.google.api.client.json.jackson2.JacksonFactory
 import grails.converters.JSON
+import groovy.json.JsonSlurper
 
 class LoginController {
 
@@ -51,14 +52,45 @@ class LoginController {
             player = new Player(name: payload.email, email: payload.email, source: 'google')
             println player
 
-            if(!player.save(flush: true)) {
+            if (!player.save(flush: true)) {
 
                 player.errors.allErrors.each {
                     println it
                 }
 
-                render 'failed to login'
+                flash.message = 'Could not register user'
+                forward action: 'index'
                 return
+            }
+        }
+        session.playerId = player.id
+        session.playerName = player.name
+        redirect controller: 'player'
+    }
+
+
+    def facebookAuth() {
+        def payload
+        try {
+            def urlParams = [fields: 'name,email', access_token: params.idtoken]
+            payload = new JsonSlurper().parse(new URL("https://graph.facebook.com/v3.2/me?${urlParams.collect { k, v -> "$k=${URLEncoder.encode(v, 'UTF-8')}" } join '&'}"))
+        } catch (Exception ex) {
+            flash.message = 'Could not register user'
+            forward action: 'index'
+            return
+        }
+
+        Player player = Player.findBySourceAndEmail('facebook', payload.email)
+        if (!player) {
+            player = new Player(name: payload.email, email: payload.email, source: 'facebook')
+            println player
+
+            if (!player.save(flush: true)) {
+
+                player.errors.allErrors.each {
+                    println it
+                }
+
                 flash.message = 'Could not register user'
                 forward action: 'index'
                 return
