@@ -20,3 +20,20 @@
 .login-provider-button {
     margin-top: 4px;
 }
+
+.login-provider-button-microsoft {
+    box-sizing: border-box;
+    background-color: white;
+    width: 400px;
+    height: 40px;
+    position: relative;
+    display: block;
+}
+
+.login-provider-button-microsoft:before {
+    content: "Microsoft";
+    position: absolute;
+    top:50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}

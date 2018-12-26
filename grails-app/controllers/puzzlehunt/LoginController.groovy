@@ -4,7 +4,6 @@ import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdTokenVerifier
 import com.google.api.client.http.apache.ApacheHttpTransport
 import com.google.api.client.json.jackson2.JacksonFactory
-import grails.converters.JSON
 import groovy.json.JsonSlurper
 
 class LoginController {
@@ -83,6 +82,46 @@ class LoginController {
         Player player = Player.findBySourceAndEmail('facebook', payload.email)
         if (!player) {
             player = new Player(name: payload.email, email: payload.email, source: 'facebook')
+            println player
+
+            if (!player.save(flush: true)) {
+
+                player.errors.allErrors.each {
+                    println it
+                }
+
+                flash.message = 'Could not register user'
+                forward action: 'index'
+                return
+            }
+        }
+        session.playerId = player.id
+        session.playerName = player.name
+        redirect controller: 'player'
+    }
+
+    def microsoftAuth() {
+        def payload
+        HttpURLConnection c
+
+        try {
+            def url = new URL('https://graph.microsoft.com/v1.0/me')
+            c = (HttpURLConnection) url.openConnection()
+            c.setRequestProperty 'Authorization', "Bearer $params.idtoken"
+            c.setRequestProperty 'Accept', 'application/json'
+            payload = new JsonSlurper().parse(c.inputStream)
+        } catch(Exception ex) {
+            ex.printStackTrace()
+            if (c && c.errorStream) System.err.println c.errorStream.text
+
+            flash.message = 'Could not register user'
+            forward action: 'index'
+            return
+        }
+
+        Player player = Player.findBySourceAndEmail('microsoft', payload.userPrincipalName)
+        if (!player) {
+            player = new Player(name: payload.userPrincipalName, email: payload.userPrincipalName, source: 'microsoft')
             println player
 
             if (!player.save(flush: true)) {

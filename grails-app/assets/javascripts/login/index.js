@@ -8,7 +8,8 @@ function loadedGoogle() {
     console.log('hi');
     gapi.signin2.render('withGoogle', {
         longtitle: true,
-        width: '500',
+        width: '400',
+        height: '40'
     });
 
     console.log(gapi);
