@@ -33,6 +33,13 @@
             <g:if test="${flash.message}">
                 <label class="flash-message">${flash.message}</label>
             </g:if>
+            <label id="otherMessage" style="display: none" class="flash-message"></label>
+
+
+            <label class="input-label">Login or Create Account:</label>
+            <div id="withGoogle" class="login-provider-button login-provider-button-google"></div>
+
+
             <label class="input-label">Username:</label>
             <input type="text" name="username" placeholder="USERNAME" class="login-entry" value=""/>
 
@@ -41,12 +48,11 @@
             <input type="submit" value="LOGIN" class="submit-button"/>
 
 
-            <div id="withGoogle"></div>
         </div>
     </div>
 </g:form>
 
-<g:form style="display: block" action="googleAuth" class="googleAuth">
+<g:form style="display: none" action="googleAuth" class="googleAuth">
     <g:textField name="idtoken" id="googleIdToken"/>
 </g:form>
 

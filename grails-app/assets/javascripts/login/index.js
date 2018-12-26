@@ -1,25 +1,22 @@
-function onGoogle(googleUser) {
-
-
-    console.log('google sign in', googleUser);
-    var id_token = googleUser.getAuthResponse().id_token;
-
-    document.getElementById('googleIdToken').value = id_token;
-    document.querySelector('.googleAuth').submit();
-
-    // var xhr = new XMLHttpRequest();
-    // xhr.open('POST', 'googleAuth');
-    // xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
-    // xhr.onload = function () {
-    //     console.log('Signed in as: ' + xhr.responseText);
-    // };
-    // xhr.send('idtoken=' + id_token);
+function displayMessage(msg) {
+    var elem = document.getElementById('otherMessage');
+    elem.textContent = msg;
+    elem.style.display = null;
 }
 
 function loadedGoogle() {
     console.log('hi');
     gapi.signin2.render('withGoogle', {
         longtitle: true,
-        onsuccess: onGoogle
+        width: '500',
+    });
+
+    console.log(gapi);
+    gapi.load('auth2', () => {
+        gapi.auth2.getAuthInstance().attachClickHandler('withGoogle', {}, function (googleUser) {
+            console.log('google sign in', googleUser);
+            document.getElementById('googleIdToken').value = googleUser.getAuthResponse().id_token;
+            document.querySelector('.googleAuth').submit();
+        }, () => displayMessage('Failed to login with Google'));
     });
 }

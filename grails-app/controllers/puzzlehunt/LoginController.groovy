@@ -13,7 +13,7 @@ class LoginController {
     def index() {}
 
     def login() {
-        def player = Player.findByNameAndPassword(params.username, params.password)
+        def player = Player.findByNameAndPasswordAndSourceIsNull(params.username, params.password)
         if (player) {
             session.playerId = player.id
             session.playerName = player.name
@@ -28,22 +28,44 @@ class LoginController {
 
     def googleAuth() {
         GoogleIdTokenVerifier verifier = new GoogleIdTokenVerifier.Builder(new ApacheHttpTransport(), new JacksonFactory())
-                .setAudience(['98624763155-ig63kk95v6jfs3803m7o53qpgbaqb1nm.apps.googleusercontent.com']).build()
+            .setAudience(['98624763155-ig63kk95v6jfs3803m7o53qpgbaqb1nm.apps.googleusercontent.com']).build()
 
         GoogleIdToken idToken = verifier.verify(params.idtoken)
 
-        if (idToken) {
-            GoogleIdToken.Payload payload = idToken.getPayload()
+        if (!idToken) {
+            flash.message = "Invalid Credentials"
+            forward action: 'index'
+        }
+        GoogleIdToken.Payload payload = idToken.getPayload()
 
-            println payload
-            println payload.email
-
-            render payload
-            return
+        if (!payload.email && !payload.emailVerified) {
+            flash.message = "Invalid Credentials"
+            forward action: 'index'
         }
 
+        println payload
+        println payload.email
 
-        println params
-        render 'ok'
+        Player player = Player.findBySourceAndEmail('google', payload.email)
+        if (!player) {
+            player = new Player(name: payload.email, email: payload.email, source: 'google')
+            println player
+
+            if(!player.save(flush: true)) {
+
+                player.errors.allErrors.each {
+                    println it
+                }
+
+                render 'failed to login'
+                return
+                flash.message = 'Could not register user'
+                forward action: 'index'
+                return
+            }
+        }
+        session.playerId = player.id
+        session.playerName = player.name
+        redirect controller: 'player'
     }
 }
