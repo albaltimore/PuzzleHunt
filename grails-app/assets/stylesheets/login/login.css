@@ -23,16 +23,26 @@
 
 .login-provider-button-microsoft {
     box-sizing: border-box;
-    background-color: white;
+    background-color: #F3F3F3;
     width: 400px;
     height: 40px;
     position: relative;
     display: block;
+    background-image: url("../Microsoft_Logo.svg");
+    background-size: contain;
+    border: 6px solid transparent;
+    background-repeat: no-repeat;
+    cursor: pointer;
 }
 
 .login-provider-button-microsoft:before {
-    content: "Microsoft";
+    content: "Log in with Microsoft";
     position: absolute;
+    padding-left: 20px;
+    display: inline-table;
+    font-size: 18px;
+    font-family: sans-serif;
+    color: #737373;
     top:50%;
     left: 50%;
     transform: translate(-50%, -50%);

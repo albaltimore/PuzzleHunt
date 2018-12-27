@@ -5,7 +5,6 @@ function displayMessage(msg) {
 }
 
 function loadedGoogle() {
-    console.log('hi');
     gapi.signin2.render('withGoogle', {
         longtitle: true,
         width: '400',
