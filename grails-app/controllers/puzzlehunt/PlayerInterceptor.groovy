@@ -12,7 +12,8 @@ class PlayerInterceptor {
     boolean before() {
         def player = Player.get(session.playerId)
         def team = player.team
-        def hasEventStarted = ((Property.findByName('START')?.value ?: 0) as Long) <= System.currentTimeMillis()
+        def hunt = Hunt.findById(session.huntId)
+        def hasEventStarted = ((hunt.startTime ?: 0) as Long) <= System.currentTimeMillis()
 
         if (!team || !team.isFinalized || !hasEventStarted) {
             redirect controller: 'team'

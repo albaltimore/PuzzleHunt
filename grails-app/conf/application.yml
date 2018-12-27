@@ -82,7 +82,7 @@ grails:
             enabled: true
             encryptcookie: true
             cryptoalgorithm: "Blowfish"
-            sessiontimeout: 3600
+            sessiontimeout: 14400
             cookiename: 'puzzlesession'
             sethttponly: true
             springsecuritycompatibility: false

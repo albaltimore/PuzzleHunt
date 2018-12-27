@@ -10,6 +10,11 @@ class LoginInterceptor {
     int order = 10
 
     boolean before() {
+        if (!session.huntId) {
+            render status: 404
+            return false
+        }
+
         if (!session.playerId || !session.playerName || ! Player.findByNameAndId(session.playerName, session.playerId)) {
             redirect controller: "login"
             return false

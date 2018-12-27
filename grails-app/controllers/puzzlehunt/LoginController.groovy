@@ -12,6 +12,16 @@ class LoginController {
 
     def index() {}
 
+    def register() {
+        Hunt hunt = Hunt.findByLinkKey(params.id)
+        if (!hunt) {
+            render status: 404
+            return
+        }
+        session.huntId = hunt.id
+        redirect controller: 'player'
+    }
+
     def login() {
         def player = Player.findByNameAndPasswordAndSourceIsNull(params.username, params.password)
         if (player) {
@@ -22,7 +32,7 @@ class LoginController {
 
         } else {
             flash.message = "Invalid Credentials"
-            forward action: "index"
+            redirect action: "index"
         }
     }
 
@@ -34,13 +44,13 @@ class LoginController {
 
         if (!idToken) {
             flash.message = "Invalid Credentials"
-            forward action: 'index'
+            redirect action: 'index'
         }
         GoogleIdToken.Payload payload = idToken.getPayload()
 
         if (!payload.email && !payload.emailVerified) {
             flash.message = "Invalid Credentials"
-            forward action: 'index'
+            redirect action: 'index'
         }
 
         println payload
@@ -58,7 +68,7 @@ class LoginController {
                 }
 
                 flash.message = 'Could not register user'
-                forward action: 'index'
+                redirect action: 'index'
                 return
             }
         }
@@ -75,7 +85,7 @@ class LoginController {
             payload = new JsonSlurper().parse(new URL("https://graph.facebook.com/v3.2/me?${urlParams.collect { k, v -> "$k=${URLEncoder.encode(v, 'UTF-8')}" } join '&'}"))
         } catch (Exception ex) {
             flash.message = 'Could not register user'
-            forward action: 'index'
+            redirect action: 'index'
             return
         }
 
@@ -91,7 +101,7 @@ class LoginController {
                 }
 
                 flash.message = 'Could not register user'
-                forward action: 'index'
+                redirect action: 'index'
                 return
             }
         }
@@ -115,7 +125,7 @@ class LoginController {
             if (c && c.errorStream) System.err.println c.errorStream.text
 
             flash.message = 'Could not register user'
-            forward action: 'index'
+            redirect action: 'index'
             return
         }
 
@@ -131,7 +141,7 @@ class LoginController {
                 }
 
                 flash.message = 'Could not register user'
-                forward action: 'index'
+                redirect action: 'index'
                 return
             }
         }
