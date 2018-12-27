@@ -21,14 +21,10 @@ function signIn() {
 }
 
 function acquireTokenPopupAndCallMSGraph() {
-    //Call acquireTokenSilent (iframe) to obtain a token for Microsoft Graph
     myMSALObj.acquireTokenSilent(applicationConfig.graphScopes).then(function (accessToken) {
-        console.log('ACCESS TOKEN', accessToken);
-
         registerAccessToken(applicationConfig.graphEndpoint, accessToken);
     }, function (error) {
         console.log(error);
-        // Call acquireTokenPopup (popup window) in case of acquireTokenSilent failure due to consent or interaction required ONLY
         if (error.indexOf("consent_required") !== -1 || error.indexOf("interaction_required") !== -1 || error.indexOf("login_required") !== -1) {
             myMSALObj.acquireTokenPopup(applicationConfig.graphScopes).then(function (accessToken) {
                 console.log('ACCESS TOKEN INNER', accessToken);

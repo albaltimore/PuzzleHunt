@@ -22,7 +22,6 @@
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bluebird/3.3.4/bluebird.min.js"></script>
     <script src="https://secure.aadcdn.microsoftonline-p.com/lib/0.2.3/js/msal.js"></script>
-    <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
 
     <asset:javascript src="login/msft.js" />
 
