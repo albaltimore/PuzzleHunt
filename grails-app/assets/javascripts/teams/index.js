@@ -21,7 +21,7 @@ function reload() {
 
         if (data.team) {
             if (hasStarted && data.team.isFinalized) {
-                window.reload();
+                location.reload();
                 return;
             }
 
@@ -80,7 +80,7 @@ function reload() {
                         showLoading();
                         $.post('makeFinal', {isFinalized: true}, data => {
                             closeLoading();
-                            window.reload();
+                            location.reload();
                         }).fail(onFail);
                     });
                 });
@@ -98,13 +98,13 @@ function reload() {
                         showLoading();
                         $.post('teamAccept', {invite: invite.id}, data => {
                             closeLoading();
-                            window.reload();
+                            location.reload();
                         }).fail(onFail);
                     }))
                         .append(' ').append($("<label class='link'>Decline</label>").click(evt => {
                         $.post('teamDecline', {invite: invite.id}, data => {
                             closeLoading();
-                            window.reload();
+                            location.reload();
                         }).fail(onFail);
                     }));
                 });
@@ -210,7 +210,7 @@ $(document).ready(function () {
         $.get('start', data => {
             console.log(data);
             if (data.hasStarted) {
-                window.reload();
+                location.reload();
                 return;
             }
 
@@ -231,7 +231,7 @@ $(document).ready(function () {
                     if (left < 0) {
                         clearInterval(intervalID);
                         startedLabel();
-                        setTimeout(()=>{window.reload()}, 2000);
+                        setTimeout(location.reload, 2000);
                         return;
                     }
                     start.text(timeDiffString(left));

@@ -156,6 +156,14 @@ class BootStrap {
         resources.each { k, v -> println "resource ${v.filename} ${v.accessor} ${v.role}"; v.save(flush: true) }
         rounds.each { k, v -> v.save(flush: true) }
 
+
+        Hunt hunt = new Hunt(description: 'Test Hunt')
+        if (!hunt.save(flush: true)) {
+            println "Failed to save Hunt $hunt"
+        }
+
+        println "https://localhost:8080/login/register/$hunt.linkKey"
+
         //        println players
         //        println puzzles
         //        println resources

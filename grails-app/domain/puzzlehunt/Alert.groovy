@@ -8,7 +8,7 @@ class Alert {
     long targetTime
     int leadTime
     String batchId
-
+    Hunt hunt
 
     static constraints = {
     }

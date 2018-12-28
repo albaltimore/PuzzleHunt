@@ -17,6 +17,7 @@ class PlayerController {
 
     def getPuzzles() {
         def player = Player.get(session.playerId)
+        def hunt = Hunt.findById(session.huntId)
         def team = player.team
         if (!team.hasStarted) {
             team.hasStarted = true
@@ -95,7 +96,14 @@ class PlayerController {
         ] : null
 
 
-        def ret = [puzzles: puzzles, rounds: rounds.values(), status: status, contactInfo: team.contactInfo]
+        def ret = [
+            puzzles: puzzles,
+            rounds: rounds.values(),
+            status: status,
+            contactInfo: team.contactInfo,
+            endsIn: hunt.endTime ? hunt.endTime - System.currentTimeMillis() : null,
+            showLeaderBoard: hunt.showLeaderboard
+        ]
         render ret as JSON
     }
 
@@ -154,12 +162,13 @@ class PlayerController {
     }
 
     def nextHintTime() {
+        def hunt = Hunt.findById(session.huntId)
         def player = Player.findById(session.playerId)
         def team = player.team
         def maxHints = team.hintMaxCount + (team.status?.hintCount ?: 0)
         def totalTime = team.hintRegen - (team.status?.hintTime ?: 0) * 1000
 
-        def start = (Property.findByName('START')?.value ?: 0) as Long
+        def start = (hunt.startTime ?: 0) as Long
         def left = (1..maxHints).findAll {
             def targetStart = System.currentTimeMillis() - totalTime * it
             (it - Hint.countByTeamAndCreateTimeGreaterThan(team, targetStart) - ((start > targetStart) ? 1 : 0)) > 0
@@ -179,13 +188,21 @@ class PlayerController {
 
     @Transactional
     def requestHint() {
+        def hunt = Hunt.findById(session.huntId)
+
+        if (hunt.endTime && hunt.endTime < System.currentTimeMillis()) {
+            def ret = [error: "Cannot reqeust hint. The event is closed."]
+            render ret as JSON
+            return
+        }
+
         def player = Player.findById(session.playerId)
         def team = player.team
 
         def totalTime = team.hintRegen - (team.status?.hintTime ?: 0) * 1000
         def maxHints = team.hintMaxCount + (team.status?.hintCount ?: 0)
 
-        def start = (Property.findByName('START')?.value ?: 0) as Long
+        def start = (hunt.startTime ?: 0) as Long
         def left = (1..maxHints).findAll {
             def targetStart = System.currentTimeMillis() - totalTime * it
             (it - Hint.countByTeamAndCreateTimeGreaterThan(team, targetStart) - ((start > targetStart) ? 1 : 0)) > 0
@@ -220,6 +237,13 @@ class PlayerController {
     }
 
     def checkPuzzle() {
+        def hunt = Hunt.findById session.huntId
+        if (hunt.endTime && hunt.endTime < System.currentTimeMillis()) {
+            def ret = [solved: false, message: "The hunt is over, cannot submit."]
+            render ret as JSON
+            return
+        }
+
         def player = Player.findById session.playerId
         def team = player.team
         if (System.currentTimeMillis() <= team.lastSubmission + (grailsApplication.config.puzzlehunt.puzzleTimeout as Long)) {
@@ -282,7 +306,7 @@ class PlayerController {
 
         } collect {
             println "$unlockTime, $it.seconds"
-            if (unlockTime + it.seconds * 1000 > System.currentTimeMillis()) [unlockTime: unlockTime + it.seconds*1000]
+            if (unlockTime + it.seconds * 1000 > System.currentTimeMillis()) [unlockTime: unlockTime + it.seconds * 1000]
             else [description: it.description, accessor: it.resource?.accessor, filename: it?.resource?.filename]
         }
 
@@ -344,6 +368,20 @@ class PlayerController {
         }
 
         def ret = [success: true]
+        render ret as JSON
+    }
+
+    def getLeaderBoard() {
+        def hunt = Hunt.findById session.huntId
+
+        def teamPuzzles = [:]
+        Team.findAllByHunt hunt each { teamPuzzles[it.name] = ([] as Set) }
+
+        Attempt.where { team.hunt == hunt && isCorrect }.collect {
+            teamPuzzles.get it.team.name add it.puzzle.name
+        }
+        def ret = [:]
+        teamPuzzles.each { k, v -> ret[k] = v.size() }
         render ret as JSON
     }
 }

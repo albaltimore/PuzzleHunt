@@ -325,6 +325,7 @@ var rounds = {};
 var selectedRound;
 var teamStatus;
 var contactInfo;
+var endTime = null;
 
 function reloadMap(openPuzzleId) {
     clearPoints();
@@ -332,7 +333,6 @@ function reloadMap(openPuzzleId) {
         console.log('team data', teamData);
         var rootPane = $("#rootPane");
         var pMap = {};
-
 
         function selectRound(roundId) {
             selectedRound = roundId;
@@ -342,8 +342,8 @@ function reloadMap(openPuzzleId) {
         }
 
         var titleDiv = $("#titlePane");
-        titleDiv.css("display", "inline-block");
         titleDiv.empty();
+        endTime = teamData.endsIn !== null ? Date.now() + teamData.endsIn : null;
 
         contactInfo = teamData.contactInfo;
 
@@ -805,6 +805,20 @@ $(document).ready(function () {
                 (teamStatus.puzzleTime ? "Your speed puzzle timer is increased by " + teamStatus.puzzleTime + " seconds.\n" : ""));
         }
     });
+
+    var endLabel = $("<label/>");
+    $('#endPane').append(endLabel);
+
+    setInterval(() => {
+        if (endTime) {
+            endLabel.css('display', 'block');
+            var left = endTime - Date.now();
+            endLabel.text( left > 0 ? `Time Left: ${timeDiffString(endTime - Date.now())}` : "The Hunt Has Ended");
+        } else {
+            endLabel.css('display', 'none');
+        }
+    }, 500);
+
 
     setInterval(function () {
         if (!removePanes.length) {

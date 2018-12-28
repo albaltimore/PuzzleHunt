@@ -6,6 +6,7 @@ class Team {
     boolean isPublic = false
     String teamKey = UUID.randomUUID().toString()
     boolean hasStarted = false
+    Hunt hunt
 
     Long lastHint = 0
     long hintRegen = 1000 * 60 * 20

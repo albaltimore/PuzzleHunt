@@ -27,7 +27,7 @@ class TeamController {
 
     def start() {
         render([
-            startsIn: ((Property.findByName('START')?.value ?: 0) as Long) - System.currentTimeMillis(),
+            startsIn: ((Hunt.findById(session.huntId).startTime ?: 0) as Long) - System.currentTimeMillis(),
             hasStarted: Player.findById(session.playerId).team?.hasStarted
         ] as JSON)
     }
@@ -39,7 +39,8 @@ class TeamController {
             return
         }
 
-        Team team = new Team(name: UUID.randomUUID().toString())
+        Hunt hunt = Hunt.findById(session.huntId)
+        Team team = new Team(name: UUID.randomUUID().toString(), hunt: hunt)
 
 
         player.team = team
