@@ -8,7 +8,7 @@ class UrlMappings {
                 // apply constraints here
             }
         }
-        "/"(redirect:[controller: "player", permanent:"true"])
+        "/"(redirect:[controller: "login", action: 'homepage', permanent:"true"])
         "500"(view:'/error')
         "404"(view:'/notFound')
     }
