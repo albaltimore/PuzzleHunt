@@ -8,7 +8,7 @@
     <asset:stylesheet src="login/login.css"/>
     <asset:stylesheet src="login/bootstrap.css"/>
     <asset:javascript src="login/index.js"/>
-
+    <meta name="google-site-verification" content="u_wLvF3IbUSaoNJFzEdBjTDrpVAfAnH5Kq8zC7m_83E" />
 
     <g:if test="${params.id != 'bb'}">
         <meta name="google-signin-client_id"
