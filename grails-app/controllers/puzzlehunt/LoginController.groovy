@@ -22,6 +22,14 @@ class LoginController {
         redirect controller: 'player'
     }
 
+    def homepage() {
+        if (session.playerId) {
+            redirect controller: 'player'
+            return
+        }
+        redirect controller: 'login'
+    }
+
     def login() {
         def player = Player.findByNameAndPasswordAndSourceIsNull(params.username, params.password)
         if (player) {
