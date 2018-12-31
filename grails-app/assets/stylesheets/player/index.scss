@@ -143,30 +143,3 @@ body {
     }
   }
 }
-
-.leaderboard {
-  &-pane {
-    border: 1px solid white;
-    position: fixed;
-    right: 20px;
-    top: 50px;
-    color: #DDD;
-    background: black;
-    padding: 10px;
-    z-index: 1000;
-
-    &:before {
-      position: relative;
-      margin: auto;
-      content: 'Leaderboard';
-      font-size: 24px;
-      text-align: center;
-      display: block;
-    }
-  }
-
-
-  &-self {
-    color: white;
-  }
-}
