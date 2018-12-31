@@ -30,7 +30,7 @@
     display: block;
     background-image: url("../Microsoft_logo.svg");
     background-size: contain;
-    border: 6px solid transparent;
+    border: 8px solid transparent;
     background-repeat: no-repeat;
     cursor: pointer;
 }

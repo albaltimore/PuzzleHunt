@@ -8,136 +8,165 @@ $fa-font-path: "../font-awesome/fonts";
 @import "/shared/modal";
 
 body {
-    padding: 0;
-    margin: 0;
+  padding: 0;
+  margin: 0;
 }
 
 .root-div {
-    position: fixed;
-    width: 100%;
-    height: 100%;
-    overflow: auto;
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
 }
 
 .header-div {
-    display: table;
-    margin: auto;
+  display: table;
+  margin: auto;
 }
 
 .puzzle-pane {
+  position: absolute;
+  background-color: black;
+  width: 300px;
+  border: 1px solid white;
+  padding: 5px 5px 5px 5px;
+  z-index: 100;
+  display: flex;
+  flex-direction: column;
+  font-size: 16px;
+
+  &-control {
     position: absolute;
-    background-color: black;
-    width: 300px;
-    border: 1px solid white;
-    padding: 5px 5px 5px 5px;
-    z-index: 100;
+    padding: 2px 6px 2px 6px;
+    top: 5px;
+    right: 0;
     display: flex;
-    flex-direction: column;
-    font-size: 16px;
 
-    &-control {
-        position: absolute;
-        padding: 2px 6px 2px 6px;
-        top: 5px;
-        right: 0;
-        display: flex;
+    &-item {
+      position: relative;
+      flex: 1 1 auto;
+      margin: 0 2px;
+      color: white;
+      cursor: pointer;
+      z-index: 100;
+      font-size: 14px;
+    }
+  }
 
-        &-item {
-            position: relative;
-            flex: 1 1 auto;
-            margin: 0 2px;
-            color: white;
-            cursor: pointer;
-            z-index: 100;
-            font-size: 14px;
-        }
+  &-maximize {
+    @extend .fa;
+    @extend .fa-window-maximize;
+  }
+
+  &-close {
+    @extend .fa;
+    @extend .fa-times;
+  }
+
+  &-maximized {
+    position: fixed;
+    width: 95%;
+    height: 95%;
+    max-width: 95%;
+    max-height: 95%;
+    top: 50%;
+    left: 50%;
+    border: 2px solid;
+    transform: translate(-50%, -50%);
+    font-size: 36px;
+
+    & > .puzzle-pane-maximize {
+      @extend .fa;
+      @extend .fa-window-minimize;
     }
 
-    &-maximize {
-        @extend .fa;
-        @extend .fa-window-maximize;
-    }
+    & .puzzle-pane-content {
+      max-height: none;
 
-    &-close {
-        @extend .fa;
-        @extend .fa-times;
-    }
+      &-img {
+        display: none;
+      }
 
-    &-maximized {
-        position: fixed;
-        width: 95%;
-        height: 95%;
-        max-width: 95%;
-        max-height: 95%;
-        top: 50%;
-        left: 50%;
-        border: 2px solid;
-        transform: translate(-50%, -50%);
-        font-size: 36px;
-
-        & > .puzzle-pane-maximize {
-            @extend .fa;
-            @extend .fa-window-minimize;
-        }
-        & .puzzle-pane-content {
-            max-height: none;
-
-            &-img {
-                display: none;
-            }
-
-            &-background {
-                display: block;
-            }
-        }
-
-        & .puzzle-pane-title {
-            font-size: 48px;
-        }
-
-        & .puzzle-pane-solve {
-            font-size: 36px;
-        }
-    }
-
-    &-title {
-        position: relative;
-        text-align: center;
-        margin-top: 4px;
-        font-size: 20px;
-        flex: 0 0 auto;
-        padding: 0 30px;
-    }
-
-    &-content {
+      &-background {
         display: block;
-        width:100%;
-        margin-top: 10px;
-        margin-bottom: 3px;
-        flex: 1 1 auto;
-        max-height: 200px;
-        overflow-y: auto;
-        background-size: contain;
-        background-repeat: no-repeat;
-        background-position: center;
-
-        &-background {
-            display: none;
-        }
+      }
     }
 
-    &-solve {
-        flex: 1 1 auto;
+    & .puzzle-pane-title {
+      font-size: 48px;
     }
+
+    & .puzzle-pane-solve {
+      font-size: 36px;
+    }
+  }
+
+  &-title {
+    position: relative;
+    text-align: center;
+    margin-top: 4px;
+    font-size: 20px;
+    flex: 0 0 auto;
+    padding: 0 30px;
+  }
+
+  &-content {
+    display: block;
+    width: 100%;
+    margin-top: 10px;
+    margin-bottom: 3px;
+    flex: 1 1 auto;
+    max-height: 200px;
+    overflow-y: auto;
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+
+    &-background {
+      display: none;
+    }
+  }
+
+  &-solve {
+    flex: 1 1 auto;
+  }
 }
 
 .hint {
-    &-next {
-        color: yellow;
-        display: block;
-        font-size: 18px;
-        &:before {
-            content: "Next hint in ";
-        }
+  &-next {
+    color: yellow;
+    display: block;
+    font-size: 18px;
+
+    &:before {
+      content: "Next hint in ";
     }
+  }
+}
+
+.leaderboard {
+  &-pane {
+    border: 1px solid white;
+    position: fixed;
+    right: 20px;
+    top: 50px;
+    color: #DDD;
+    background: black;
+    padding: 10px;
+    z-index: 1000;
+
+    &:before {
+      position: relative;
+      margin: auto;
+      content: 'Leaderboard';
+      font-size: 24px;
+      text-align: center;
+      display: block;
+    }
+  }
+
+
+  &-self {
+    color: white;
+  }
 }

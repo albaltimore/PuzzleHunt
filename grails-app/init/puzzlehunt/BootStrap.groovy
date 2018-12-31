@@ -162,7 +162,7 @@ class BootStrap {
             println "Failed to save Hunt $hunt"
         }
 
-        println "https://localhost:8080/login/register/$hunt.linkKey"
+        println "http://localhost:8080/login/register/$hunt.linkKey"
 
         //        println players
         //        println puzzles

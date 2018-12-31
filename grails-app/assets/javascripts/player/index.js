@@ -289,6 +289,56 @@ function updateAlerts() {
 }
 
 
+var leaderboardInited = false;
+
+function leaderboard(teamName) {
+    if (leaderboardInited) return;
+    leaderboardInited = true;
+    var rootDiv = $(".leaderboard-pane");
+
+    console.log('leaderboard!');
+
+    function paint(launch) {
+        $.get('getLeaderBoard', data => {
+            console.log('leaderboard data', teamName, data);
+            if (data.data) {
+                rootDiv.empty();
+                var table = $("<table/>");
+                Object.keys(data.data).forEach(team => {
+                    var tdata = data.data[team];
+
+                    var tr = $("<tr/>");
+                    var teamTd = $("<td/>");
+                    teamTd.text(team);
+                    teamTd.addClass('leaderboard-team');
+                    tr.append(teamTd);
+
+                    var scoreTd = $("<td/>");
+                    scoreTd.text(tdata.score);
+                    scoreTd.addClass('leaderboard-score');
+
+                    if (team === teamName) {
+                        scoreTd.addClass('leaderboard-self');
+                        teamTd.addClass('leaderboard-self');
+                    }
+
+                    tr.append(scoreTd);
+
+
+                    table.append(tr);
+                });
+                rootDiv.append(table);
+            }
+            if (data.show && launch) {
+                setInterval(paint, 1000 * 60 / 2);
+            }
+        });
+    }
+
+    paint(true);
+}
+
+
 var removePanes = [];
 var removeTimers = [];
 var paneMaximized = false;
@@ -357,6 +407,8 @@ function reloadMap(openPuzzleId) {
             statusPane.append($("<img src='getResource?accessor=" + teamStatus.resource + "'/>"));
             statusPane.append($("<label >" + teamStatus.points + "</label>"));
         }
+
+        if (!leaderboardInited) setTimeout(() => leaderboard(teamData.teamName), 0);
 
         teamData.rounds.forEach(function (round) {
             console.log(round.id, parseInt(window.location.hash.substr(1)));
@@ -813,7 +865,7 @@ $(document).ready(function () {
         if (endTime) {
             endLabel.css('display', 'block');
             var left = endTime - Date.now();
-            endLabel.text( left > 0 ? `Time Left: ${timeDiffString(endTime - Date.now())}` : "The Hunt Has Ended");
+            endLabel.text(left > 0 ? `Time Left: ${timeDiffString(endTime - Date.now())}` : "The Hunt Has Ended");
         } else {
             endLabel.css('display', 'none');
         }

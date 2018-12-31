@@ -29,6 +29,8 @@
 
             <div class="alert"><label></label><div class="alert-window" style="display: none"></div></div>
         </div>
+        <div class="leaderboard-pane"></div>
+
     </div>
 </div>
 

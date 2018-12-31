@@ -11,7 +11,7 @@ class LoginInterceptor {
 
     boolean before() {
         if (!session.huntId) {
-            render status: 404
+            redirect controller: 'login', action: 'nohunt'
             return false
         }
 

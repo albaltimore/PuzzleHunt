@@ -8,7 +8,7 @@
     <asset:stylesheet src="login/login.css"/>
     <asset:stylesheet src="login/bootstrap.css"/>
     <asset:javascript src="login/index.js"/>
-    <meta name="google-site-verification" content="u_wLvF3IbUSaoNJFzEdBjTDrpVAfAnH5Kq8zC7m_83E" />
+    <meta name="google-site-verification" content="u_wLvF3IbUSaoNJFzEdBjTDrpVAfAnH5Kq8zC7m_83E"/>
 
     <g:if test="${params.id != 'bb'}">
         <meta name="google-signin-client_id"
@@ -39,16 +39,15 @@
             <label id="otherMessage" style="display: none" class="flash-message"></label>
 
             <g:if test="${params.id != 'bb'}">
-
                 <label class="input-label">Login or Create Account:</label>
+
+                <div id="withMicrosoft" class="login-provider-button login-provider-button-microsoft"></div>
 
                 <div id="withGoogle" class="login-provider-button login-provider-button-google"></div>
 
                 <div id="withFacebook" class="fb-login-button login-provider-button login-provider-button-facebook"
                      data-width="500" data-size="large" data-button-type="login_with" data-show-faces="false"
                      data-auto-logout-link="false" data-use-continue-as="false" data-scope="email"></div>
-
-                <div id="withMicrosoft" class="login-provider-button login-provider-button-microsoft"></div>
             </g:if>
             <g:else>
                 <label class="input-label">Username:</label>
