@@ -1,5 +1,7 @@
 var applicationConfig = {
-    clientID: 'd61adc91-cc63-4c21-a830-6e39acee75b4', //This is your client ID
+    clientID: 
+window.location.hostname === "bbpuzzlerace19.herokuapp.com" ? ' 
+5a1f5983-b721-46fc-8dbf-f9796f0a5c9a' : 'd61adc91-cc63-4c21-a830-6e39acee75b4',
     authority: "https://login.microsoftonline.com/common",  //Default authority value is https://login.microsoftonline.com/common
     graphScopes: ["user.read"],
     graphEndpoint: "https://graph.microsoft.com/v1.0/me"
