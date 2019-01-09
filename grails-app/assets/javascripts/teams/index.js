@@ -75,7 +75,7 @@ function reload() {
                 $('.team-finalize').text('Finalize').click(evt => {
                     showConfirmDialog(`Warning!\n
                             Are you sure you want to finalize your team?
-                            You will not be able to accept new team members.
+                            You will not be able to accept new team members. Double check you have accepted any new member requests.
                             You will not be able to undo this once the hunt starts.`, "Yes", "No", () => {
                         showLoading();
                         $.post('makeFinal', {isFinalized: true}, data => {

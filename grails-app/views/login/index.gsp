@@ -5,7 +5,7 @@
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <link rel="shortcut icon" type="image/png" href="${assetPath(src: 'favicon.png')}"/>
-    <asset:stylesheet src="login/login.css"/>
+    <asset:stylesheet src="login/index.css"/>
     <asset:stylesheet src="login/bootstrap.css"/>
     <asset:javascript src="login/index.js"/>
     <meta name="google-site-verification" content="u_wLvF3IbUSaoNJFzEdBjTDrpVAfAnH5Kq8zC7m_83E"/>
@@ -39,7 +39,7 @@
             <label id="otherMessage" style="display: none" class="flash-message"></label>
 
             <g:if test="${params.id != 'bb'}">
-                <label class="input-label">Login or Create Account:</label>
+                <label class="input-label login-provider-label">Login or Create Account</label>
 
                 <div id="withMicrosoft" class="login-provider-button login-provider-button-microsoft"></div>
 

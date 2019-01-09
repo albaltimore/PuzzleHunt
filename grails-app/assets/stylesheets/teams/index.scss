@@ -1,6 +1,6 @@
 @import "/shared/modal";
 @import "/shared/constants";
-
+@import "/fonts/Work-Sans/Work-Sans.css";
 
 body, html {
     width: 100%;
@@ -10,7 +10,7 @@ body, html {
     border: none;
     background-color: black;
     color: #DDD;
-    font-family: sans-serif;
+    font-family: "WorkSans-Regular", sans-serif;
     font-size: 16px;
     line-height: 20px;
 }
@@ -86,7 +86,7 @@ a, .link {
 }
 .puzzle-button {
     display: inline-block;
-    padding: 2px;
+    padding: 0 2px;
     position: relative;
     border: 2px solid white;
     cursor: pointer;
