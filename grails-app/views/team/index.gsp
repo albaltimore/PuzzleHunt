@@ -16,7 +16,7 @@
 <g:form useToken="true" style="visibility: hidden">
 </g:form>
 <div class="root-div">
-    <div class="huntContainer"></div>
+    <div class="hunt-container"></div>
 
     <div class="puzzle-timer"></div>
 

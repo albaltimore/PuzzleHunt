@@ -16,6 +16,7 @@ function reload() {
         closeLoading();
         console.log(data);
 
+        $(".hunt-container").text(`Welcome to ${data.hunt}`);
         $(".team-members").empty();
         $('.player-name').text(data.name);
 

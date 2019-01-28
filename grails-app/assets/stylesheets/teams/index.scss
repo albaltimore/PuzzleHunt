@@ -105,10 +105,15 @@ a, .link {
 
 .puzzle-timer {
     &-heading {
-        font-size: 2em;
+        font-size: 1.4em;
 
         &-time:before {
             content: "Hunt Starts in ";
         }
     }
+}
+
+.hunt-container {
+    font-size: 2em;
+    margin: 10px 0;
 }

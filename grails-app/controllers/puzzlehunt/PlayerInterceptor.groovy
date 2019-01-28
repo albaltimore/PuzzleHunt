@@ -13,11 +13,16 @@ class PlayerInterceptor {
         def player = Player.get(session.playerId)
         def team = player.team
         def hunt = Hunt.findById(session.huntId)
+        if (!hunt) {
+            redirect controller: 'login', action: 'nohunt'
+            return false
+        }
+
         def hasEventStarted = ((hunt.startTime ?: 0) as Long) <= System.currentTimeMillis()
 
         if (!team || !team.isFinalized || !hasEventStarted) {
             redirect controller: 'team'
-            false
+            return false
         }
 
         true
