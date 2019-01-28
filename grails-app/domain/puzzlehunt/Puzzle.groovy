@@ -24,6 +24,7 @@ class Puzzle {
     Resource iconSolvedResource
     Resource iconFailedResource
     List<Resource> hintResources
+    boolean isFinal
 
     def getPartialSolution(input) {
         def ret = null

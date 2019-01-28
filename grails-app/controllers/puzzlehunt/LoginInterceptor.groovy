@@ -10,15 +10,16 @@ class LoginInterceptor {
     int order = 10
 
     boolean before() {
-        if (!session.huntId) {
-            redirect controller: 'login', action: 'nohunt'
-            return false
-        }
-
         if (!session.playerId || !session.playerName || ! Player.findByNameAndId(session.playerName, session.playerId)) {
             redirect controller: "login"
             return false
         }
+
+        if (!session.huntId && controllerName != 'admin') {
+            redirect controller: 'login', action: 'nohunt'
+            return false
+        }
+
         return true
     }
 

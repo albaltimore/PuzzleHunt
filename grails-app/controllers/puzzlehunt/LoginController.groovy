@@ -47,6 +47,11 @@ class LoginController {
     }
 
     def googleAuth() {
+        if (!params.idtoken) {
+            render status: 500
+            return
+        }
+
         GoogleIdTokenVerifier verifier = new GoogleIdTokenVerifier.Builder(new ApacheHttpTransport(), new JacksonFactory())
             .setAudience(['98624763155-ig63kk95v6jfs3803m7o53qpgbaqb1nm.apps.googleusercontent.com']).build()
 

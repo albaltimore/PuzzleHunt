@@ -8,8 +8,10 @@ class TeamController {
 
     def getState() {
         Player player = Player.findById(session.playerId)
+        Hunt hunt = Hunt.findById(session.huntId)
 
         render([
+            hunt: hunt.description,
             name: player.name,
             description: player.description,
             team: player.team ? [

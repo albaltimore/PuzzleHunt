@@ -1,8 +1,12 @@
 package puzzlehunt
 
+import groovy.transform.ToString
+
+@ToString(includeNames = true)
 class Hunt {
     String id
     String description
+    String winningText
     String linkKey = UUID.randomUUID().toString()
 
     Long startTime
@@ -14,6 +18,7 @@ class Hunt {
         startTime nullable: true
         endTime nullable: true
         maxTeamSize nullable: true
+        winningText nullable: true
     }
 
     static mapping = {

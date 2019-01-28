@@ -13,9 +13,23 @@
     <link rel="shortcut icon" type="image/png" href="${assetPath(src: 'favicon.png')}"/>
     <asset:javascript src="admin/admin.js"/>
     <asset:stylesheet src="hint/hint.css"/>
+    <asset:stylesheet src="admin/index.css" />
 </head>
 
 <body>
+<h3>Hunts</h3>
+<div id="huntListDiv">
+    <label>Select Hunt</label> <select style="width: 150px" id="huntSelect"></select><br/>
+
+    <label>Key:</label> <label id="huntKey"></label><br/>
+    <label>Description</label> <input type="text" id="huntDescription" style="width: 500px;" /><br/>
+    <label>Winning Message</label> <input type="text" id="huntWinningText" style="width: 500px;" /><br/>
+    <label>Start</label> <input type="datetime-local" id="huntStart" /><br/>
+    <label>End</label> <input type="datetime-local" id="huntEnd" /><br/>
+    <label>Max Team Size</label> <input type="number" min="0" step="1" id="huntMaxTeamSize"/><br/>
+    <input type="submit" value="Create/Update" id="huntSave"/>
+</div>
+
 <h3>Rounds</h3>
 
 <div id='unlockDiv'></div>
@@ -70,6 +84,7 @@
 </div>
 
 <h3>Delete Alerts</h3>
+
 <div id="alertsDiv">
 
 </div>
@@ -79,8 +94,6 @@
 
     <div id="modal-root"></div>
 </div>
-
-
 
 </body>
 

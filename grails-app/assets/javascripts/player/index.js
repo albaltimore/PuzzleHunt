@@ -304,8 +304,17 @@ function leaderboard(teamName) {
             if (data.data) {
                 rootDiv.empty();
                 var table = $("<table/>");
-                Object.keys(data.data).forEach(team => {
-                    var tdata = data.data[team];
+                Object.keys(data.data).map(team => [team, data.data[team]]).sort((adata, bdata) => {
+                    var a = adata[1], b = bdata[1];
+                    if ((a.isWinner || false) !== (b.isWinner || false)) {
+                        return Number(b.isWinner || false) - Number(a.isWinner || false);
+                    }
+                    if (Number(a.score || 0) !== Number(b.score || 0)) {
+                        return Number(b.score || 0) - Number(a.score || 0);
+                    }
+                    return Number(a.timestamp || 0) !== Number(b.timestamp || 0);
+                }).forEach(it => {
+                    var [team, tdata] = it;
 
                     var tr = $("<tr/>");
                     var teamTd = $("<td/>");
@@ -320,6 +329,10 @@ function leaderboard(teamName) {
                     if (team === teamName) {
                         scoreTd.addClass('leaderboard-self');
                         teamTd.addClass('leaderboard-self');
+                    }
+                    if (tdata.isWinner) {
+                        scoreTd.addClass('leaderboard-winner');
+                        teamTd.addClass('leaderboard-winner');
                     }
 
                     tr.append(scoreTd);
@@ -469,6 +482,7 @@ function reloadMap(openPuzzleId) {
         });
 
         console.log(rounds);
+
         teamData.puzzles.forEach(function (puzzle) {
             pMap[puzzle.id] = puzzle;
 
@@ -525,10 +539,12 @@ function reloadMap(openPuzzleId) {
             });
         });
 
+        var isWinner = teamData.puzzles.some(p => p.solved && p.isFinal);
+        if (isWinner) rootPane.addClass('puzzle-winner');
         teamData.puzzles.forEach(function (puzzle) {
             if (puzzle.iconAccessor) {
                 var pointDiv = false;
-                var point = $("<img class='puzzle-point puzzle-point-image' src='" + "getResource?accessor=" + puzzle.iconAccessor + "' style='position: absolute; cursor: pointer; transform: translate(-50%, -50%)' />");
+                var point = $("<img class='puzzle-point puzzle-point-image' src='" + "getResource?accessor=" + puzzle.iconAccessor + "' />");
             } else {
                 pointDiv = true;
                 point = $("<div class='puzzle-point puzzle-point-div' />");
@@ -542,7 +558,6 @@ function reloadMap(openPuzzleId) {
 
             if (puzzle.solved) {
                 point.addClass('puzzle-point-solved');
-                //if (pointDiv) point.css("background-color", "green");
             } else if (!puzzle.requiredPuzzles.length || puzzle.requiredPuzzles.some(function (rp) {
                 return pMap[rp.id] && pMap[rp.id].solved;
             })) {
@@ -552,9 +567,9 @@ function reloadMap(openPuzzleId) {
 
             rounds[puzzle.roundId].pointsDiv.append(point);
 
-            point.click(function (evt) {
+            if (!isWinner) point.click(function (evt) {
                 clearPanes();
-                var pane = $("<div class='puzzle-pane'/>");
+                var pane = $("<div class='puzzle-pane puzzle-pane-minimized'/>");
                 rounds[puzzle.roundId].pointsDiv.append(pane);
 
                 var rw = rounds[puzzle.roundId].width;
@@ -597,6 +612,7 @@ function reloadMap(openPuzzleId) {
                 controls.append(maximizeButton);
                 maximizeButton.click(() => {
                     pane.toggleClass('puzzle-pane-maximized');
+                    pane.toggleClass('puzzle-pane-minimized');
                     paneMaximized = pane.hasClass('puzzle-pane-maximized');
                     setCoords(paneMaximized);
                 });

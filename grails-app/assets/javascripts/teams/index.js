@@ -73,16 +73,23 @@ function reload() {
                 $('.team-finalize-label').text('Your team is finalized. The hunt will start soon.');
             } else {
                 $('.team-finalize').text('Finalize').click(evt => {
-                    showConfirmDialog(`Warning!\n
+                    $.get('getState', stateData => {
+                        if (!stateData.team) onFail();
+                        showConfirmDialog(`Warning!\n
                             Are you sure you want to finalize your team?
                             You will not be able to accept new team members. Double check you have accepted any new member requests.
-                            You will not be able to undo this once the hunt starts.`, "Yes", "No", () => {
-                        showLoading();
-                        $.post('makeFinal', {isFinalized: true}, data => {
-                            closeLoading();
-                            location.reload();
-                        }).fail(onFail);
-                    });
+                            You will not be able to undo this once the hunt starts.
+                            
+                            Current members: ${stateData.team.players.map(p => p.name).join(', ')}
+                            ${stateData.team.invites.length ? "There are" + stateData.team.invites.length + "  requests to join your team." : ""} 
+                            `, "Yes", "No", () => {
+                            showLoading();
+                            $.post('makeFinal', {isFinalized: true}, data => {
+                                closeLoading();
+                                location.reload();
+                            }).fail(onFail);
+                        });
+                    }).fail(onFail);
                 });
                 $('.team-finalize-label').text('Finalize your team when you are ready to start.');
             }
@@ -218,6 +225,7 @@ $(document).ready(function () {
                 $('.puzzle-timer').empty().append(`<label class="puzzle-timer-heading">The hunt has started!</label>
                 <label>Finalize your team and join the hunt.</label>`);
             }
+
             if (data.startsIn < 0) {
                 hasStarted = true;
                 startedLabel();

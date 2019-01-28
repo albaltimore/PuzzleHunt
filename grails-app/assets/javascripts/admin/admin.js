@@ -73,6 +73,48 @@ function dateString(d) {
 function init() {
     $.get("getData", function (data) {
         console.log(data);
+        var hunts = {};
+
+        var huntsDiv = $("#huntsDiv");
+        $("#huntSelect").append($("<option/>").val("%NEW%").text("NEW"));
+        data.hunts.forEach(hunt => {
+            console.log(hunt);
+            $("#huntSelect").append($("<option/>").val(hunt.id).text(hunt.description));
+            hunts[hunt.id] = hunt;
+        });
+
+        $("#huntSelect").change(evt => {
+            var hunt = hunts[$("#huntSelect").val()];
+            $("#huntKey").text(hunt ? window.location.origin + "/login/register/" + hunt.linkKey : "");
+            $("#huntDescription").val(hunt ? hunt.description : "");
+            $("#huntWinningText").val(hunt && hunt.winningText ? hunt.winningText : "");
+            $("#huntStart").val(hunt && hunt.startTime ? dateString(new Date(hunt.startTime)) : "");
+            $("#huntEnd").val(hunt && hunt.endTime ? dateString(new Date(hunt.endTime)) : "");
+            $("#huntMaxTeamSize").val(hunt && hunt.maxTeamSize ? hunt.maxTeamSize : "");
+
+        });
+
+        $("#huntSave").click(evt => {
+
+            var req = {
+                id: $("#huntSelect").val() === "%NEW%" ? null : $("#huntSelect").val(),
+                description: $("#huntDescription").val() || null,
+                startTime: new Date($("#huntStart").val()).getTime() || null,
+                endTime: new Date($("#huntEnd").val()).getTime() || null,
+                maxTeamSize: parseInt($("#huntMaxTeamSize").val()) || null,
+                winningText: $("#huntWinningText").val() || null
+            };
+            console.log(req);
+            $.post("saveHunt", req, evt => {
+                console.log("succsess");
+                showDialog("Success", refresh);
+            }).fail(function (data) {
+                console.log(data);
+                showDialog("Error :(", refresh);
+            });
+
+        });
+
 
         var roundsDiv = $("#unlockDiv");
         data.rounds.forEach(function (round) {
@@ -109,6 +151,7 @@ function init() {
                 option.text(player.description);
                 $(widget).append(option);
             }
+
             addOption("#alertPlayerSelect")
         });
 
@@ -121,7 +164,7 @@ function init() {
             }
 
             addOption("teamSelect");
-        })
+        });
 
         data.activities.forEach(function (activity) {
             var option = $("<option></option>");
@@ -135,9 +178,9 @@ function init() {
             var alert = data.alerts[k];
             var alertsPane = $("<div></div>");
             alertsDiv.append(alertsPane);
-            alertsPane.append($("<label>" + alert.title +  "</label>"));
+            alertsPane.append($("<label>" + alert.title + "</label>"));
             alertsPane.append($("<label style='color: gray'>|</label>"));
-            alertsPane.append($("<label>" + new Date(alert.targetTime).toLocaleString() +  "</label>"));
+            alertsPane.append($("<label>" + new Date(alert.targetTime).toLocaleString() + "</label>"));
 
             var deleteButton = $("<label style='cursor: pointer; color: #59A0E6'>delete</label>")
             alertsPane.append(deleteButton);

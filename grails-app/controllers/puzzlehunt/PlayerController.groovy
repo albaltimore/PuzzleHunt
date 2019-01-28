@@ -6,11 +6,11 @@ import grails.gorm.transactions.Transactional
 class PlayerController {
 
     private static final EXTENSION_TYPES = [
-            "png": "image/png",
-            "jpg": "image/jpg",
-            "gif": "image/gif",
-            "pdf": "application/pdf",
-            "mp4": "video/mp4"
+        "png": "image/png",
+        "jpg": "image/jpg",
+        "gif": "image/gif",
+        "pdf": "application/pdf",
+        "mp4": "video/mp4"
     ]
 
     def index() {}
@@ -46,64 +46,61 @@ class PlayerController {
 
             if (!(p.round.id in rounds)) {
                 rounds[p.round.id] = [
-                        id        : p.round.id,
-                        name      : p.round.name,
-                        floorId   : p.round.floorId,
-                        background: p.round.background.accessor,
-                        width     : p.round.width,
-                        height    : p.round.height,
+                    id: p.round.id,
+                    name: p.round.name,
+                    floorId: p.round.floorId,
+                    background: p.round.background.accessor,
+                    width: p.round.width,
+                    height: p.round.height,
                 ]
             }
             [
-                    id              : p.id,
-                    xCor            : p.xCor,
-                    yCor            : p.yCor,
-                    name            : p.name,
-                    roundId         : p.round.id,
-                    requiredPuzzles : p.requiredPuzzles.collect { rp ->
-                        [
-                                id          : rp.puzzle.id,
-                                color       : rp.color,
-                                points      : rp.coordinates.collect { c -> [xCor: c.xCor, yCor: c.yCor] },
-                                pathResource: rp.pathResource?.collect { pr -> [resource: pr.resource.accessor, xCor: pr.xCor, yCor: pr.yCor] },
-                        ]
-                    },
-                    pathResource    : p.pathResource?.collect { pr -> [resource: pr.resource.accessor, xCor: pr.xCor, yCor: pr.yCor] },
-                    hintDisabled    : p.disableHint,
-                    solved          : p.id in solved,
-                    failed          : failed,
-                    timeLimit       : timeLimit,
-                    started         : started,
-                    startTime       : startTime,
-//                introAccessor: started ? p?.introResource?.accessor : null,
-//                introFilename: started ? p?.introResource?.filename : null,
-//                solvedAccessor: p.id in solved ? p?.solvedResource?.accessor : null,
-//                solvedFilename: p.id in solved ? p?.solvedResource?.filename : null,
-                    iconAccessor    : p.id in solved ? p?.iconSolvedResource?.accessor : (failed ? p.iconFailedResource?.accessor : p?.iconReadyResource?.accessor),
-                    hasHintResources: p.hintResources.asBoolean()
+                id: p.id,
+                xCor: p.xCor,
+                yCor: p.yCor,
+                name: p.name,
+                roundId: p.round.id,
+                requiredPuzzles: p.requiredPuzzles.collect { rp ->
+                    [
+                        id: rp.puzzle.id,
+                        color: rp.color,
+                        points: rp.coordinates.collect { c -> [xCor: c.xCor, yCor: c.yCor] },
+                        pathResource: rp.pathResource?.collect { pr -> [resource: pr.resource.accessor, xCor: pr.xCor, yCor: pr.yCor] },
+                    ]
+                },
+                pathResource: p.pathResource?.collect { pr -> [resource: pr.resource.accessor, xCor: pr.xCor, yCor: pr.yCor] },
+                hintDisabled: p.disableHint,
+                solved: p.id in solved,
+                failed: failed,
+                timeLimit: timeLimit,
+                started: started,
+                startTime: startTime,
+                isFinal: p.isFinal,
+                iconAccessor: p.id in solved ? p?.iconSolvedResource?.accessor : (failed ? p.iconFailedResource?.accessor : p?.iconReadyResource?.accessor),
+                hasHintResources: p.hintResources.asBoolean()
             ]
         }
 
         def status = stat ? [
-                resource    : stat.resource.accessor,
-                name        : stat.name,
-                hintTime    : stat.hintTime,
-                puzzleTime  : stat.puzzleTime,
-                hintCount   : stat.hintCount,
-                priorityLine: stat.priorityLine,
-                level       : stat.statusLevel,
-                points      : statPoints
+            resource: stat.resource.accessor,
+            name: stat.name,
+            hintTime: stat.hintTime,
+            puzzleTime: stat.puzzleTime,
+            hintCount: stat.hintCount,
+            priorityLine: stat.priorityLine,
+            level: stat.statusLevel,
+            points: statPoints
         ] : null
 
 
         def ret = [
-                puzzles        : puzzles,
-                rounds         : rounds.values(),
-                status         : status,
-                contactInfo    : team.contactInfo,
-                teamName       : team.name,
-                endsIn         : hunt.endTime ? hunt.endTime - System.currentTimeMillis() : null,
-                showLeaderBoard: hunt.showLeaderboard
+            puzzles: puzzles,
+            rounds: rounds.values(),
+            status: status,
+            contactInfo: team.contactInfo,
+            teamName: team.name,
+            endsIn: hunt.endTime ? hunt.endTime - System.currentTimeMillis() : null,
+            showLeaderBoard: hunt.showLeaderboard
         ]
         render ret as JSON
     }
@@ -134,10 +131,10 @@ class PlayerController {
         def solved = team.hasSolved(puzzle)
 
         render([
-                introAccessor : started ? puzzle?.introResource?.accessor : null,
-                introFilename : started ? puzzle?.introResource?.filename : null,
-                solvedAccessor: solved ? puzzle?.solvedResource?.accessor : null,
-                solvedFilename: solved ? puzzle?.solvedResource?.filename : null,
+            introAccessor: started ? puzzle?.introResource?.accessor : null,
+            introFilename: started ? puzzle?.introResource?.filename : null,
+            solvedAccessor: solved ? puzzle?.solvedResource?.accessor : null,
+            solvedFilename: solved ? puzzle?.solvedResource?.filename : null,
         ] as JSON)
 
     }
@@ -179,9 +176,9 @@ class PlayerController {
         if (start > System.currentTimeMillis() - totalTime) recentHints.add(new Hint(createTime: start))
 
         def ret = [
-                max : maxHints,
-                left: left,
-                time: !recentHints.size() ? 0 : (recentHints*.createTime.max() ?: 0) + totalTime
+            max: maxHints,
+            left: left,
+            time: !recentHints.size() ? 0 : (recentHints*.createTime.max() ?: 0) + totalTime
         ]
 
         render ret as JSON
@@ -249,6 +246,12 @@ class PlayerController {
         def team = player.team
         if (System.currentTimeMillis() <= team.lastSubmission + (grailsApplication.config.puzzlehunt.puzzleTimeout as Long)) {
             def ret = [solved: false, message: "Too many submissions at once"]
+            render ret as JSON
+            return
+        }
+
+        if (team.solvedPuzzles*.isFinal.any()) {
+            def ret = [solved: false, message: "Not submitted. You have already won!"]
             render ret as JSON
             return
         }
@@ -321,7 +324,7 @@ class PlayerController {
         def team = player.team
 
         if (rs && !rs.role && (!rs.puzzle || team.hasSolved(rs.puzzle) ||
-                (!rs.mustSolve && team.isSolvable(rs.puzzle)))) {
+            (!rs.mustSolve && team.isSolvable(rs.puzzle)))) {
 
             if (rs.linkUri) {
                 redirect url: rs.linkUri
@@ -343,12 +346,12 @@ class PlayerController {
             it.targetTime - (1000 * it.leadTime) < System.currentTimeMillis()
         }.collect {
             [
-                    id            : it.id,
-                    title         : it.title,
-                    message       : it.message,
-                    targetTime    : it.targetTime,
-                    leadTime      : it.leadTime,
-                    isAcknowledged: it.isAcknowledged
+                id: it.id,
+                title: it.title,
+                message: it.message,
+                targetTime: it.targetTime,
+                leadTime: it.leadTime,
+                isAcknowledged: it.isAcknowledged
             ]
         }
         render alerts as JSON
@@ -381,13 +384,16 @@ class PlayerController {
 
 
         def teamPuzzles = [:]
-        Team.findAllByHunt hunt each { teamPuzzles[it.name] = ([] as Set) }
+        Team.findAllByHunt hunt each { teamPuzzles[it.name] = [score: ([] as Set), isWinner: false, timestamp: 0] }
 
         Attempt.where { team.hunt == hunt && isCorrect }.collect {
-            teamPuzzles.get it.team.name add it.puzzle.name
+            teamPuzzles[it.team.name].score.add it.puzzle.name
+            if (it.puzzle.isFinal) teamPuzzles[it.team.name].isWinner = true
+            if (teamPuzzles[it.team.name].timestamp < it.timestamp) teamPuzzles[it.team.name].timestamp = it.timestamp
         }
+
         def ret = [:]
-        teamPuzzles.each { k, v -> ret[k] = [score: v.size()] }
+        teamPuzzles.each { k, v -> ret[k] = [score: v.score.size(), isWinner: v.isWinner, timestamp: v.timestamp] }
         render([show: true, data: ret] as JSON)
     }
 }
