@@ -60,7 +60,7 @@ function showHintResourcesDialog(puzzleId, puzzleName) {
                         closeWindow();
                         showHintResourcesDialog(puzzleId, puzzleName);
                     } else timerLabel.text(timeDiffString(timeLeft));
-                }, 25)
+                }, 25);
             }
         });
 
@@ -407,6 +407,8 @@ function reloadMap(openPuzzleId) {
         var titleDiv = $("#titlePane");
         titleDiv.empty();
         endTime = teamData.endsIn !== null ? Date.now() + teamData.endsIn : null;
+        var hasEnded = endTime && endTime < Date.now();
+        if (hasEnded) rootPane.addClass('puzzle-ended');
 
         contactInfo = teamData.contactInfo;
 
@@ -567,7 +569,7 @@ function reloadMap(openPuzzleId) {
 
             rounds[puzzle.roundId].pointsDiv.append(point);
 
-            if (!isWinner) point.click(function (evt) {
+            if (!isWinner && !hasEnded) point.click(function (evt) {
                 clearPanes();
                 var pane = $("<div class='puzzle-pane puzzle-pane-minimized'/>");
                 rounds[puzzle.roundId].pointsDiv.append(pane);

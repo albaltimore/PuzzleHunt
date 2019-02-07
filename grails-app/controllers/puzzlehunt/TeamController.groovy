@@ -6,6 +6,8 @@ import grails.gorm.transactions.Transactional
 class TeamController {
     def index() {}
 
+    def namingService
+
     def getState() {
         Player player = Player.findById(session.playerId)
         Hunt hunt = Hunt.findById(session.huntId)
@@ -42,8 +44,7 @@ class TeamController {
         }
 
         Hunt hunt = Hunt.findById(session.huntId)
-        Team team = new Team(name: UUID.randomUUID().toString(), hunt: hunt)
-
+        Team team = new Team(name: namingService.getRandomName(), hunt: hunt)
 
         player.team = team
 

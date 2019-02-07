@@ -44,6 +44,14 @@ class PlayerController {
 
             def failed = p.timeLimit && started && (startTime + (timeLimit * 1000) < System.currentTimeMillis())
 
+            def timeStarted = PuzzleStart.findByPuzzleAndTeam(p, team)
+            if (!timeStarted) {
+                timeStarted = new PuzzleStart(puzzle: p, team: team, startTime: System.currentTimeMillis())
+                if (!timeStarted.save(flush: true)) {
+                    println timeStarted.errors
+                }
+            }
+
             if (!(p.round.id in rounds)) {
                 rounds[p.round.id] = [
                     id: p.round.id,
@@ -386,7 +394,7 @@ class PlayerController {
         def teamPuzzles = [:]
         Team.findAllByHunt hunt each { teamPuzzles[it.name] = [score: ([] as Set), isWinner: false, timestamp: 0] }
 
-        Attempt.where { team.hunt == hunt && isCorrect }.collect {
+        Attempt.where { team.hunt == hunt && isCorrect == true }.collect {
             teamPuzzles[it.team.name].score.add it.puzzle.name
             if (it.puzzle.isFinal) teamPuzzles[it.team.name].isWinner = true
             if (teamPuzzles[it.team.name].timestamp < it.timestamp) teamPuzzles[it.team.name].timestamp = it.timestamp

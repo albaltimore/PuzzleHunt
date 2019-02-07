@@ -1,4 +1,6 @@
+$font-path: "./" !default;
+
 @font-face {
   font-family: WorkSans-Regular;
-  src: url("WorkSans-Regular.woff2"), url("WorkSans-Regular.ttf");
+  src: url($font-path + "Work-Sans/WorkSans-Regular.woff2"), url($font-path + "Work-Sans/WorkSans-Regular.ttf");
 }
