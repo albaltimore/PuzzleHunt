@@ -12,8 +12,11 @@ class TeamInterceptor {
 
     boolean before() {
         def player = Player.get(session.playerId)
-        def team = player.team
         Hunt hunt = Hunt.findById(session.huntId)
+        Team team = TeamInvite.where { completed == true && player == player && team.hunt == hunt }.find()?.team
+
+        session.teamId = team?.id
+
         def hasEventStarted = ((hunt?.startTime ?: 0) as Long) <= System.currentTimeMillis()
 
         if (team && team.isFinalized && hasEventStarted) {

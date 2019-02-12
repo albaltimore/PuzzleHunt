@@ -26,7 +26,7 @@
 
 <body>
 <div id="fb-root"></div>
-<g:form useToken="true" action="login" controller="login">
+<g:form useToken="true" action="login" controller="login" class="login-form">
     <div class="root-div">
         <div class="content-div">
             <label class="bloomberg-headline">Bloomberg</label>
@@ -58,8 +58,16 @@
                 <input type="submit" value="LOGIN" class="submit-button"/>
             </g:else>
         </div>
+
+
     </div>
 </g:form>
+<footer>
+    <div class="footer-links">
+        <a href="https://www.bloomberg.com/notices/privacy/" target="_blank">Privacy Policy</a><label> | </label><a href="https://www.bloomberg.com/notices/privacy/" target="_blank">Terms Of Service</a>
+    </div>
+    <label>Copyright 2019 Bloomberg Finance L.P. All rights reserved.</label>
+</footer>
 
 <g:form style="display: none" action="googleAuth" class="googleAuth">
     <g:textField name="idtoken" id="googleIdToken"/>

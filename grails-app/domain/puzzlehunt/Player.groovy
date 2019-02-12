@@ -14,7 +14,6 @@ class Player {
     String role
 
     Long firstLoginTime
-    Team team
 
     static constraints = {
         name unique: ['email', 'source']
@@ -26,7 +25,6 @@ class Player {
         source nullable: true
 
         firstLoginTime nullable: true
-        team nullable: true
     }
 
     static hasMany = [:]

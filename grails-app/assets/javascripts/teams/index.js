@@ -103,11 +103,15 @@ function reload() {
                         .append(`<label class="team-other-index">${idx + 1}</label>`)
                         .append($("<label/>").text(invite.player))
                         .append(' ').append($("<label class='link'>Accept</label>").click(evt => {
-                        showLoading();
-                        $.post('teamAccept', {invite: invite.id}, data => {
-                            closeLoading();
-                            location.reload();
-                        }).fail(onFail);
+                        if (data.team.maxTeamSize <= data.team.players.length) {
+                            showDialog("Your team has already reached them maximum of " + data.team.maxTeamSize + " members.")
+                        } else {
+                            showLoading();
+                            $.post('teamAccept', {invite: invite.id}, data => {
+                                closeLoading();
+                                location.reload();
+                            }).fail(onFail);
+                        }
                     }))
                         .append(' ').append($("<label class='link'>Decline</label>").click(evt => {
                         $.post('teamDecline', {invite: invite.id}, data => {

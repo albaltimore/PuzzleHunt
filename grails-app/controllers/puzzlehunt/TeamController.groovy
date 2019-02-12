@@ -2,6 +2,7 @@ package puzzlehunt
 
 import grails.converters.JSON
 import grails.gorm.transactions.Transactional
+import javafx.beans.binding.IntegerExpression
 
 class TeamController {
     def index() {}
@@ -11,44 +12,59 @@ class TeamController {
     def getState() {
         Player player = Player.findById(session.playerId)
         Hunt hunt = Hunt.findById(session.huntId)
+        Team team = session.teamId ? Team.findById(session.teamId) : null
 
         render([
             hunt: hunt.description,
             name: player.name,
             description: player.description,
-            team: player.team ? [
-                id: player.team.id, name: player.team.name, isPublic: player.team.isPublic, isFinalized: player.team.isFinalized, hasStarted: player.team.hasStarted, key: player.team.teamKey,
-                players: Player.findAllByTeam(player.team).collect {
+            team: team ? [
+                id: team.id, name: team.name, isPublic: team.isPublic, isFinalized: team.isFinalized, hasStarted: team.hasStarted, key: team.teamKey,
+                maxTeamSize: hunt.maxTeamSize ?: Integer.MAX_VALUE,
+                players: TeamInvite.findAllByTeamAndCompleted(team, true)*.player.collect {
                     [name: it.name, description: it.description, id: it.id]
                 },
-                invites: TeamInvite.findAllByTeam(player.team).collect { [id: it.id, player: it.player.name] }
+                invites: TeamInvite.findAllByTeam(team).collect { [id: it.id, player: it.player.name] }
             ] : null,
             teams: Team.findAllByIsPublicAndHasStarted(true, false).collect {
-                [players: Player.countByTeam(it), name: it.name, id: it.id, key: it.teamKey, hasInvite: TeamInvite.countByTeamAndPlayer(it, player).asBoolean()]
+                [
+                    players: TeamInvite.findAllByTeamAndCompleted(it, true)*.player*.id.unique().size(),
+                    name: it.name,
+                    id: it.id,
+                    key: it.teamKey,
+                    hasInvite: TeamInvite.countByTeamAndPlayerAndCompleted(it, player, false).asBoolean()
+                ]
             }
         ] as JSON)
     }
 
     def start() {
+        Team team = session.teamId ? Team.findById(session.teamId) : null
         render([
             startsIn: ((Hunt.findById(session.huntId).startTime ?: 0) as Long) - System.currentTimeMillis(),
-            hasStarted: Player.findById(session.playerId).team?.hasStarted
+            hasStarted: team?.hasStarted
         ] as JSON)
     }
 
     def createTeam() {
         Player player = Player.findById(session.playerId)
-        if (player.team) {
+        Team team = session.teamId ? Team.findById(session.teamId) : null
+        if (team) {
             render status: 500
             return
         }
 
         Hunt hunt = Hunt.findById(session.huntId)
-        Team team = new Team(name: namingService.getRandomName(), hunt: hunt)
+        team = new Team(name: namingService.getRandomName(), hunt: hunt)
 
-        player.team = team
 
-        if (!team.save(flush: true) || !player.save(flush: true)) {
+        if (!team.save(flush: true)) {
+            render status: 500
+        }
+
+        TeamInvite teamInvite = new TeamInvite(team: team, player: player, playerRequest: true, completed: true)
+
+        if (!teamInvite.save(flush: true)) {
             render status: 500
         }
 
@@ -56,8 +72,8 @@ class TeamController {
     }
 
     def publicize() {
-        Player player = Player.findById(session.playerId)
-        Team team = player.team
+        Team team = session.teamId ? Team.findById(session.teamId) : null
+
         if (!team) {
             render status: 500
             return
@@ -74,7 +90,7 @@ class TeamController {
 
     def makeFinal() {
         Player player = Player.findById(session.playerId)
-        Team team = player.team
+        Team team = session.teamId ? Team.findById(session.teamId) : null
         if (!team) {
             render status: 500
             return
@@ -98,19 +114,15 @@ class TeamController {
 
     def leaveTeam() {
         Player player = Player.findById(session.playerId)
-        Team team = player.team
+        Team team = session.teamId ? Team.findById(session.teamId) : null
         if (!team || team.isFinalized || team.hasStarted) {
             render status: 500
             return
         }
-
-        player.team = null;
-        if (!player.save(flush: true)) {
-            render status: 500
-            return
+        TeamInvite.findAllByTeamAndPlayerAndCompleted(team, player, true).each {
+            it.delete(flush: true)
         }
-
-        if (!Player.countByTeam(team)) {
+        if (!(TeamInvite.where { completed == true && team == team }.count())) {
             team.delete(flush: true)
         }
 
@@ -144,7 +156,8 @@ class TeamController {
     @Transactional
     def teamInvite() {
         Player player = Player.findById(session.playerId)
-        if (!player.team) {
+        Team team = session.teamId ? Team.findById(session.teamId) : null
+        if (!team) {
             render status: 500
             return
         }
@@ -188,13 +201,14 @@ class TeamController {
     @Transactional
     def teamDecline() {
         TeamInvite invite = TeamInvite.findById(params.invite)
+        Team team = session.teamId ? Team.findById(session.teamId) : null
         if (!invite) {
             render status: 500
             return
         }
 
         Player player = Player.findById(session.playerId)
-        if (!player.team || player.team != invite.team) {
+        if (!team || team != invite.team) {
             render status: 500
             return
         }
@@ -213,19 +227,24 @@ class TeamController {
         }
 
         Player player = Player.findById(session.playerId)
-        if (player.team || player != invite.player) {
+        Team team = session.teamId ? Team.findById(session.teamId) : null
+        if (team || player != invite.player) {
             render status: 500
             return
         }
 
-        player.team = invite.team
-        if (!player.save(flush: true)) {
+        if (hunt.maxTeamSize <= TeamInvite.findAllByTeamAndCompleted(invite.team, true)*.player*.id.unique().size()) {
             render status: 500
             return
         }
 
-        TeamInvite.where { player == player && playerRequest == true }.deleteAll()
-
+        invite.completed = true
+        if (!invite.save(flush: true)) {
+            render status: 500
+            return
+        }
+        session.teamId = invite.team.id
+        TeamInvite.where { player == player && playerRequest == true && id != invite.id }.deleteAll()
         render [:] as JSON
     }
 
@@ -238,22 +257,31 @@ class TeamController {
             return
         }
 
+        Hunt hunt = Hunt.findById(session.huntId)
         Player player = Player.findById(session.playerId)
+        Team playerTeam = session.teamId ? Team.findById(session.teamId) : null
         Player otherPlayer = invite.player
-        if (!player.team || player.team != invite.team || otherPlayer.team) {
+        Team otherTeam = TeamInvite.where {
+            player == otherPlayer && team.hunt == hunt && completed == true
+        }.get()?.team
+
+        if (!playerTeam || playerTeam != invite.team || otherTeam) {
+            println "$playerTeam $otherTeam"
+
             render status: 500
             return
         }
 
-        otherPlayer.team = invite.team
-
-        if (!otherPlayer.save(flush: true)) {
+        if (hunt.maxTeamSize <= TeamInvite.findAllByTeamAndCompleted(playerTeam, true)*.player*.id.unique().size()) {
             render status: 500
             return
         }
 
-        invite.delete(flush: true)
-
+        invite.completed = true
+        if (!invite.save(flush: true)) {
+            render status: 500
+            return
+        }
         render [:] as JSON
     }
 

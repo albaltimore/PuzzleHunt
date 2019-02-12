@@ -4,6 +4,7 @@ class TeamInvite {
     Team team
     Player player
     boolean playerRequest
+    boolean completed = false
 
     static constraints = {
 

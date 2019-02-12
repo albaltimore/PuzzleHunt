@@ -24,6 +24,16 @@ class LoginController {
         redirect controller: 'player'
     }
 
+    def logout() {
+        Hunt hunt = session.huntId ? Hunt.findById(session.huntId) : null
+
+        session.invalidate()
+        def newSession = request.getSession(true)
+        if (hunt) newSession.huntId = hunt.id
+
+        redirect action: 'index'
+    }
+
     def homepage() {
         if (session.playerId) {
             redirect controller: 'player'

@@ -18,7 +18,7 @@ class PlayerController {
     def getPuzzles() {
         def player = Player.get(session.playerId)
         def hunt = Hunt.findById(session.huntId)
-        def team = player.team
+        Team team = session.teamId ? Team.findById(session.teamId) : null
         if (!team.hasStarted) {
             team.hasStarted = true
 
@@ -115,7 +115,7 @@ class PlayerController {
 
     def getPuzzleResources() {
         def player = Player.get(session.playerId)
-        def team = player.team
+        Team team = session.teamId ? Team.findById(session.teamId) : null
 
         Puzzle puzzle = Puzzle.findById(params.id)
         if (!puzzle || !team.isSolvable(puzzle)) {
@@ -156,7 +156,7 @@ class PlayerController {
 
     def startTimedPuzzle() {
         def player = Player.findById(session.playerId)
-        def team = player.team
+        Team team = session.teamId ? Team.findById(session.teamId) : null
 
         def puzzle = Puzzle.findById(params.id)
         if (team.hasSolved(puzzle) || !team.isSolvable(puzzle)) {
@@ -170,7 +170,7 @@ class PlayerController {
     def nextHintTime() {
         def hunt = Hunt.findById(session.huntId)
         def player = Player.findById(session.playerId)
-        def team = player.team
+        Team team = session.teamId ? Team.findById(session.teamId) : null
         def maxHints = team.hintMaxCount + (team.status?.hintCount ?: 0)
         def totalTime = team.hintRegen - (team.status?.hintTime ?: 0) * 1000
 
@@ -203,7 +203,8 @@ class PlayerController {
         }
 
         def player = Player.findById(session.playerId)
-        def team = player.team
+
+        Team team = session.teamId ? Team.findById(session.teamId) : null
 
         def totalTime = team.hintRegen - (team.status?.hintTime ?: 0) * 1000
         def maxHints = team.hintMaxCount + (team.status?.hintCount ?: 0)
@@ -251,7 +252,7 @@ class PlayerController {
         }
 
         def player = Player.findById session.playerId
-        def team = player.team
+        Team team = session.teamId ? Team.findById(session.teamId) : null
         if (System.currentTimeMillis() <= team.lastSubmission + (grailsApplication.config.puzzlehunt.puzzleTimeout as Long)) {
             def ret = [solved: false, message: "Too many submissions at once"]
             render ret as JSON
@@ -293,7 +294,7 @@ class PlayerController {
 
     def getHintResources() {
         Player player = Player.findById session.playerId
-        Team team = player.team
+        Team team = session.teamId ? Team.findById(session.teamId) : null
         Puzzle puzzle = Puzzle.findById params.id
 
 
@@ -329,7 +330,8 @@ class PlayerController {
         def bootstrapPath = grailsApplication.config.puzzlehunt.resourcePath
         def rs = Resource.findByAccessor(params.accessor)
         def player = Player.findById session.playerId
-        def team = player.team
+
+        Team team = session.teamId ? Team.findById(session.teamId) : null
 
         if (rs && !rs.role && (!rs.puzzle || team.hasSolved(rs.puzzle) ||
             (!rs.mustSolve && team.isSolvable(rs.puzzle)))) {

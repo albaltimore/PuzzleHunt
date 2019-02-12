@@ -291,7 +291,7 @@ function updateAlerts() {
 
 var leaderboardInited = false;
 
-function leaderboard(teamName) {
+var leaderboard = (teamName) => {
     if (leaderboardInited) return;
     leaderboardInited = true;
     var rootDiv = $(".leaderboard-pane");
@@ -309,10 +309,14 @@ function leaderboard(teamName) {
                     if ((a.isWinner || false) !== (b.isWinner || false)) {
                         return Number(b.isWinner || false) - Number(a.isWinner || false);
                     }
-                    if (Number(a.score || 0) !== Number(b.score || 0)) {
-                        return Number(b.score || 0) - Number(a.score || 0);
+                    if (a.isWinner) {
+                        return Number(a.timestamp || 0) - Number(b.timestamp || 0);
+                    } else {
+                        if (Number(a.score || 0) !== Number(b.score || 0)) {
+                            return Number(b.score || 0) - Number(a.score || 0);
+                        }
+                        return Number(a.timestamp || 0) - Number(b.timestamp || 0);
                     }
-                    return Number(a.timestamp || 0) !== Number(b.timestamp || 0);
                 }).forEach(it => {
                     var [team, tdata] = it;
 
@@ -343,13 +347,14 @@ function leaderboard(teamName) {
                 rootDiv.append(table);
             }
             if (data.show && launch) {
+                leaderboard = () => paint();
                 setInterval(paint, 1000 * 60 / 2);
             }
         });
     }
 
     paint(true);
-}
+};
 
 
 var removePanes = [];
@@ -752,6 +757,7 @@ function reloadMap(openPuzzleId) {
                                 $.post("checkPuzzle", {id: puzzle.id, solution: solveEntry.val()}, function (data) {
                                     console.log(data);
                                     if (data.solved) {
+                                        leaderboard();
                                         reloadMap(puzzle.id);
                                     } else {
                                         statusLabel.text(data.message);
