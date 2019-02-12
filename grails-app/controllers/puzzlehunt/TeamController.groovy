@@ -2,7 +2,6 @@ package puzzlehunt
 
 import grails.converters.JSON
 import grails.gorm.transactions.Transactional
-import javafx.beans.binding.IntegerExpression
 
 class TeamController {
     def index() {}
