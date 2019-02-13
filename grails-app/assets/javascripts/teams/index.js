@@ -82,7 +82,7 @@ function reload() {
                             You will not be able to undo this once the hunt starts.
                             
                             Current members: ${stateData.team.players.map(p => p.name).join(', ')}
-                            ${stateData.team.invites.length ? "There are" + stateData.team.invites.length + "  requests to join your team." : ""} 
+                            ${stateData.team.invites.length ? "There are " + stateData.team.invites.length + "  requests to join your team." : ""} 
                             `, "Yes", "No", () => {
                             showLoading();
                             $.post('makeFinal', {isFinalized: true}, data => {

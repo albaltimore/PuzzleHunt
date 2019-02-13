@@ -32,13 +32,18 @@ footer {
         & > a {
             color: $link-color;
             text-decoration: none;
+            display: inline-block;
+        }
+
+        & > label {
+            margin-top: 10px;
+            display: block;
+            color: white;
+            font-size: 14px;
         }
     }
 
-    > label {
-        color: white;
-        font-size: 14px;
-    }
+
 }
 
 .login-form {

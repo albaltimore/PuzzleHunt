@@ -59,14 +59,14 @@
             </g:else>
         </div>
 
-
     </div>
 </g:form>
 <footer>
     <div class="footer-links">
-        <a href="https://www.bloomberg.com/notices/privacy/" target="_blank">Privacy Policy</a><label> | </label><a href="https://www.bloomberg.com/notices/privacy/" target="_blank">Terms Of Service</a>
+        <a href="https://www.bloomberg.com/notices/privacy/" target="_blank">Privacy Policy</a> | <g:link
+            action="terms" target="_blank">Terms Of Service</g:link>
+        <label>Copyright 2019 Bloomberg Finance L.P. All rights reserved.</label>
     </div>
-    <label>Copyright 2019 Bloomberg Finance L.P. All rights reserved.</label>
 </footer>
 
 <g:form style="display: none" action="googleAuth" class="googleAuth">

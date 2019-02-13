@@ -19,4 +19,11 @@
         <label class="nohunt-label"></label>
     </div>
 </div>
+<footer>
+    <div class="footer-links">
+        <a href="https://www.bloomberg.com/notices/privacy/" target="_blank">Privacy Policy</a> | <g:link
+            action="terms" target="_blank">Terms Of Service</g:link>
+        <label>Copyright 2019 Bloomberg Finance L.P. All rights reserved.</label>
+    </div>
+</footer>
 </body>

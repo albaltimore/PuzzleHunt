@@ -23,7 +23,7 @@ class TeamController {
                 players: TeamInvite.findAllByTeamAndCompleted(team, true)*.player.collect {
                     [name: it.name, description: it.description, id: it.id]
                 },
-                invites: TeamInvite.findAllByTeam(team).collect { [id: it.id, player: it.player.name] }
+                invites: TeamInvite.findAllByTeamAndCompleted(team, false).collect { [id: it.id, player: it.player.name] }
             ] : null,
             teams: Team.findAllByIsPublicAndHasStarted(true, false).collect {
                 [
@@ -265,8 +265,6 @@ class TeamController {
         }.get()?.team
 
         if (!playerTeam || playerTeam != invite.team || otherTeam) {
-            println "$playerTeam $otherTeam"
-
             render status: 500
             return
         }

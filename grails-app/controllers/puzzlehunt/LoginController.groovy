@@ -14,6 +14,8 @@ class LoginController {
 
     def nohunt() {}
 
+    def terms() {}
+
     def register() {
         Hunt hunt = Hunt.findByLinkKey(params.id)
         if (!hunt) {
