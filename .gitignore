@@ -16,5 +16,6 @@ bootstrap
 .env
 .asscache
 log
+grails-app/assets/bootstrap/**
 grails-app/assets/packaged/**
 .ideaDataSources
