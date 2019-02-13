@@ -34,15 +34,15 @@
         </li>
 
         <li>
-            How to win: The first team to complete the final puzzle will be the winning team. NOTE: You do not need to complete all of the other puzzles to complete the final puzzle. If no team completes the final puzzle, the winning team will be the team that has solved the most puzzles in the shortest amount of time. All members of the wining team must be in the room at the close of the Competition to receive the prize.
+            How to win: The first team to complete the final puzzle will be the winning team. NOTE: You do not need to complete all of the other puzzles to complete the final puzzle. If no team completes the final puzzle, the winning team will be the team that solved the most puzzles in the shortest amount of time. All members of the wining team must be in the room at the close of the Competition to receive the prize.
         </li>
 
         <li>
-            Prize: Bloomberg will award the following prize to the winning team. [INCLUDE PRIZE INFORMATION] The value of the prize is roughly US$[______]. The prize is not transferable. The prize is awarded without warranty of any kind.
+            Prize: Bloomberg will award an Oculus Go Standalone Virtual Reality Headset to each member of the winning team. The value of each Headset is roughly US$200. The prize is not transferable. The prize is awarded without warranty of any kind. This Competition is neither endorsed by, nor affiliated with, Oculus.
         </li>
 
         <li>
-            Use of Personal Information: By entering the Competition, you consent to Bloomberg and its subsidiaries and affiliates using any submitted entry information, including your name, name of your school, email addresses, telephone numbers and photographs or other likenesses, for purposes of administering the Competition, fulfilling the objectives of the Competition, conducting publicity, improving Bloomberg’s services, and distributing marketing and recruiting materials to you, and you consent to the transfer or export, if any, of such information to various countries around the world, for these purposes. You further agree to the terms of the Bloomberg Privacy Policy located at <a
+            Use of Personal Information: By entering the Competition, you acknowledge that Bloomberg and its subsidiaries and affiliates may use any submitted entry information, including your name, name of your school, major(s), expected graduation year, email addresses, telephone numbers and photographs or other likenesses, for purposes of administering the Competition, fulfilling the objectives of the Competition, conducting publicity, improving Bloomberg’s services, and distributing marketing and recruiting materials to you, and you acknowledge that your personal information may be transferred to and processed in various countries around the world that may have different levels of privacy protection than your country, for these purposes. For more information about Bloomberg’s privacy practices, including with respect to your submitted entry information, please refer to Bloomberg’s Privacy Policy located at <a
                 href="https://www.bloomberg.com/notices/privacy/" target="_blank">https://www.bloomberg.com/notices/privacy/</a>
         </li>
 
