@@ -102,7 +102,8 @@ function init() {
                 startTime: new Date($("#huntStart").val()).getTime() || null,
                 endTime: new Date($("#huntEnd").val()).getTime() || null,
                 maxTeamSize: parseInt($("#huntMaxTeamSize").val()) || null,
-                winningText: $("#huntWinningText").val() || null
+                winningText: $("#huntWinningText").val() || null,
+                gameoverText: $("#huntGameoverText").val() || null
             };
             console.log(req);
             $.post("saveHunt", req, evt => {

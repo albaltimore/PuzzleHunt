@@ -102,6 +102,7 @@ class PlayerController {
 
 
         def ret = [
+            hunt:[name: hunt.description],
             puzzles: puzzles,
             rounds: rounds.values(),
             status: status,

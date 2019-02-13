@@ -409,6 +409,7 @@ function reloadMap(openPuzzleId) {
             });
         }
 
+        $("#huntPane").text(teamData.hunt.name);
         var titleDiv = $("#titlePane");
         titleDiv.empty();
         endTime = teamData.endsIn !== null ? Date.now() + teamData.endsIn : null;

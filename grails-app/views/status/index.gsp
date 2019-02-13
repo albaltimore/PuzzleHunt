@@ -17,7 +17,6 @@
 
             <div style="display: table; position: relative; margin: auto">
 
-
                 <table id="statusTable">
 
                 </table>

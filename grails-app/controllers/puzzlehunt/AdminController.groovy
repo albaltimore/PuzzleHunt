@@ -108,22 +108,19 @@ class AdminController {
     }
 
     def saveHunt() {
-        println "SAVE HUNT PARAMS $params"
         Hunt hunt = params.id ? Hunt.findById(params.id) : new Hunt()
         hunt.description = params.description ?: null
         hunt.maxTeamSize = params.maxTeamSize ? params.maxTeamSize as Integer : null
         hunt.startTime = params.startTime ? params.startTime as Long : null
         hunt.endTime = params.endTime ? params.endTime as Long : null
         hunt.winningText = params.winningText ?: null
-
-        println "HUNT IS $hunt"
+        hunt.gameoverText = params.gameoverText ?: null
 
         if (!hunt.save(flush: true)) {
             println hunt.errors
             render status: 500
             return
         }
-
 
         def ret = [success: "true"]
         render ret as JSON

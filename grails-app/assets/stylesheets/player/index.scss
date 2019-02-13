@@ -174,3 +174,13 @@ body {
     cursor: pointer;
     transform: translate(-50%, -50%);
 }
+
+.greeting {
+    &-logout {
+        & > a {
+            &:before {
+                content: "Logout";
+            }
+        }
+    }
+}

@@ -24,6 +24,7 @@
     <label>Key:</label> <label id="huntKey"></label><br/>
     <label>Description</label> <input type="text" id="huntDescription" style="width: 500px;" /><br/>
     <label>Winning Message</label> <input type="text" id="huntWinningText" style="width: 500px;" /><br/>
+    <label>Game Over Message</label> <input type="text" id="huntGameoverText" style="width: 500px;" /><br/>
     <label>Start</label> <input type="datetime-local" id="huntStart" /><br/>
     <label>End</label> <input type="datetime-local" id="huntEnd" /><br/>
     <label>Max Team Size</label> <input type="number" min="0" step="1" id="huntMaxTeamSize"/><br/>
