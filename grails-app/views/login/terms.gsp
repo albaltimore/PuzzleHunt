@@ -34,7 +34,7 @@
         </li>
 
         <li>
-            How to win: The first team to complete the final puzzle will be the winning team. NOTE: You do not need to complete all of the other puzzles to complete the final puzzle. If no team completes the final puzzle, the winning team will be the team that has solved the most puzzles in the shortest amount of time. All members of the wining team must be in the room at the close of the Competition to receive the prize.
+            How to win: The first team to complete the final puzzle will be the winning team. NOTE: You do not need to complete all of the other puzzles to complete the final puzzle. If no team completes the final puzzle, the winning team will be the team that has solved the most puzzles in the shortest amount of time. All members of the winning team must be in the room at the close of the Competition to receive the prize.
         </li>
 
         <li>
