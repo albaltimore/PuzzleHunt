@@ -23,7 +23,7 @@ class SSLInterceptor {
     }
 
     boolean after() {
-        header 'X-Frame-Options', 'deny'
+        header 'X-Frame-Options', 'sameorigin'
         true
     }
 

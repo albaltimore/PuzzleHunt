@@ -401,10 +401,11 @@ class PlayerController {
         }
 
         Attempt.where { team.hunt == hunt && isCorrect == true }.collect {
-            if (!teamPuzzles.containsKey(it.team)) return
-            teamPuzzles[it.team.name].score.add it.puzzle.name
-            if (it.puzzle.isFinal) teamPuzzles[it.team.name].isWinner = true
-            if (teamPuzzles[it.team.name].timestamp < it.timestamp) teamPuzzles[it.team.name].timestamp = it.timestamp
+            if (teamPuzzles[it.team.name]) {
+                teamPuzzles[it.team.name].score.add it.puzzle.name
+                if (it.puzzle.isFinal) teamPuzzles[it.team.name].isWinner = true
+                if (teamPuzzles[it.team.name].timestamp < it.timestamp) teamPuzzles[it.team.name].timestamp = it.timestamp
+            }
         }
 
         def ret = [:]

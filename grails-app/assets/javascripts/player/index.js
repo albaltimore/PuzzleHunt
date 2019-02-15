@@ -134,7 +134,7 @@ function showHintDialog(puzzleId, puzzleName, hintText) {
             }
 
         }, 25);
-
+    }).always(() => {
         var closeDiv = $("<div style='position: relative; left: 50%; transform: translate(-50%); display: inline-block' />");
         pane.append(closeDiv);
 
