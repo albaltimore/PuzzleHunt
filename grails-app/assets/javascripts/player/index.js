@@ -777,7 +777,7 @@ function reloadMap(openPuzzleId) {
                                     }
                                 }).fail(function (err) {
                                     console.log(err);
-                                    statusLabel.text("Probably Incorrect");
+                                    statusLabel.text("Cannot verify answer");
                                 });
                             }
                         });
