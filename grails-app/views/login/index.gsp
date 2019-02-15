@@ -10,17 +10,12 @@
     <asset:javascript src="login/index.js"/>
     <meta name="google-site-verification" content="u_wLvF3IbUSaoNJFzEdBjTDrpVAfAnH5Kq8zC7m_83E"/>
 
-    <g:if test="${params.id != 'bb'}">
-        <meta name="google-signin-client_id"
-              content="98624763155-ig63kk95v6jfs3803m7o53qpgbaqb1nm.apps.googleusercontent.com">
-        <script src="https://apis.google.com/js/platform.js?onload=loadedGoogle" async defer></script>
+    <meta name="google-signin-client_id" content="98624763155-ig63kk95v6jfs3803m7o53qpgbaqb1nm.apps.googleusercontent.com">
+    <script src="https://apis.google.com/js/platform.js?onload=loadedGoogle" async defer></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bluebird/3.3.4/bluebird.min.js"></script>
+    <script src="https://secure.aadcdn.microsoftonline-p.com/lib/0.2.3/js/msal.js"></script>
 
-
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/bluebird/3.3.4/bluebird.min.js"></script>
-        <script src="https://secure.aadcdn.microsoftonline-p.com/lib/0.2.3/js/msal.js"></script>
-
-        <asset:javascript src="login/msft.js"/>
-    </g:if>
+    <asset:javascript src="login/msft.js"/>
     <title>Login</title>
 </head>
 
@@ -38,33 +33,21 @@
             </g:if>
             <label id="otherMessage" style="display: none" class="flash-message"></label>
 
-            <g:if test="${params.id != 'bb'}">
-                <label class="input-label login-provider-label">Login or Create Account</label>
+            <label class="input-label login-provider-label">Login or Create Account</label>
 
-                <div id="withMicrosoft" class="login-provider-button login-provider-button-microsoft"></div>
+            <div id="withMicrosoft" class="login-provider-button login-provider-button-microsoft"></div>
 
-                <div id="withGoogle" class="login-provider-button login-provider-button-google"></div>
-
-                <div id="withFacebook" class="fb-login-button login-provider-button login-provider-button-facebook"
-                     data-width="500" data-size="large" data-button-type="login_with" data-show-faces="false"
-                     data-auto-logout-link="false" data-use-continue-as="false" data-scope="email"></div>
-            </g:if>
-            <g:else>
-                <label class="input-label">Username:</label>
-                <input type="text" name="username" placeholder="USERNAME" class="login-entry" value=""/>
-
-                <label class="input-label">Password:</label>
-                <input type="password" name="password" placeholder="PASSWORD" class="login-entry"/>
-                <input type="submit" value="LOGIN" class="submit-button"/>
-            </g:else>
+            <div id="withGoogle" class="login-provider-button login-provider-button-google"></div>
+            <div id="withFacebook" class="fb-login-button login-provider-button login-provider-button-facebook"
+                 data-width="500" data-size="large" data-button-type="login_with" data-show-faces="false"
+                 data-auto-logout-link="false" data-use-continue-as="false" data-scope="email"></div>
         </div>
 
     </div>
 </g:form>
 <footer>
     <div class="footer-links">
-        <a href="https://www.bloomberg.com/notices/privacy/" target="_blank">Privacy Policy</a> | <g:link
-            action="terms" target="_blank">Terms Of Service</g:link>
+        <a href="https://www.bloomberg.com/notices/privacy/" target="_blank">Privacy Policy</a> | <g:link action="terms" target="_blank">Terms Of Service</g:link>
         <label>Copyright 2019 Bloomberg Finance L.P. All rights reserved.</label>
     </div>
 </footer>

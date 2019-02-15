@@ -22,7 +22,10 @@ class SSLInterceptor {
         true
     }
 
-    boolean after() { true }
+    boolean after() {
+        header 'X-Frame-Options', 'deny'
+        true
+    }
 
     void afterView() {
         // no-op

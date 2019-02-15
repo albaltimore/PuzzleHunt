@@ -44,20 +44,6 @@ class LoginController {
         redirect controller: 'login'
     }
 
-    def login() {
-        def player = Player.findByNameAndPasswordAndSourceIsNull(params.username, params.password)
-        if (player) {
-            session.playerId = player.id
-            session.playerName = player.name
-
-            redirect controller: "player"
-
-        } else {
-            flash.message = "Invalid Credentials"
-            redirect action: "index"
-        }
-    }
-
     def googleAuth() {
         if (!params.idtoken) {
             render status: 500

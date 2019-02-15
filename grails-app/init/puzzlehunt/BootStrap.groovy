@@ -73,7 +73,7 @@ class BootStrap {
         }
 
         config.resources.each {
-            resources[it.id] = new Resource(puzzle: puzzles[it.puzzle], filename: it.file, accessor: UUID.randomUUID().toString(), linkUri: it.link, mustSolve: it.mustSolve ?: false, role: it.role ?: null)
+            resources[it.id] = new Resource(puzzle: puzzles[it.puzzle], filename: it.file, accessor: UUID.randomUUID().toString(), linkUri: it.link, mustSolve: it.mustSolve ?: false, role: it.role ?: null, textContent: it.text ?: null)
             if (!resources[it.id].save()) {
                 println "Failed to save C ${it}"
             }

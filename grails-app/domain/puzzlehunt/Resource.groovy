@@ -8,6 +8,7 @@ class Resource {
     String accessor
     boolean mustSolve
     String role
+    String textContent
 
     static constraints = {
         puzzle nullable: true
@@ -15,5 +16,6 @@ class Resource {
         role nullable: true
         linkUri nullable: true
         filename nullable: true
+        textContent nullable: true
     }
 }

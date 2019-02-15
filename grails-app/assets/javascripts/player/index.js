@@ -372,6 +372,8 @@ function clearPanes() {
         clearInterval(timer);
     });
     removeTimers = [];
+
+    $(".map-root").css('z-index', "");
 }
 
 
@@ -409,7 +411,7 @@ function reloadMap(openPuzzleId) {
             });
         }
 
-        $("#huntPane").text(teamData.hunt.name);
+        $("#huntPane").attr("hunt",teamData.hunt.name);
         var titleDiv = $("#titlePane");
         titleDiv.empty();
         endTime = teamData.endsIn !== null ? Date.now() + teamData.endsIn : null;
@@ -622,6 +624,8 @@ function reloadMap(openPuzzleId) {
                     pane.toggleClass('puzzle-pane-maximized');
                     pane.toggleClass('puzzle-pane-minimized');
                     paneMaximized = pane.hasClass('puzzle-pane-maximized');
+                    $(".map-root").css('z-index', pane.hasClass('puzzle-pane-maximized') ? 4 : "");
+
                     setCoords(paneMaximized);
                 });
 
@@ -649,40 +653,48 @@ function reloadMap(openPuzzleId) {
 
                     $.get('getPuzzleResources', {id: puzzle.id}, puzzleResouces => {
                         console.log('puzz resc', puzzleResouces);
+
                         if (puzzleResouces.solvedAccessor) {
                             var accessorUrl = "getResource?accessor=" + puzzleResouces.solvedAccessor;
                             var introExtension = puzzleResouces.solvedFilename ? puzzleResouces.solvedFilename.substr(puzzleResouces.solvedFilename.lastIndexOf(".") + 1).toLowerCase() : "link";
 
                             if (introExtension === "pdf") {
-                                var body = $("<object data='" + accessorUrl + "#view=FitH' class='puzzle-pane-content'/>");
+                                var body = $("<object data='" + accessorUrl + "#view=FitH' class='puzzle-pane-content  puzzle-pane-content-solved'/>");
                                 var link = $("<div style='margin-bottom: 10px'><a style='color: #59A0E6' target=\"_blank\" href=\"" + accessorUrl + "\">Download</a></div>");
                                 contentDiv.after(body);
                                 contentDiv.after(link);
                             } else if (introExtension === "mp4") {
-                                var body = $("<video class='puzzle-pane-content' controls><source src='" + accessorUrl + "' type='video/mp4' /></video>");
+                                var body = $("<video class='puzzle-pane-content  puzzle-pane-content-solved' controls><source src='" + accessorUrl + "' type='video/mp4' /></video>");
                                 var link = $("<div style='margin-bottom: 10px'><a style='color: #59A0E6' target=\"_blank\" href=\"" + accessorUrl + "\">Download</a></div>");
                                 contentDiv.after(body);
                                 contentDiv.after(link);
                             } else if (introExtension === "link") {
-                                var link = $("<iframe class='puzzle-pane-content' src='" + accessorUrl + "' frameborder='0' allow='autoplay; encrypted-media' allowfullscreen />");
+                                var link = $("<iframe class='puzzle-pane-content  puzzle-pane-content-solved  puzzle-pane-content-text' src='" + accessorUrl + "' frameborder='0' allow='autoplay; encrypted-media' allowfullscreen />");
                                 contentDiv.after(link);
+                            } else if (introExtension === 'txt') {
+                                var dataLabel;
+                                contentDiv.after(dataLabel = $(`<label class='puzzle-pane-content puzzle-pane-content-solved'></label>`));
+                                $.get(accessorUrl, data => {
+                                    dataLabel.text(data);
+                                });
                             } else {
                                 body = $("<a target=\"_blank\" href=\"" + accessorUrl + "\"  class='puzzle-pane-content-img' ><img src=\"" + accessorUrl + "\" class='puzzle-pane-content'/></a>");
                                 contentDiv.after(body);
                                 body = $("<a target=\"_blank\" href=\"" + accessorUrl + "\"  class='puzzle-pane-content-background puzzle-pane-content'  style='background-image: url(\"" + accessorUrl + "\") ' /></a>");
                                 contentDiv.after(body);
                             }
+
                         } else {
                             var label = $("<label style='width:100%; color:green; font-size: 64px; text-align: center; display: inline-block'>SOLVED</label>");
                             pane.append(label);
                         }
+                        contentDiv.after($(`<div style='margin-bottom: 10px'><a style='color: #59A0E6' target="_blank" href="getResource?accessor=${puzzleResouces.introAccessor}">The Puzzle</a></div>`));
 
-                        link = $("<div style='margin-bottom: 10px'><a style='color: #59A0E6' target=\"_blank\" href=\"" + "getResource?accessor=" + puzzleResouces.introAccessor + "\">The Puzzle</a></div>");
-                        pane.append(link);
                     }).fail(
                         //TODO
-                    );
-                    contentDiv.remove();
+                    ).always(() => {
+                        contentDiv.remove();
+                    });
 
                 } else if (solveable) {
                     var label = $("<label class='puzzle-pane-title' style='color:yellow;'></label>");

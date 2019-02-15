@@ -137,6 +137,12 @@ body {
             display: none;
         }
 
+        @at-root label#{&} {
+            color: white;
+            font-size: 24px;
+
+        }
+
         @at-root img#{&} {
             margin: auto;
         }

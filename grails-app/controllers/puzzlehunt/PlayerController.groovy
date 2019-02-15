@@ -102,7 +102,7 @@ class PlayerController {
 
 
         def ret = [
-            hunt:[name: hunt.description],
+            hunt: [name: hunt.description],
             puzzles: puzzles,
             rounds: rounds.values(),
             status: status,
@@ -143,7 +143,7 @@ class PlayerController {
             introAccessor: started ? puzzle?.introResource?.accessor : null,
             introFilename: started ? puzzle?.introResource?.filename : null,
             solvedAccessor: solved ? puzzle?.solvedResource?.accessor : null,
-            solvedFilename: solved ? puzzle?.solvedResource?.filename : null,
+            solvedFilename: solved ? (puzzle?.solvedResource?.textContent ? 'info.txt' : puzzle?.solvedResource?.filename) : null,
         ] as JSON)
 
     }
@@ -334,11 +334,13 @@ class PlayerController {
 
         Team team = session.teamId ? Team.findById(session.teamId) : null
 
-        if (rs && !rs.role && (!rs.puzzle || team.hasSolved(rs.puzzle) ||
-            (!rs.mustSolve && team.isSolvable(rs.puzzle)))) {
-
+        if (rs && !rs.role && (!rs.puzzle || team.hasSolved(rs.puzzle) || (!rs.mustSolve && team.isSolvable(rs.puzzle)))) {
             if (rs.linkUri) {
                 redirect url: rs.linkUri
+            } else if (rs.textContent) {
+                render text: rs.textContent, contentType: 'text/plain'
+
+
             } else if (rs.filename) {
                 def f = new File("${bootstrapPath}/${rs.filename}")
                 def extension = rs.filename.substring(rs.filename.lastIndexOf(".") + 1).toLowerCase()
