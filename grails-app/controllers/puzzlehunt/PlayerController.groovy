@@ -308,8 +308,6 @@ class PlayerController {
 
 
         def unlockTime = PuzzleStart.findByPuzzleAndTeam(puzzle, team)?.startTime
-        println unlockTime
-
 
         if (!team.isSolvable(puzzle) || !unlockTime) {
             render status: 500
@@ -327,7 +325,6 @@ class PlayerController {
             return true
 
         } collect {
-            println "$unlockTime, $it.seconds"
             if (unlockTime + it.seconds * 1000 > System.currentTimeMillis()) [unlockTime: unlockTime + it.seconds * 1000]
             else [description: it.description, accessor: it.resource?.accessor, filename: it?.resource?.filename]
         }

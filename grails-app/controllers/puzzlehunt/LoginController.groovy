@@ -66,13 +66,9 @@ class LoginController {
             redirect action: 'index'
         }
 
-        println payload
-        println payload.email
-
         Player player = Player.findBySourceAndEmail('google', payload.email)
         if (!player) {
             player = new Player(name: payload.email, email: payload.email, source: 'google')
-            println player
 
             if (!player.save(flush: true)) {
 
@@ -105,7 +101,6 @@ class LoginController {
         Player player = Player.findBySourceAndEmail('facebook', payload.email)
         if (!player) {
             player = new Player(name: payload.email, email: payload.email, source: 'facebook')
-            println player
 
             if (!player.save(flush: true)) {
 
@@ -145,7 +140,6 @@ class LoginController {
         Player player = Player.findBySourceAndEmail('microsoft', payload.userPrincipalName)
         if (!player) {
             player = new Player(name: payload.userPrincipalName, email: payload.userPrincipalName, source: 'microsoft')
-            println player
 
             if (!player.save(flush: true)) {
 

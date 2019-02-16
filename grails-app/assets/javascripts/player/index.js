@@ -512,7 +512,7 @@ function reloadMap(openPuzzleId) {
 
         // console.log(rounds);
 
-        teamData.puzzles.forEach(function (puzzle) {
+        if (!hasOverlay) teamData.puzzles.forEach(function (puzzle) {
             pMap[puzzle.id] = puzzle;
 
             if (puzzle.pathResource) {
