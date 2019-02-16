@@ -138,7 +138,7 @@ function reload() {
 
         $(".team-list").empty();
 
-        var teamsFiltered = data.teams.filter(team => !data.team || team.name !== data.team.name);
+        var teamsFiltered = data.teams.filter(team => (!data.team || team.name !== data.team.name) && team.players);
 
         if (teamsFiltered.length) {
             $(".team-list-container").css('display', 'block');

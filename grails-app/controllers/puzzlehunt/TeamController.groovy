@@ -25,7 +25,7 @@ class TeamController {
                 },
                 invites: TeamInvite.findAllByTeamAndCompleted(team, false).collect { [id: it.id, player: it.player.name] }
             ] : null,
-            teams: Team.findAllByIsPublicAndHasStarted(true, false).collect {
+            teams: Team.findAllByIsPublicAndHasStartedAndHunt(true, false, hunt).collect {
                 [
                     players: TeamInvite.findAllByTeamAndCompleted(it, true)*.player*.id.unique().size(),
                     name: it.name,

@@ -7,12 +7,13 @@ class Round {
     int width
     int height
     boolean unlocked = false
-
-
-
+    Resource winningResource
+    Resource gameoverResource
 
     static constraints = {
         background nullable: true
+        winningResource nullable: true
+        gameoverResource nullable: true
     }
 
     static hasMany = [requiredPuzzles: RequiredPuzzle]
