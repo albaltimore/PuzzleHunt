@@ -26,12 +26,14 @@ class PlayerController {
                 render status: 500
                 return
             }
-
-            println "MADE TEAM START $team.name"
         }
 
         def solved = team.solvedPuzzles*.id
         def timedStarted = PuzzleStart.findAllByTeam team collect { it.puzzle.id }
+
+        def endTime = hunt.endTime ? hunt.endTime - System.currentTimeMillis() : null
+        def hasEnded = endTime != null && endTime < 0
+        def isWinner = false
 
         def rounds = [:]
         def stat = team.status
@@ -60,7 +62,13 @@ class PlayerController {
                     background: p.round.background.accessor,
                     width: p.round.width,
                     height: p.round.height,
+                    gameoverResource: hasEnded ? p.round.winningResource?.accessor : null,
+                    winningResource: null
                 ]
+            }
+            if (p.isFinal && p.id in solved) {
+                rounds[p.round.id].winningResource = p.round.winningResource?.accessor
+                isWinner = true
             }
             [
                 id: p.id,
@@ -101,6 +109,8 @@ class PlayerController {
         ] : null
 
 
+
+
         def ret = [
             hunt: [name: hunt.description],
             puzzles: puzzles,
@@ -108,8 +118,9 @@ class PlayerController {
             status: status,
             contactInfo: team.contactInfo,
             teamName: team.name,
-            endsIn: hunt.endTime ? hunt.endTime - System.currentTimeMillis() : null,
-            showLeaderBoard: hunt.showLeaderboard
+            endsIn: endTime,
+            showLeaderBoard: hunt.showLeaderboard,
+            endText: isWinner ? hunt.winningText : hasEnded ? hunt.gameoverText : null
         ]
         render ret as JSON
     }
@@ -134,9 +145,6 @@ class PlayerController {
         }
 
         def started = puzzle.timeLimit ? (timeStarted as Boolean) : true
-//        def startTime = timedStarted?.startTime
-//        def timeLimit = puzzle.timeLimit ? puzzle.timeLimit + (team.status?.puzzleTime ?: 0) : null
-        //def failed = p.timeLimit && started && (startTime + (timeLimit * 1000) < System.currentTimeMillis())
         def solved = team.hasSolved(puzzle)
 
         render([

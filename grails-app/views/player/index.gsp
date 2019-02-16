@@ -37,9 +37,13 @@
                 <div class="alert-window" style="display: none"></div></div>
         </div>
 
-        <div class="leaderboard-pane"></div>
+        <div class="greeting greeting-leaderboard leaderboard-pane"></div>
 
     </div>
+
+    <footer>
+        <g:link controller="login" action="logout">Logout</g:link> | <a href="https://www.bloomberg.com/notices/privacy/" target="_blank">Privacy Policy</a> | <g:link controller="login" action="terms" target="_blank">Terms Of Service</g:link>
+    </footer>
 </div>
 
 <div id="modal" style="visibility: hidden">
@@ -47,6 +51,7 @@
 
     <div id="modal-root"></div>
 </div>
+
 </body>
 
 </html>

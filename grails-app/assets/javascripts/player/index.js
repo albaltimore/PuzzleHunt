@@ -18,7 +18,7 @@ function showHintResourcesDialog(puzzleId, puzzleName) {
     pane.append(loadingLabel);
 
     $.get("getHintResources", {id: puzzleId}, function (hintResources) {
-        console.log(hintResources);
+        // console.log(hintResources);
         loadingLabel.remove();
 
         var hintInterval;
@@ -191,7 +191,6 @@ var alertRefreshInterval;
 var alertNext;
 
 function updateAlerts() {
-    console.log("update alerts");
     alertNext = null;
     var alertLabel$ = $(".alert");
     var alertWindow$ = $(".alert-window");
@@ -199,7 +198,7 @@ function updateAlerts() {
     alertLabel$.removeClass("alert-pending alert-available");
 
     $.get('getAlerts', function (alerts) {
-        console.log(alerts);
+        // console.log(alerts);
         if (alerts && alerts.length) {
             alerts.forEach(alert => {
                 if (alertsMap[alert.id]) {
@@ -210,7 +209,7 @@ function updateAlerts() {
             });
         }
     }).fail(function (e) {
-        console.log(e);
+        // console.log(e);
     }).always(function () {
         if (!alertNext) alertNext = setTimeout(updateAlerts, 66000);
     });
@@ -265,7 +264,7 @@ function updateAlerts() {
                     alertAvailable = true;
                     alertAck.click(() => {
                         $.post("acknowledgeAlert", {id: alert.id}, function (alertData) {
-                            console.log(alertData);
+                            // console.log(alertData);
                             alertAck.remove();
 
                         }).fail(console.log).always(updateAlerts)
@@ -296,11 +295,9 @@ var leaderboard = (teamName) => {
     leaderboardInited = true;
     var rootDiv = $(".leaderboard-pane");
 
-    console.log('leaderboard!');
-
     function paint(launch) {
         $.get('getLeaderBoard', data => {
-            console.log('leaderboard data', teamName, data);
+            // console.log('leaderboard data', teamName, data);
             if (data.data) {
                 rootDiv.empty();
                 var table = $("<table/>");
@@ -367,7 +364,7 @@ var removeTimers = [];
 var paneMaximized = false;
 
 function clearPanes() {
-    console.log("clearing", removePanes);
+    // console.log("clearing", removePanes);
     removePanes.forEach(function (pane) {
         pane.remove();
     });
@@ -385,10 +382,10 @@ function clearPanes() {
 var puzzlePoints = [];
 
 function clearPoints() {
-    console.log("clearing points", puzzlePoints);
+    // console.log("clearing points", puzzlePoints);
     clearPanes();
     puzzlePoints.forEach(function (puzzlePoint) {
-        console.log('remove point', puzzlePoint);
+        // console.log('remove point', puzzlePoint);
         if (puzzlePoint) {
             puzzlePoint.remove();
         }
@@ -405,7 +402,7 @@ var endTime = null;
 function reloadMap(openPuzzleId) {
     clearPoints();
     $.get("getPuzzles", function (teamData) {
-        console.log('team data', teamData);
+        // console.log('team data', teamData);
         var rootPane = $("#rootPane");
         var pMap = {};
 
@@ -438,19 +435,31 @@ function reloadMap(openPuzzleId) {
 
         if (!leaderboardInited) setTimeout(() => leaderboard(teamData.teamName), 0);
 
+
+        var hasOverlay = false;
         teamData.rounds.forEach(function (round) {
-            console.log(round.id, parseInt(window.location.hash.substr(1)));
+            // console.log(round.id, parseInt(window.location.hash.substr(1)));
             if (!selectedRound && round.id === parseInt(window.location.hash.substr(1))) {
                 selectedRound = round.id;
             }
             if (rounds[round.id]) {
                 return;
             }
+
+            var background = round.background;
+            if (round.winningResource) {
+                background = round.winningResource;
+                hasOverlay = true;
+            } else if (round.gameoverResource) {
+                background = round.gameoverResource;
+                hasOverlay = true;
+            }
+
             rounds[round.id] = round;
             var paneDiv = $("<div class='map-root' style='width: " + round.width + "px ;height: " + round.height + "px'>");
             paneDiv.addClass("map-root-round-" + round.floorId);
             rootPane.append(paneDiv);
-            var img = $("<img src=getResource?accessor=" + round.background + " style='position: absolute; z-index: 1'>");
+            var img = $(`<img src="getResource?accessor=${background}" style='position: absolute; z-index: 1'>`);
             paneDiv.append(img);
             rounds[round.id].pane = paneDiv;
 
@@ -460,6 +469,11 @@ function reloadMap(openPuzzleId) {
 
             if (round.id !== selectedRound) {
                 paneDiv.css("display", "none");
+            }
+
+
+            if (teamData.endText) {
+                paneDiv.append($(`<div class="game-ended-text" />`).attr("text", teamData.endText));
             }
         });
 
@@ -496,7 +510,7 @@ function reloadMap(openPuzzleId) {
             pMap[puzzle.id] = puzzle;
         });
 
-        console.log(rounds);
+        // console.log(rounds);
 
         teamData.puzzles.forEach(function (puzzle) {
             pMap[puzzle.id] = puzzle;
@@ -513,7 +527,7 @@ function reloadMap(openPuzzleId) {
                 return pMap[rp.id];
             }).forEach(function (rp) {
                 if (puzzle.roundId !== pMap[rp.id].roundId) {
-                    console.log("nolinks", puzzle, rp);
+                    // console.log("nolinks", puzzle, rp);
                     return;
                 }
 
@@ -556,7 +570,13 @@ function reloadMap(openPuzzleId) {
 
         var isWinner = teamData.puzzles.some(p => p.solved && p.isFinal);
         if (isWinner) rootPane.addClass('puzzle-winner');
-        teamData.puzzles.forEach(function (puzzle) {
+
+
+        if (hasOverlay) {
+            $(".greeting").css('display', 'none');
+        }
+
+        if (!hasOverlay) teamData.puzzles.forEach(function (puzzle) {
             if (puzzle.iconAccessor) {
                 var pointDiv = false;
                 var point = $("<img class='puzzle-point puzzle-point-image' src='" + "getResource?accessor=" + puzzle.iconAccessor + "' />");
@@ -640,14 +660,14 @@ function reloadMap(openPuzzleId) {
                     clearPanes();
                 });
 
-                console.log('pane maximized', paneMaximized);
+                //console.log('pane maximized', paneMaximized);
                 if (paneMaximized) {
                     maximizeButton.click();
                 }
 
-                console.log("puzzle", puzzle.solved);
+                //console.log("puzzle", puzzle.solved);
                 if (puzzle.solved) {
-                    console.log("solved", puzzle);
+                    //console.log("solved", puzzle);
                     var label = $("<label class='puzzle-pane-title' style='color: green' ></label>");
                     label.text(puzzle.name);
                     pane.append(label);
@@ -657,7 +677,7 @@ function reloadMap(openPuzzleId) {
                     pane.append(contentDiv);
 
                     $.get('getPuzzleResources', {id: puzzle.id}, puzzleResouces => {
-                        console.log('puzz resc', puzzleResouces);
+                        // console.log('puzz resc', puzzleResouces);
 
                         if (puzzleResouces.solvedAccessor) {
                             var accessorUrl = "getResource?accessor=" + puzzleResouces.solvedAccessor;
@@ -709,7 +729,7 @@ function reloadMap(openPuzzleId) {
                     if (puzzle.started) {
                         if (puzzle.timeLimit) {
                             var endTime = puzzle.timeLimit * 1000 + puzzle.startTime;
-                            console.log(new Date().getTime(), endTime);
+                            // console.log(new Date().getTime(), endTime);
 
                             var ends = $("<div style='margin-top: 5px'></div>");
                             var endLab = $("<label style='color: white; margin: auto; width: 100%'>Time Limit Expired!</label>");
@@ -723,7 +743,7 @@ function reloadMap(openPuzzleId) {
                         pane.append(contentDiv);
 
                         $.get('getPuzzleResources', {id: puzzle.id}, puzzleResouces => {
-                            console.log('puzz resc', puzzleResouces);
+                            // console.log('puzz resc', puzzleResouces);
                             var accessorUrl = "getResource?accessor=" + puzzleResouces.introAccessor;
                             var introExtension = puzzleResouces.introFilename ? puzzleResouces.introFilename.substr(puzzleResouces.introFilename.lastIndexOf(".") + 1).toLowerCase() : "link";
 
@@ -773,7 +793,7 @@ function reloadMap(openPuzzleId) {
 
                                 statusLabel.text("Checking..");
                                 $.post("checkPuzzle", {id: puzzle.id, solution: solveEntry.val()}, function (data) {
-                                    console.log(data);
+                                    // console.log(data);
                                     if (data.solved) {
                                         leaderboard();
                                         reloadMap(puzzle.id);
@@ -781,7 +801,7 @@ function reloadMap(openPuzzleId) {
                                         statusLabel.text(data.message);
                                     }
                                 }).fail(function (err) {
-                                    console.log(err);
+                                    // console.log(err);
                                     statusLabel.text("Probably Incorrect");
                                 });
                             }
@@ -829,7 +849,6 @@ function reloadMap(openPuzzleId) {
                 }
             });
             if (openPuzzleId === puzzle.id) {
-                console.log('hi');
                 point.click();
             }
         });
@@ -882,7 +901,7 @@ $(document).ready(function () {
     $.get('getInstructions', function (instructions) {
         if (!instructions) return;
         var pane = $(".greeting-links");
-        console.log(instructions);
+        // console.log(instructions);
         instructions.forEach(instruction => {
             var link = $("<a class='greeting-links-item' href='getResource?accessor=" + instruction.resource + "' target='_blank' />");
             link.text(instruction.name);
