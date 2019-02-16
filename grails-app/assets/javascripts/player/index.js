@@ -801,8 +801,8 @@ function reloadMap(openPuzzleId) {
                                         statusLabel.text(data.message);
                                     }
                                 }).fail(function (err) {
+                                    statusLabel.text("Cannot verify answer");
                                     // console.log(err);
-                                    statusLabel.text("Probably Incorrect");
                                 });
                             }
                         });
