@@ -62,7 +62,7 @@ class PlayerController {
                     background: p.round.background.accessor,
                     width: p.round.width,
                     height: p.round.height,
-                    gameoverResource: hasEnded ? p.round.winningResource?.accessor : null,
+                    gameoverResource: hasEnded ? p.round.gameoverResource?.accessor : null,
                     winningResource: null
                 ]
             }
