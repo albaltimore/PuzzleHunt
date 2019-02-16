@@ -333,6 +333,11 @@ var leaderboard = (teamName) => {
                     if (team === teamName) {
                         scoreTd.addClass('leaderboard-self');
                         teamTd.addClass('leaderboard-self');
+
+                        table.prepend($("<tr/>")
+                            .append($(`<td class="leaderboard-team leaderboard-self leaderboard-first ${tdata.isWinner ? 'leaderboard-winner' : ""}" />`).text(team))
+                            .append($(`<td class="leaderboard-score leaderboard-self leaderboard-first ${tdata.isWinner ? 'leaderboard-winner' : ""}" />`).text(tdata.score)));
+
                     }
                     if (tdata.isWinner) {
                         scoreTd.addClass('leaderboard-winner');
@@ -411,7 +416,7 @@ function reloadMap(openPuzzleId) {
             });
         }
 
-        $("#huntPane").attr("hunt",teamData.hunt.name);
+        $("#huntPane").attr("hunt", teamData.hunt.name);
         var titleDiv = $("#titlePane");
         titleDiv.empty();
         endTime = teamData.endsIn !== null ? Date.now() + teamData.endsIn : null;
