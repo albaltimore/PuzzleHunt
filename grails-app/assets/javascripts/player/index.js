@@ -795,8 +795,12 @@ function reloadMap(openPuzzleId) {
                                 $.post("checkPuzzle", {id: puzzle.id, solution: solveEntry.val()}, function (data) {
                                     // console.log(data);
                                     if (data.solved) {
-                                        leaderboard();
-                                        reloadMap(puzzle.id);
+                                        if (puzzle.isFinal) {
+                                            location.reload();
+                                        } else {
+                                            leaderboard();
+                                            reloadMap(puzzle.id);
+                                        }
                                     } else {
                                         statusLabel.text(data.message);
                                     }
