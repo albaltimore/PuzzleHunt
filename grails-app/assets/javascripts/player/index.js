@@ -930,7 +930,7 @@ $(document).ready(function () {
         if (endTime) {
             endLabel.css('display', 'block');
             var left = endTime - Date.now();
-            endLabel.text(left > 0 ? `${timeDiffString(endTime - Date.now())}` : "00:00");
+            endLabel.text(left > 0 ? `${timeDiffString(left)}`.substr(0, 5) : "00:00");
         } else {
             endLabel.css('display', 'none');
         }
