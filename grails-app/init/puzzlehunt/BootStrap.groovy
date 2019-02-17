@@ -160,7 +160,7 @@ class BootStrap {
         rounds.each { k, v -> v.save(flush: true) }
 
 
-        Hunt hunt = new Hunt(description: 'Test Hunt', endTime: System.currentTimeMillis() + (1000 * 60 * 2), gameoverText: "Game Over Text", winningText: "You Win; go do this... blah blah blah...")
+        Hunt hunt = new Hunt(description: 'Test Hunt', endTime: System.currentTimeMillis() + (1000 * 60 * 25), gameoverText: "Game Over Text", winningText: "You Win; go do this... blah blah blah...")
         if (!hunt.save(flush: true)) {
             println "Failed to save Hunt $hunt"
         }
