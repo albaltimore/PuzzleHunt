@@ -88,6 +88,7 @@ function init() {
             $("#huntKey").text(hunt ? window.location.origin + "/login/register/" + hunt.linkKey : "");
             $("#huntDescription").val(hunt ? hunt.description : "");
             $("#huntWinningText").val(hunt && hunt.winningText ? hunt.winningText : "");
+            $("#huntGameoverText").val(hunt && hunt.gameoverText ? hunt.gameoverText : "");
             $("#huntStart").val(hunt && hunt.startTime ? dateString(new Date(hunt.startTime)) : "");
             $("#huntEnd").val(hunt && hunt.endTime ? dateString(new Date(hunt.endTime)) : "");
             $("#huntMaxTeamSize").val(hunt && hunt.maxTeamSize ? hunt.maxTeamSize : "");
