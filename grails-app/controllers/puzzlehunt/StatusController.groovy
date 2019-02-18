@@ -9,7 +9,10 @@ class StatusController {
     }
 
     def getStatus() {
-        def teams = Team.all.collect {
+        def hunt = Hunt.findById(session.huntId)
+        def subTeams = hunt ? Team.findAllByHunt(hunt) : Team.all
+
+        def teams = subTeams.collect {
             [
                 name: it.name,
                 priorityLine: it.getStatus()?.priorityLine,
