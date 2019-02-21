@@ -1,3 +1,4 @@
+//= require /shared/intro
 //= require jquery/jquery
 //= require shared/modal
 

@@ -1,3 +1,4 @@
+//= require /shared/intro
 //= require jquery/jquery
 //= require shared/modal
 
@@ -14,7 +15,6 @@ function reload() {
     showLoading();
     $.get('getState', data => {
         closeLoading();
-        console.log(data);
 
         $(".hunt-container").text(`Welcome to ${data.hunt}`);
         $(".team-members").empty();
@@ -204,7 +204,6 @@ $(document).ready(function () {
 
     $(".team-join-submit").click(evt => {
         var text = $(".team-join-key").val();
-        console.log(text);
         if (!text) {
             showDialog("Please enter the key of the team to join");
             return;
@@ -220,7 +219,6 @@ $(document).ready(function () {
 
     var reloadTimer = () => {
         $.get('start', data => {
-            console.log(data);
             if (data.hasStarted) {
                 location.reload();
                 return;

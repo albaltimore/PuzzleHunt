@@ -1,3 +1,5 @@
+//= require /shared/intro
+
 function displayMessage(msg) {
     var elem = document.getElementById('otherMessage');
     elem.textContent = msg;
@@ -11,7 +13,6 @@ function loadedGoogle() {
         height: '40'
     });
 
-    console.log(gapi);
     gapi.load('auth2', () => {
         gapi.auth2.getAuthInstance().attachClickHandler('withGoogle', {}, function (googleUser) {
             console.log('google sign in', googleUser);
