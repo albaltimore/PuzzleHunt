@@ -38,7 +38,7 @@
         </li>
 
         <li>
-            Prize: Bloomberg will award an Oculus Go Standalone Virtual Reality Headset to each member of the winning team. The value of each Headset is roughly US$200. The prize is not transferable. The prize is awarded without warranty of any kind. This Competition is neither endorsed by, nor affiliated with, Oculus.
+            Prize: Bloomberg will award a prize to each member of the winning team. Prizes for each Competition will be announced in advance of each Competition’s start date. The value of each prize will be an amount not to exceed US$200. The prize is not transferable. The prize is awarded without warranty of any kind.
         </li>
 
         <li>
